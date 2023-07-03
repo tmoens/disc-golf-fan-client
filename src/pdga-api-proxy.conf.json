@@ -1,0 +1,7 @@
+{
+  "/pdgaapi/*": {
+    "target": "https://api.pdga.com/services/json",
+    "secure": true,
+    "logLevel": "debug"
+  }
+}
