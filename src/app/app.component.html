@@ -1,3 +1,9 @@
-<H1>Disc Golf Fan</H1>
-<app-players></app-players>
-<router-outlet></router-outlet>
+<mat-toolbar>
+  <span>Disc Golf Fan</span>
+  <span class="fill-remaining-space"></span>
+  <span>menu goes here</span>
+</mat-toolbar>
+<app-fan *ngIf="selectedFan" [fan]="selectedFan" (onUpdate)="onUpdate()">
+
+</app-fan>
+<!--<router-outlet></router-outlet>-->

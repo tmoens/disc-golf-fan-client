@@ -11,14 +11,17 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^17.0.2",
+    "@angular/cdk": "^17.0.0",
     "@angular/common": "^17.0.2",
     "@angular/compiler": "^17.0.2",
     "@angular/core": "^17.0.2",
     "@angular/forms": "^17.0.2",
+    "@angular/material": "^17.0.0",
     "@angular/platform-browser": "^17.0.2",
     "@angular/platform-browser-dynamic": "^17.0.2",
     "@angular/router": "^17.0.2",
     "class-transformer": "^0.5.1",
+    "reflect-metadata": "^0.1.13",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

@@ -1,5 +1,6 @@
 import {Expose, Type} from 'class-transformer';
-import {DivisionDto} from './divisionDto';
+import {DivisionDto} from './division-dto';
+import 'reflect-metadata';
 
 export class PlayerResultDto {
   @Expose() resultId!: number;

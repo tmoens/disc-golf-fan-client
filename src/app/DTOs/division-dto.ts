@@ -1,5 +1,6 @@
 import { Type, Expose } from 'class-transformer';
-import { TournamentDto } from './tournamentDto';
+import { TournamentDto } from './tournament-dto';
+import 'reflect-metadata';
 
 export class DivisionDto {
   @Expose() liveRoundId!: number;

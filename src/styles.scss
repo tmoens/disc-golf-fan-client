@@ -1,1 +1,62 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.lo-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.lo-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.lo-full {
+  flex: 1;
+}
+
+.lo-justify-start {
+  justify-content: start;
+}
+
+.lo-justify-center {
+  justify-content: center;
+}
+
+.lo-justify-end {
+  justify-content: end;
+}
+
+.lo-justify-space-between {
+  justify-content: space-between;
+}
+
+.lo-align-center {
+  align-items: center;
+}
+
+.lo-gap5 {
+  gap: 5px;
+}
+
+.lo-gap10 {
+  gap: 10px;
+}
+
+.lo-gap20 {
+  gap: 20px;
+}
+
+.lo-gap64 {
+  gap: 64px;
+}
+
+.lo-10px {
+  flex-basis: 10px;
+}
+
+.lo-80px {
+  flex-basis: 80px;
+}

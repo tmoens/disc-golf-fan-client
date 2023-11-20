@@ -1,0 +1,10 @@
+<mat-toolbar>
+  <span>Manage My Favourites</span>
+  <span class="fill-remaining-space"></span>
+</mat-toolbar>
+
+<mat-list *ngIf="fan">
+  <mat-list-item *ngFor="let favourite of fan.favourites">
+    <app-favourite-editor [favourite]="favourite" (deleteFavourite)="deleteFavourite(favourite)"></app-favourite-editor>
+  </mat-list-item>
+</mat-list>
