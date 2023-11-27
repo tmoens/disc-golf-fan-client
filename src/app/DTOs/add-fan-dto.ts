@@ -1,4 +1,4 @@
-import { IsEmail, Length } from 'class-validator';
+import {IsEmail, Length} from 'class-validator';
 
 export class AddFanDto {
   @Length(1, 50, { message: `Fan's username must be 1 to 50 characters long` })

@@ -1,9 +1,14 @@
 <mat-toolbar>
   <span>Disc Golf Fan</span>
-  <span class="fill-remaining-space"></span>
-  <span>menu goes here</span>
+  <div class="fill-remaining-space"></div>
+  <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+    <mat-icon color="primary">menu</mat-icon>
+  </button>
+  <mat-menu #mainMenu="matMenu">
+    <button mat-menu-item [routerLink]="['/manage-favourites']" routerLinkActive="active">Manage Favourites</button>
+    <button mat-menu-item [routerLink]="['/live-scores']" routerLinkActive="active">Live Scores</button>
+    <button mat-menu-item [routerLink]="['/register']" routerLinkActive="active">Register</button>
+    <button mat-menu-item [routerLink]="['/login']" routerLinkActive="active">Sign In</button>
+  </mat-menu>
 </mat-toolbar>
-<app-fan *ngIf="selectedFan" [fan]="selectedFan" (onUpdate)="onUpdate()">
-
-</app-fan>
-<!--<router-outlet></router-outlet>-->
+<router-outlet></router-outlet>

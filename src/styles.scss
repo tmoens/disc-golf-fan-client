@@ -6,6 +6,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .lo-row {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 5px;
 }
 
 .lo-column {
@@ -57,6 +60,26 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex-basis: 10px;
 }
 
+.lo-40px {
+  flex-basis: 40px;
+}
+
+.lo-10px {
+  flex-basis: 10px;
+}
+
 .lo-80px {
   flex-basis: 80px;
+}
+
+.lo-100px {
+  flex-basis: 100px;
+}
+
+.lo-120px {
+  flex-basis: 120px;
+}
+
+.lo-160px {
+  flex-basis: 160px;
 }

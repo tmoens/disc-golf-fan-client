@@ -6,12 +6,18 @@ import {catchError} from 'rxjs/operators';
 import {environment} from '../environments/environment';
 import {Router} from '@angular/router';
 import {FanDto} from './DTOs/fan-dto';
+import {PlayerDto} from './DTOs/player-dto';
+import {AddFavouriteDto} from './DTOs/add-favourite-dto';
+import {FavouriteDto} from './DTOs/favourite-dto';
+import {PlayerResultDto} from './DTOs/player-result-dto';
+import {BriefPlayerResultDto} from './DTOs/brief-player-result-dto';
+import {RegistrationDto} from './DTOs/auth-related/registration-dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoaderService {
-  serverURL: string;
+  serverUrl: string;
 
   constructor(
     private http: HttpClient,
@@ -19,25 +25,57 @@ export class LoaderService {
     private router: Router,
   ) {
     if (environment.production) {
-      this.serverURL = location.origin + '/zf-server';
+      this.serverUrl = location.origin + '/dg-fan-server';
     } else {
-      this.serverURL = 'http://localhost:3000';
+      this.serverUrl = 'http://localhost:3000';
     }
   }
 
-  getFanById( id: number): Observable<FanDto | null> {
-    const url = `${this.serverURL}/fan/${id}`
-    return this.http.get<FanDto>(url)
+  getPlayerById( id: string): Observable<PlayerDto | null> {
+    const url = `${this.serverUrl}/player/${id}`
+    return this.http.get<PlayerDto>(url)
       .pipe(
-        catchError(this.handleError(url, null))
+        catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
-  deleteFavouriteById( fanId: number, playerId: string): Observable<null> {
-    const url = `${this.serverURL}/favourite/${fanId}/${playerId}`
+  getFanById( id: number): Observable<FanDto | null> {
+    const url = `${this.serverUrl}/fan/${id}`
+    return this.http.get<FanDto>(url)
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  getScoresForFan( id: number): Observable<BriefPlayerResultDto[] | null> {
+    const url = `${this.serverUrl}/fan/get-stats/${id}`
+    return this.http.get<BriefPlayerResultDto[]>(url)
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, []))
+      );
+  }
+
+  addFavourite(favourite: AddFavouriteDto): Observable<null> {
+    const url = `${this.serverUrl}/favourite/add/`;
+    return this.http.post<any>(url, favourite)
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  updateFavourite(favourite: FavouriteDto): Observable<FavouriteDto | null> {
+    const url = `${this.serverUrl}/favourite/update/`;
+    return this.http.post<any>(url, favourite)
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  deleteFavourite(favourite: FavouriteDto): Observable<null> {
+    const url = `${this.serverUrl}/favourite/delete/${favourite.fanId}/${favourite.playerId}`
     return this.http.delete<any>(url)
       .pipe(
-        catchError(this.handleError(url, null))
+        catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
@@ -57,7 +95,8 @@ export class LoaderService {
    * parameterized such that you can tell it what to return when
    * it is finished doing it's business.
    */
-  private handleError<T>(operation = 'operation', result?: T) {
+
+  private handleErrorAndShowSnackbar<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T | null> => {
       // if (401 === error.status && this.authService.isAuthenticated) {
       //   this.message.open('Your session has ended unexpectedly',
@@ -65,26 +104,11 @@ export class LoaderService {
       //   this.authService.onLogout();
       //   this.router.navigateByUrl('/login').then();
       // } else {
-        this.message.open(operation + '. ' + error.error.message || error.status,
-          'Dismiss', {duration: 3000});
+      this.message.open(`${error.error.message} || ${error.status}`,
+          'Dismiss', {duration: 5000});
       // }
       // Let the app keep running by returning what we were told to.
       return of(result as T);
     };
-  }
-}
-
-// this assumes that the params are scalar. Which they are.
-export function convertObjectToHTTPQueryParams(params: any) {
-  const paramArray: string[] = [];
-  Object.keys(params).forEach(key => {
-    if (params[key]) {
-      paramArray.push(key + '=' + params[key]);
-    }
-  });
-  if (paramArray.length > 0) {
-    return '?' + paramArray.join('&');
-  }  else {
-    return '';
   }
 }

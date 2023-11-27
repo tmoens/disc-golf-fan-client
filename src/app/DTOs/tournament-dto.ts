@@ -1,4 +1,4 @@
-import { Type, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class TournamentDto {
   @Expose() id!: string;
