@@ -16,7 +16,6 @@ export class FanService {
 
     private loaderService: LoaderService,
   ) {
-    this.getFanById(1);
   }
 
   getFanById(fanId: number) {

@@ -4,14 +4,12 @@ import {Observable, of} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {catchError} from 'rxjs/operators';
 import {environment} from '../environments/environment';
-import {Router} from '@angular/router';
 import {FanDto} from './DTOs/fan-dto';
 import {PlayerDto} from './DTOs/player-dto';
 import {AddFavouriteDto} from './DTOs/add-favourite-dto';
 import {FavouriteDto} from './DTOs/favourite-dto';
-import {PlayerResultDto} from './DTOs/player-result-dto';
 import {BriefPlayerResultDto} from './DTOs/brief-player-result-dto';
-import {RegistrationDto} from './DTOs/auth-related/registration-dto';
+import {AuthService} from './auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +20,9 @@ export class LoaderService {
   constructor(
     private http: HttpClient,
     private message: MatSnackBar,
-    private router: Router,
+    private authService: AuthService,
   ) {
+
     if (environment.production) {
       this.serverUrl = location.origin + '/dg-fan-server';
     } else {
@@ -33,7 +32,7 @@ export class LoaderService {
 
   getPlayerById( id: string): Observable<PlayerDto | null> {
     const url = `${this.serverUrl}/player/${id}`
-    return this.http.get<PlayerDto>(url)
+    return this.http.get<PlayerDto>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -41,7 +40,7 @@ export class LoaderService {
 
   getFanById( id: number): Observable<FanDto | null> {
     const url = `${this.serverUrl}/fan/${id}`
-    return this.http.get<FanDto>(url)
+    return this.http.get<FanDto>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -49,7 +48,7 @@ export class LoaderService {
 
   getScoresForFan( id: number): Observable<BriefPlayerResultDto[] | null> {
     const url = `${this.serverUrl}/fan/get-stats/${id}`
-    return this.http.get<BriefPlayerResultDto[]>(url)
+    return this.http.get<BriefPlayerResultDto[]>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, []))
       );
@@ -57,7 +56,7 @@ export class LoaderService {
 
   addFavourite(favourite: AddFavouriteDto): Observable<null> {
     const url = `${this.serverUrl}/favourite/add/`;
-    return this.http.post<any>(url, favourite)
+    return this.http.post<any>(url, favourite,{ headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -65,7 +64,7 @@ export class LoaderService {
 
   updateFavourite(favourite: FavouriteDto): Observable<FavouriteDto | null> {
     const url = `${this.serverUrl}/favourite/update/`;
-    return this.http.post<any>(url, favourite)
+    return this.http.post<any>(url, favourite, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -73,7 +72,7 @@ export class LoaderService {
 
   deleteFavourite(favourite: FavouriteDto): Observable<null> {
     const url = `${this.serverUrl}/favourite/delete/${favourite.fanId}/${favourite.playerId}`
-    return this.http.delete<any>(url)
+    return this.http.delete<any>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -98,12 +97,6 @@ export class LoaderService {
 
   private handleErrorAndShowSnackbar<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T | null> => {
-      // if (401 === error.status && this.authService.isAuthenticated) {
-      //   this.message.open('Your session has ended unexpectedly',
-      //     null, {duration: this.appState.confirmMessageDuration});
-      //   this.authService.onLogout();
-      //   this.router.navigateByUrl('/login').then();
-      // } else {
       this.message.open(`${error.error.message} || ${error.status}`,
           'Dismiss', {duration: 5000});
       // }
