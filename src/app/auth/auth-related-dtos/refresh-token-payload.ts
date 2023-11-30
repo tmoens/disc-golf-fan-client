@@ -1,3 +1,3 @@
 export class RefreshTokenPayload {
-  id: string;
+  id!: string;
 }

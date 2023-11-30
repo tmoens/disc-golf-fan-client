@@ -5,10 +5,26 @@
     <mat-icon color="primary">menu</mat-icon>
   </button>
   <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item [routerLink]="['/manage-favourites']" routerLinkActive="active">Manage Favourites</button>
-    <button mat-menu-item [routerLink]="['/live-scores']" routerLinkActive="active">Live Scores</button>
-    <button mat-menu-item [routerLink]="['/register']" routerLinkActive="active">Register</button>
-    <button mat-menu-item [routerLink]="['/login']" routerLinkActive="active">Sign In</button>
+    <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/manage-favourites']" routerLinkActive="active">
+      <mat-icon>manage_accounts</mat-icon>
+      Manage Favourites
+    </button>
+    <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/live-scores']" routerLinkActive="active">
+      <mat-icon>sync_alt</mat-icon>
+      Live Scores
+    </button>
+    <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/register']" routerLinkActive="active">
+      <mat-icon>app_registration</mat-icon>
+      Register
+    </button>
+    <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/login']" routerLinkActive="active">
+      <mat-icon>login</mat-icon>
+      Sign In
+    </button>
+    <button mat-menu-item [disabled]="!authService.isAuthenticated()" (click)="onLogout()">
+      <mat-icon>logout</mat-icon>
+      Sign Out
+    </button>
   </mat-menu>
 </mat-toolbar>
 <router-outlet></router-outlet>

@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {LoaderService} from '../loader.service';
 import {FanService} from '../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
 
@@ -13,12 +12,11 @@ import {MatCardModule} from '@angular/material/card';
 })
 export class LiveScoresComponent implements OnInit {
   constructor(
-    private loaderService: LoaderService,
     protected fanService: FanService,
   ) {
   }
 
   ngOnInit() {
-    this.fanService.getFanById(1);
+    this.fanService.getScores();
   }
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../auth.service';
 
 enum ConfirmationStatus {
   TBD,

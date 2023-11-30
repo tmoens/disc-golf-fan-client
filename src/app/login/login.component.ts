@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {EmailValidator, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../auth/auth.service';
-import {LoginDto} from '../DTOs/auth-related/login-dto';
+import {LoginDto} from '../auth/auth-related-dtos/login-dto';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 
 enum LoginStatus {
@@ -33,6 +33,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -45,6 +46,7 @@ export class LoginComponent {
         next: () => {
           this.loginStatus = LoginStatus.SUCCESS;
           this.loginError = null;
+          this.router.navigate(['/live-scores']).then();
         },
         error: (error) => {
           this.loginStatus = LoginStatus.FAIL;
@@ -52,5 +54,8 @@ export class LoginComponent {
         }
       });
     }
+  }
+  onForgotPassword() {
+
   }
 }

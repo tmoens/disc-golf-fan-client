@@ -38,7 +38,7 @@ export class LoaderService {
       );
   }
 
-  getFanById( id: number): Observable<FanDto | null> {
+  getFanById( id: string): Observable<FanDto | null> {
     const url = `${this.serverUrl}/fan/${id}`
     return this.http.get<FanDto>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
@@ -46,7 +46,7 @@ export class LoaderService {
       );
   }
 
-  getScoresForFan( id: number): Observable<BriefPlayerResultDto[] | null> {
+  getScoresForFan( id: string): Observable<BriefPlayerResultDto[] | null> {
     const url = `${this.serverUrl}/fan/get-stats/${id}`
     return this.http.get<BriefPlayerResultDto[]>(url, { headers: this.authService.createAccessHeader() })
       .pipe(

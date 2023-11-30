@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {PlayerResultDto} from '../DTOs/player-result-dto';
+import {PlayerResultDto} from '../../DTOs/player-result-dto';
 
 @Component({
   selector: 'app-scoreline',

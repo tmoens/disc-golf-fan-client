@@ -3,6 +3,7 @@ import {LoaderService} from '../loader.service';
 import {FanDto} from '../DTOs/fan-dto';
 import {plainToInstance} from 'class-transformer';
 import {BriefPlayerResultDto} from '../DTOs/brief-player-result-dto';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +14,21 @@ export class FanService {
 
 
   constructor(
-
+    private authService: AuthService,
     private loaderService: LoaderService,
   ) {
+    this.authService.authenticatedUserIdSubject.subscribe((userId: string | null) => {
+      if (userId) {
+        this.getFanById(userId);
+      }
+    })
   }
 
-  getFanById(fanId: number) {
+  getFanById(fanId: string) {
     this.loaderService.getFanById(fanId).subscribe((data) => {
       if (data) {
         this.fan = plainToInstance(FanDto, data);
         this.fan.sortFavourites();
-        this.getScores();
       } else {
         if (this.fan) {
           delete this.fan;

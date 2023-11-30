@@ -1,5 +1,7 @@
 <mat-card *ngIf="registerForm" class="registration-form">
-    <mat-card-title>Register here to follow your favourite disc golfers</mat-card-title>
+    <mat-card-header>
+        <mat-card-title>Register here to follow your favourite disc golfers</mat-card-title>
+    </mat-card-header>
     <mat-card-content >
         <form [formGroup]="registerForm" *ngIf="!registrationSuccessful" class="lo-column lo-gap10 lo-align-center" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="fill" floatLabel="always">

@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import {FavouriteDto} from './favourite-dto';
 
 export class FanDto {
-  @Expose() public id!: number;
+  @Expose() public id!: string;
   @Expose() public username!: string;
   @Expose() public name!: string;
 

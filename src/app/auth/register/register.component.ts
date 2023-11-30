@@ -5,10 +5,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import {LoaderService} from '../loader.service';
-import {RegistrationDto} from '../DTOs/auth-related/registration-dto';
+import {RegistrationDto} from '../auth-related-dtos/registration-dto';
 import {plainToInstance} from 'class-transformer';
-import {AuthService} from '../auth/auth.service';
+import {AuthService} from '../auth.service';
 
 @Component({
   selector: 'app-register',
@@ -17,8 +16,15 @@ import {AuthService} from '../auth/auth.service';
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
+
 export class RegisterComponent {
-  registerForm: FormGroup | undefined;
+  registerForm: FormGroup = this.formBuilder.group({
+    email: ['', [Validators.required, Validators.email]],
+    name: ['', Validators.required],
+    password: ['', Validators.required],
+    registrationCode: ['', Validators.required]
+  });
+
   message: string = '';
   registrationSuccessful = false;
 
@@ -27,18 +33,8 @@ export class RegisterComponent {
     private authService: AuthService,
     ) {}
 
-  ngOnInit(): void {
-    this.registerForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      name: ['', Validators.required],
-      password: ['', Validators.required],
-      registrationCode: ['', Validators.required]
-    });
-  }
-
   onSubmit(): void {
-    if (this.registerForm?.valid) {
-      console.log('Registration Data:', this.registerForm.value);
+    if (this.registerForm.valid) {
       const registrationDto = plainToInstance(RegistrationDto, this.registerForm.value);
       this.authService.register(registrationDto)
         .subscribe((data) => {
