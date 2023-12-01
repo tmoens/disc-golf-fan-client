@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import {BehaviorSubject, Observable, map, of, throwError} from 'rxjs';
+import {Injectable, signal, WritableSignal} from '@angular/core';
+import {Observable, map, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {RegistrationDto} from './auth-related-dtos/registration-dto';
@@ -15,19 +15,18 @@ import {ResetPasswordDto} from './auth-related-dtos/reset-password-dto';
 })
 
 export class AuthService {
-  private readonly _authenticatedUserIdSubject: BehaviorSubject<string | null>;
-  private accessTokenSubject: BehaviorSubject<string | null>;
-  private readonly refreshTokenSubject: BehaviorSubject<string | null>;
+  authenticatedUserIdSig: WritableSignal<string> = signal<string>('');
+  accessTokenSig: WritableSignal<string> = signal<string>('');
+  refreshTokenSig: WritableSignal<string> = signal<string>('');
   serverUrl: string;
 
-  constructor(private http: HttpClient) {
-    this._authenticatedUserIdSubject = new BehaviorSubject<string | null>(null);
+  constructor(
+    private http: HttpClient,
+    ) {
 
-    this.accessTokenSubject = new BehaviorSubject<string | null>(null);
     const storedAccessToken: string | null = (localStorage.getItem('accessToken'));
     if (storedAccessToken) this.setAccessToken(storedAccessToken);
 
-    this.refreshTokenSubject = new BehaviorSubject<string | null>(null);
     const storedRefreshToken: string | null = (localStorage.getItem('refreshToken'));
     if (storedRefreshToken) this.setRefreshToken(storedRefreshToken);
 
@@ -38,50 +37,39 @@ export class AuthService {
     }
   }
 
-  public get currentAccessToken(): string | null {
-    return this.accessTokenSubject.value;
-  }
-
-  public get currentRefreshToken(): string | null {
-    return this.refreshTokenSubject.value;
-  }
-
-  public get authenticatedUserIdSubject() {
-    return this._authenticatedUserIdSubject;
-  }
-
   public setAccessToken(token: string) {
     if (!token || this.isTokenExpired(token)) {
       this.removeAccessToken();
     } else {
       localStorage.setItem('accessToken', token);
-      this.accessTokenSubject.next(token);
+      this.accessTokenSig.set(token);
     }
   }
 
-  public setRefreshToken(token: string) {
+  public async setRefreshToken(token: string) {
     if (!token || this.isTokenExpired(token, 60)) {
       this.removeRefreshToken();
     } else {
       localStorage.setItem('refreshToken', token);
-      this.refreshTokenSubject.next(token);
-      this._authenticatedUserIdSubject.next(this.decryptToken(token).id);
+      this.refreshTokenSig.set(token);
+      const fanId = this.decryptToken(token).id
+      this.authenticatedUserIdSig.set(fanId);
     }
   }
 
   // As long as there is a valid refresh token, we are deemed authenticated
   public isAuthenticated() {
-    return !!this.currentRefreshToken;
+    return !!this.refreshTokenSig();
   }
 
   public removeAccessToken() {
     localStorage.removeItem('accessToken');
-    this.accessTokenSubject.next(null);
+    this.accessTokenSig.set('');
   }
 
   public removeRefreshToken() {
     localStorage.removeItem('refreshToken');
-    this.refreshTokenSubject.next(null);
+    this.refreshTokenSig.set('');
   }
 
   // Processing a login.  Normal case is to update local state and be done.
@@ -95,6 +83,21 @@ export class AuthService {
     );
   }
 
+  logout() {
+    // remove user from local storage to log user out
+    this.removeAccessToken();
+    this.removeRefreshToken();
+    return this.http.get<any>(
+      `${this.serverUrl}/auth/logout`,
+      { headers: this.createAccessHeader() }).pipe(
+      map(() => {
+        // nothing really to do here
+      })
+    );
+  }
+
+  // refresh is used in the verb sense here.
+  // We are refreshing the accessToken using the (noun sense) refreshToken
   refreshAccessToken(): Observable<any> {
     return this.http.get<any>(
       `${this.serverUrl}/auth/refresh-access-token`,
@@ -108,19 +111,6 @@ export class AuthService {
         return throwError(() => error); // Re-throw the error for further handling if necessary
       })
     );
-  }
-
-  logout() {
-    // remove user from local storage to log user out
-    this.removeAccessToken();
-    this.removeRefreshToken();
-    return this.http.get<any>(
-      `${this.serverUrl}/auth/logout`,
-      { headers: this.createAccessHeader() }).pipe(
-        map(() => {
-          // nothing really to do here
-        })
-      );
   }
 
   register( dto: RegistrationDto): Observable<string | null> {
@@ -157,11 +147,11 @@ export class AuthService {
 
 
   createAccessHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.currentAccessToken}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.accessTokenSig()}`)
   }
 
   createRefreshHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.currentRefreshToken}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshTokenSig()}`)
   }
 
   // find out if the token will expire within the next 65 seconds.

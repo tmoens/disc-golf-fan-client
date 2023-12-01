@@ -4,7 +4,7 @@ import {FanComponent} from './fan/fan.component';
 import {LiveScoresComponent} from './live-scores/live-scores.component';
 import {RegisterComponent} from './auth/register/register.component';
 import {EmailConfirmComponent} from './auth/email-confirm/email-confirm.component';
-import {LoginComponent} from './login/login.component';
+import {LoginComponent} from './auth/login/login.component';
 import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
 import {WelcomePageComponent} from './welcome-page/welcome-page.component';

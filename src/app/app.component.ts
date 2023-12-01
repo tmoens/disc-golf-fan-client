@@ -1,7 +1,7 @@
 import {Component, OnDestroy} from '@angular/core';
 import {AuthService} from './auth/auth.service';
 import {Router} from '@angular/router';
-import {BreakpointService} from './breakpoint-service.service';
+import {BreakpointService} from './breakpoint.service';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -22,11 +22,6 @@ export class AppComponent implements OnDestroy {
     this.toBeDestroyedLater = this.breakpointService.isLargeScreen().subscribe( isLarge => {
       this.isLargeScreen = isLarge;
     })
-  }
-
-  onLogout() {
-    this.authService.logout();
-    this.router.navigate(['/login']).then();
   }
 
   ngOnDestroy() {
