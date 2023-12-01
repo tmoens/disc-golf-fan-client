@@ -7,6 +7,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {MainMenuComponent} from '../../main-menu/main-menu.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 enum ConfirmationStatus {
   TBD,
@@ -17,7 +19,7 @@ enum ConfirmationStatus {
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MainMenuComponent, MatToolbarModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })

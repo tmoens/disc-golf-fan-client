@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
 import {AuthService} from '../auth.service';
+import {MainMenuComponent} from '../../main-menu/main-menu.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 enum ConfirmationStatus {
   TBD,
@@ -13,7 +15,7 @@ enum ConfirmationStatus {
 @Component({
   selector: 'app-email-confirm',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
+  imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule],
   templateUrl: './email-confirm.component.html',
   styleUrl: './email-confirm.component.scss'
 })
@@ -42,7 +44,7 @@ export class EmailConfirmComponent {
             this.confirmationResultMessage = message;
           }
         });
-
+    } else {
       this.confirmationStatus = ConfirmationStatus.FAILED;
       this.confirmationResultMessage = `No token provided. You been goofin' wit' da bees?`;
     }

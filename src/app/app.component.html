@@ -1,30 +1,36 @@
-<mat-toolbar>
-  <span>Disc Golf Fan</span>
-  <div class="fill-remaining-space"></div>
-  <button mat-icon-button [matMenuTriggerFor]="mainMenu">
-    <mat-icon color="primary">menu</mat-icon>
-  </button>
-  <mat-menu #mainMenu="matMenu">
-    <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/manage-favourites']" routerLinkActive="active">
-      <mat-icon>manage_accounts</mat-icon>
-      Manage Favourites
-    </button>
-    <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/live-scores']" routerLinkActive="active">
-      <mat-icon>sync_alt</mat-icon>
-      Live Scores
-    </button>
-    <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/register']" routerLinkActive="active">
-      <mat-icon>app_registration</mat-icon>
-      Register
-    </button>
-    <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/login']" routerLinkActive="active">
-      <mat-icon>login</mat-icon>
-      Sign In
-    </button>
-    <button mat-menu-item [disabled]="!authService.isAuthenticated()" (click)="onLogout()">
-      <mat-icon>logout</mat-icon>
-      Sign Out
-    </button>
-  </mat-menu>
-</mat-toolbar>
-<router-outlet></router-outlet>
+<!--<div [class.centered]="isLargeScreen">-->
+<!--  <mat-toolbar>-->
+<!--    <span>Disc Golf Fan</span>-->
+<!--    <div class="fill-remaining-space"></div>-->
+<!--    <button mat-icon-button [matMenuTriggerFor]="mainMenu">-->
+<!--      <mat-icon color="primary">menu</mat-icon>-->
+<!--    </button>-->
+<!--    <mat-menu #mainMenu="matMenu">-->
+<!--      <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/manage-favourites']"-->
+<!--              routerLinkActive="active">-->
+<!--        <mat-icon>manage_accounts</mat-icon>-->
+<!--        Manage Favourites-->
+<!--      </button>-->
+<!--      <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/live-scores']"-->
+<!--              routerLinkActive="active">-->
+<!--        <mat-icon>sync_alt</mat-icon>-->
+<!--        Live Scores-->
+<!--      </button>-->
+<!--      <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/register']"-->
+<!--              routerLinkActive="active">-->
+<!--        <mat-icon>app_registration</mat-icon>-->
+<!--        Register-->
+<!--      </button>-->
+<!--      <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/login']"-->
+<!--              routerLinkActive="active">-->
+<!--        <mat-icon>login</mat-icon>-->
+<!--        Sign In-->
+<!--      </button>-->
+<!--      <button mat-menu-item [disabled]="!authService.isAuthenticated()" (click)="onLogout()">-->
+<!--        <mat-icon>logout</mat-icon>-->
+<!--        Sign Out-->
+<!--      </button>-->
+<!--    </mat-menu>-->
+<!--  </mat-toolbar>-->
+  <router-outlet></router-outlet>
+<!--</div>-->

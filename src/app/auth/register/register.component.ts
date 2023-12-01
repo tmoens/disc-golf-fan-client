@@ -8,11 +8,13 @@ import {MatCardModule} from '@angular/material/card';
 import {RegistrationDto} from '../auth-related-dtos/registration-dto';
 import {plainToInstance} from 'class-transformer';
 import {AuthService} from '../auth.service';
+import {MainMenuComponent} from '../../main-menu/main-menu.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MainMenuComponent, MatToolbarModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })

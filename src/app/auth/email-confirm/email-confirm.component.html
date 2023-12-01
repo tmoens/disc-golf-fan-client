@@ -1,4 +1,15 @@
-<mat-card>
-    <mat-card-header> Email Confirmation </mat-card-header>
-    <mat-card-content>{{confirmationResultMessage}}</mat-card-content>
-</mat-card>
+<div class="small-page">
+  <mat-card>
+    <mat-card-header>
+      <mat-toolbar>
+        <span>Disc Golf Fan - Confirming your email</span>
+        <div class="fill-remaining-space"></div>
+        <app-main-menu></app-main-menu>
+      </mat-toolbar>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{confirmationResultMessage}}</p>
+      <p>TBD add a "resend email confirmation request"</p>
+    </mat-card-content>
+  </mat-card>
+</div>

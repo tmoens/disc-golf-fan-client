@@ -6,6 +6,21 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.small-page {
+  margin: 0 auto;
+  max-width: 500px;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full height of the viewport */
+}
+
+
 .lo-row {
   display: flex;
   flex-direction: row;

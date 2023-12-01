@@ -7,6 +7,8 @@ import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
+import {MainMenuComponent} from '../main-menu/main-menu.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 enum LoginStatus {
   TBD,
@@ -17,7 +19,7 @@ enum LoginStatus {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule],
+  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MainMenuComponent, MatToolbarModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -36,9 +38,6 @@ export class LoginComponent {
     private router: Router,
   ) {}
 
-  ngOnInit() {
-  }
-
   onSubmit() {
     if (this.loginForm.valid) {
       const loginDto: LoginDto = this.loginForm.value;
@@ -50,12 +49,10 @@ export class LoginComponent {
         },
         error: (error) => {
           this.loginStatus = LoginStatus.FAIL;
-          this.loginError = JSON.stringify(error, null, 2);
+          this.loginError = error.error.message;
+          // this.loginError = JSON.stringify(error, null, 2);
         }
       });
     }
-  }
-  onForgotPassword() {
-
   }
 }
