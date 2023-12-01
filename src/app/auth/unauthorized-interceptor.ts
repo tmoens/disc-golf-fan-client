@@ -32,7 +32,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
       switchMap((token: any) => {
         // Set the new token in the header and retry the original request
         const authReq = request.clone({
-          headers: request.headers.set('Authorization', `Bearer ${this.authService.currentAccessToken}`)
+          headers: request.headers.set('Authorization', `Bearer ${this.authService.accessTokenSig()}`)
         });
         return next.handle(authReq);
       }),

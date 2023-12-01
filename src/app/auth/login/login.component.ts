@@ -1,13 +1,13 @@
 import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {AuthService} from '../auth/auth.service';
-import {LoginDto} from '../auth/auth-related-dtos/login-dto';
+import {AuthService} from '../auth.service';
+import {LoginDto} from '../auth-related-dtos/login-dto';
 import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
-import {MainMenuComponent} from '../main-menu/main-menu.component';
+import {MainMenuComponent} from '../../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
 enum LoginStatus {

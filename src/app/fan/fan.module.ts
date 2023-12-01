@@ -12,6 +12,7 @@ import {CdkDrag, CdkDragHandle, CdkDropList, CdkDropListGroup} from '@angular/cd
 import {MatCardModule} from '@angular/material/card';
 import {MatLineModule} from '@angular/material/core';
 import {AuthModule} from '../auth/auth.module';
+import {MainMenuComponent} from '../main-menu/main-menu.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {AuthModule} from '../auth/auth.module';
     CdkDropList,
     MatLineModule,
     CdkDragHandle,
+    MainMenuComponent,
   ],
   exports: [
     FanComponent,

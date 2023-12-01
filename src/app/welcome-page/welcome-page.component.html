@@ -1,32 +1,31 @@
 <!-- app-disc-golf-scores.component.html -->
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>Follow friends, family and favourite pros all at once</mat-card-title>
-    <mat-card-subtitle>Live Tournament Scores for all your favorite players!</mat-card-subtitle>
-  </mat-card-header>
+<div class="small-page">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Follow friends, family and favourite pros all at once</mat-card-title>
+      <mat-card-subtitle>Live Tournament Scores for all your favorite players!</mat-card-subtitle>
+    </mat-card-header>
 
-  <mat-card-content>
-    <div class="lo-column lo-gap20">
-      <div class="lo-row lo-gap10">
-        <span class="material-symbols-outlined">select_check_box</span>
-        Tell us who your want to follow, we'll do the work!
+    <mat-card-content>
+      <div class="lo-column lo-gap20">
+        <div class="lo-row lo-gap10">
+          <span class="material-symbols-outlined">select_check_box</span>
+          Tell us who your want to follow, we'll do the work!
+        </div>
+        <div class="lo-row lo-gap10">
+          <span class="material-symbols-outlined" color="primary">select_check_box</span>
+          No need to navigate from tournament to tournament, division to division!
+        </div>
+        <div class="lo-row lo-gap10">
+          <span class="material-symbols-outlined">select_check_box</span>
+          Live updates from multiple tournaments and divisions seamlessly integrated
+        </div>
       </div>
-      <div class="lo-row lo-gap10">
-        <span class="material-symbols-outlined" color="primary">select_check_box</span>
-        No need to navigate from tournament to tournament, division to division!
-      </div>
-      <div class="lo-row lo-gap10">
-        <span class="material-symbols-outlined">select_check_box</span>
-        Live updates from multiple tournaments and divisions seamlessly integrated
-      </div>
-    </div>
-  </mat-card-content>
+    </mat-card-content>
 
-  <mat-card-actions>
-    <div class="lo-row lo-gap20">
-      <div class="fill-remaining-space"></div>
-      <button mat-raised-button color="primary" (click)="register()">Register</button>
-      <button mat-raised-button color="primary" (click)="login()">Sign In</button>
-    </div>
-  </mat-card-actions>
-</mat-card>
+    <mat-card-actions align="end" class="lo-gap20">
+        <button mat-raised-button color="primary" (click)="register()">Register</button>
+        <button mat-raised-button color="primary" (click)="login()">Sign In</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

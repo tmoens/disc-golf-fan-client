@@ -1,25 +1,39 @@
-import { Injectable } from '@angular/core';
+import {effect, Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {FanDto} from '../DTOs/fan-dto';
 import {plainToInstance} from 'class-transformer';
 import {BriefPlayerResultDto} from '../DTOs/brief-player-result-dto';
 import {AuthService} from '../auth/auth.service';
+import {interval, Subscription} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FanService {
+export class FanService implements OnDestroy {
   fan: FanDto | undefined;
-  scores: BriefPlayerResultDto[] | undefined;
 
+  // This is an Angular Signal that will hold scores we poll from the server.
+  scoresSig: WritableSignal<BriefPlayerResultDto[]> = signal<BriefPlayerResultDto[]>([]);
+
+  // keep track of this so we can unsubscribe later.
+  pollingSubscription: Subscription;
 
   constructor(
     private authService: AuthService,
     private loaderService: LoaderService,
   ) {
-    this.authService.authenticatedUserIdSubject.subscribe((userId: string | null) => {
+    effect(() => {
+      const userId = this.authService.authenticatedUserIdSig();
       if (userId) {
         this.getFanById(userId);
+        this.getScores(userId);
+      }
+    });
+
+
+    this.pollingSubscription = interval(60000).subscribe(() => {
+      if (this.fan) {
+        this.getScores(this.fan.id);
       }
     })
   }
@@ -43,20 +57,25 @@ export class FanService {
     }
   }
 
-  getScores() {
-    if (this.fan)
-    this.loaderService.getScoresForFan(this.fan.id).subscribe((data) => {
-      if (!data) {
-        if (this.scores) {
-          delete this.scores;
+  getScores(fanId: string) {
+    if (fanId)
+      this.loaderService.getScoresForFan(fanId).subscribe((data) => {
+        if (!data) {
+          this.scoresSig.set([]);
+        } else {
+          // we have data
+          const scores: BriefPlayerResultDto[] = [];
+          for (const datum of data) {
+            scores.push(plainToInstance(BriefPlayerResultDto, datum));
+          }
+          this.scoresSig.set(scores)
         }
-        return;
-      }
-      // we have data
-      this.scores = [];
-      for (const datum of data) {
-        this.scores.push(plainToInstance(BriefPlayerResultDto, datum));
-      }
-    });
+      });
+  }
+
+  ngOnDestroy() {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+    }
   }
 }

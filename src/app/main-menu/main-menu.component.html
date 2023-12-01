@@ -22,7 +22,7 @@
     <mat-icon>login</mat-icon>
     Sign In
   </button>
-  <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/welcome-page']">
+  <button mat-menu-item [disabled]="!authService.isAuthenticated()" (click)="onLogout()">
     <mat-icon>logout</mat-icon>
     Sign Out
   </button>

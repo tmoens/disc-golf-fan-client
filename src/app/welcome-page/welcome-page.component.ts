@@ -5,7 +5,7 @@ import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
-import {BreakpointService} from '../breakpoint-service.service';
+import {BreakpointService} from '../breakpoint.service';
 
 @Component({
   selector: 'app-welcome-page',
