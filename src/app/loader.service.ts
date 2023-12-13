@@ -10,6 +10,7 @@ import {AddFavouriteDto} from './DTOs/add-favourite-dto';
 import {FavouriteDto} from './DTOs/favourite-dto';
 import {BriefPlayerResultDto} from './DTOs/brief-player-result-dto';
 import {AuthService} from './auth/auth.service';
+import {PlayerResultDto} from './DTOs/player-result-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,14 @@ export class LoaderService {
       );
   }
 
+  getScoreline( id: number): Observable<PlayerResultDto | null> {
+    const url = `${this.serverUrl}/fan/get-scoreline-detail/${id}`
+    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
   addFavourite(favourite: AddFavouriteDto): Observable<null> {
     const url = `${this.serverUrl}/favourite/add/`;
     return this.http.post<any>(url, favourite,{ headers: this.authService.createAccessHeader() })
@@ -95,13 +104,13 @@ export class LoaderService {
    * it is finished doing it's business.
    */
 
-  private handleErrorAndShowSnackbar<T>(operation = 'operation', result?: T) {
+  private handleErrorAndShowSnackbar<T>(operation = 'operation', resultOnError?: T) {
     return (error: any): Observable<T | null> => {
       this.message.open(`${error.error.message} || ${error.status}`,
           'Dismiss', {duration: 5000});
       // }
       // Let the app keep running by returning what we were told to.
-      return of(result as T);
+      return of(resultOnError as T);
     };
   }
 }

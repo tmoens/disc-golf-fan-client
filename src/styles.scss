@@ -16,8 +16,6 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   max-width: 500px;
   display: flex;
   justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  height: 100vh; /* Full height of the viewport */
 }
 
 
@@ -82,8 +80,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   flex-basis: 40px;
 }
 
-.lo-10px {
-  flex-basis: 10px;
+.lo-60px {
+  flex-basis: 60px;
 }
 
 .lo-80px {

@@ -3,14 +3,13 @@ import { TournamentDto } from './tournament-dto';
 import 'reflect-metadata';
 
 export class DivisionDto {
-  @Expose() liveRoundId!: number;
   @Expose() name!: string;
+  @Expose() id!: number;
   @Expose() tournamentId!: string;
-  @Expose() round!: string;
-  @Expose() isFinished!: boolean;
-  @Expose() holeNames!: string[];
-  @Expose() holeLengths!: number[];
-  @Expose() holePars!: number[];
+  @Expose() fullName!: string;
+  @Expose() latestRound!: string;
+  @Expose() finalRound!: string;
+  @Expose() completed!: boolean;
   @Expose() pdgaLastUpdate!: string;
 
   @Type(() => TournamentDto)

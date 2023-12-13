@@ -1,6 +1,6 @@
 import {Expose, Type} from 'class-transformer';
-import {DivisionDto} from './division-dto';
 import 'reflect-metadata';
+import {RoundDto} from './round-dto';
 
 export class PlayerResultDto {
   @Expose() resultId!: number;
@@ -20,6 +20,9 @@ export class PlayerResultDto {
   @Expose() holeScores!: string;
   @Expose() pdgaLastUpdate!: string;
 
-  @Type(() => DivisionDto)
-  @Expose() division!: DivisionDto;
+  @Type(() => PlayerResultDto)
+  @Expose() leader!: PlayerResultDto;
+
+  @Type(() => RoundDto)
+  @Expose() round!: RoundDto;
 }

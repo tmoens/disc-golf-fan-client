@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import {FanComponent} from './fan.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatListModule} from '@angular/material/list';
-import {ScorelineComponent} from '../live-scores/scoreline/scoreline.component';
+import {SmallScreenScoreDetails} from '../live-scores/small-screen-score-details/small-screen-score-details.component';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -23,7 +23,7 @@ import {MainMenuComponent} from '../main-menu/main-menu.component';
     CommonModule,
     MatToolbarModule,
     MatListModule,
-    ScorelineComponent,
+    SmallScreenScoreDetails,
     MatButtonModule,
     MatIconModule,
     ReactiveFormsModule,

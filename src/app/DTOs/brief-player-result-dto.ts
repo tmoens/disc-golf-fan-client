@@ -9,10 +9,11 @@ export class BriefPlayerResultDto {
   played!: number;
   roundToPar!: number;
   // The running total vs par for the tournament.,
-   parThroughRound!: number;
-   roundScore!: number;
-   roundRating!: number;
-   roundNumber!: string;
-   divisionName!: string;
-   tournamentName!: string;
+  parThroughRound!: number;
+  roundScore!: number;
+  roundRating!: number;
+  roundNumber!: string;
+  divisionName!: string;
+  tournamentName!: string;
+  tournamentId!: string;
 }

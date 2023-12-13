@@ -1,6 +1,5 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LoaderService} from '../loader.service';
-import {FanDto} from '../DTOs/fan-dto';
 import {FavouriteDto} from '../DTOs/favourite-dto';
 import {FormControl} from '@angular/forms';
 import {debounceTime, lastValueFrom} from 'rxjs';
@@ -35,7 +34,7 @@ export class FanComponent implements OnInit {
 
   isPlayerAlreadyFavourite(playerId: string): boolean {
     if (this.fanService.fan && this.player) {
-      return this.fanService.fan.isFavourite(this.player.id);
+      return this.fanService.fan.isFavourite(playerId);
     }
     return false;
   }

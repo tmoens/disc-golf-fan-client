@@ -1,0 +1,49 @@
+.hole-score-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eagle-or-better-circle {
+  border: 2px solid green;
+  border-radius: 50%; /* Circular border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px; /* Space between circles */
+}
+
+.birdie-circle {
+  border: 2px solid green;
+  border-radius: 50%; /* Circular border */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.double-bogey-or-worse-square {
+  border: 2px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px; /* Space between squares */
+}
+
+.bogey-square {
+  border: 2px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.par {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}

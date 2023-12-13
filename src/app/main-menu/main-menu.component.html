@@ -2,23 +2,25 @@
   <mat-icon color="primary">menu</mat-icon>
 </button>
 <mat-menu #mainMenu="matMenu">
-  <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/manage-favourites']"
-          routerLinkActive="active">
+  <button mat-menu-item
+          [disabled]="manageFavouritesDisabled()"
+          [routerLink]="['/' + AppTools.MANAGE_FAVOURITES]">
     <mat-icon>manage_accounts</mat-icon>
     Manage Favourites
   </button>
-  <button mat-menu-item [disabled]="!authService.isAuthenticated()" [routerLink]="['/live-scores']"
-          routerLinkActive="active">
+  <button mat-menu-item
+          [disabled]="liveScoresDisabled()"
+          [routerLink]="['/' + AppTools.LIVE_SCORES]">
     <mat-icon>sync_alt</mat-icon>
     Live Scores
   </button>
-  <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/register']"
-          routerLinkActive="active">
+  <button mat-menu-item [disabled]="registrationDisabled()"
+          [routerLink]="['/' + AppTools.REGISTER]">
     <mat-icon>app_registration</mat-icon>
     Register
   </button>
-  <button mat-menu-item [disabled]="authService.isAuthenticated()" [routerLink]="['/login']"
-          routerLinkActive="active">
+  <button mat-menu-item [disabled]="loginDisabled()"
+  [routerLink]="['/' + AppTools.LOGIN]">
     <mat-icon>login</mat-icon>
     Sign In
   </button>

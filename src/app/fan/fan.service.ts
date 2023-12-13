@@ -12,6 +12,9 @@ import {interval, Subscription} from 'rxjs';
 export class FanService implements OnDestroy {
   fan: FanDto | undefined;
 
+  // When a fan is logged in, we grab the scores for the fan's favourites.
+  // Then we poll the server for updates.
+  // The component responsible for showing the scores just shows the latest info.
   // This is an Angular Signal that will hold scores we poll from the server.
   scoresSig: WritableSignal<BriefPlayerResultDto[]> = signal<BriefPlayerResultDto[]>([]);
 
@@ -30,8 +33,7 @@ export class FanService implements OnDestroy {
       }
     });
 
-
-    this.pollingSubscription = interval(60000).subscribe(() => {
+    this.pollingSubscription = interval(6000).subscribe(() => {
       if (this.fan) {
         this.getScores(this.fan.id);
       }

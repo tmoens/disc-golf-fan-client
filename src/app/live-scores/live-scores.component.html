@@ -2,52 +2,65 @@
   <mat-card>
     <mat-card-header>
       <mat-toolbar>
-        <span>Disc Golf Fan Sign In</span>
+        <span>Disc Golf Fan - Live Scores</span>
         <div class="fill-remaining-space"></div>
         <app-main-menu></app-main-menu>
       </mat-toolbar>
     </mat-card-header>
-      <mat-card-content *ngIf="!fanService.scoresSig()">
-        <div>No data yet</div>
-      </mat-card-content>
-    <ng-container *ngIf="fanService.scoresSig">
-      <mat-card-content *ngFor="let s of fanService.scoresSig()">
-        <div class="test-column">
-          <div class="test-row mat-h3">{{s.playerName}} {{s.divisionName}} Round: {{s.roundNumber}}</div>
-          <div class="test-row mat-small">
-            {{s.tournamentName}}
+    <mat-card-content *ngIf="!fanService.scoresSig()">
+      <div>No data yet</div>
+    </mat-card-content>
+    <mat-accordion *ngIf="fanService.scoresSig">
+      <mat-expansion-panel
+        *ngFor="let s of fanService.scoresSig()"
+        [expanded]="isExpanded(s.resultId)"
+        (closed)="closePanel()"
+        (opened)="openPanel(s.resultId)">
+        <mat-expansion-panel-header>
+          <div class="test-column">
+            <div class="test-row mat-h3">
+              <a [href]="'https://pdga.com/player/' + s.pdgaNum" target="_blank">
+                {{ s.playerName }}
+              </a>
+              {{ s.divisionName }} Round: {{ s.roundNumber }}</div>
+            <div class="test-row mat-small">
+              <a [href]="'https://pdga.com/tour/event/' + s.tournamentId" target="_blank">
+                {{ s.tournamentName }}
+              </a>
+            </div>
+            <div class="test-row">
+              <div class="datum-column lo-80px">
+                <div class="mat-small">Place</div>
+                <div *ngIf="s.tied" class="mat-h3">T{{ s.runningPlace }}</div>
+                <div *ngIf="!s.tied" class="mat-h3">{{ s.runningPlace }}</div>
+              </div>
+              <div class="datum-column lo-80px">
+                <div class="mat-small">Through</div>
+                <div class="mat-h3">{{ s.played }}</div>
+              </div>
+              <div class="datum-column lo-80px">
+                <div class="mat-small">Tot v Par</div>
+                <div *ngIf="s.parThroughRound > 0" class="mat-h3">+{{ s.parThroughRound }}</div>
+                <div *ngIf="s.parThroughRound === 0" class="mat-h3">Even</div>
+                <p *ngIf="s.parThroughRound < 0" class="mat-h3" style="color: red">{{ s.parThroughRound }}</p>
+              </div>
+              <div class="datum-column lo-80px">
+                <div class="mat-small">Rnd v Par</div>
+                <div *ngIf="s.roundToPar > 0" class="mat-h3">+{{ s.roundToPar }}</div>
+                <div *ngIf="s.roundToPar === 0" class="mat-h3">Even</div>
+                <p *ngIf="s.roundToPar < 0" class="mat-h3" style="color: red">{{ s.roundToPar }}</p>
+              </div>
+              <div class="datum-column lo-80px">
+                <div class="mat-small">Round Rating</div>
+                <div class="mat-h3">{{ s.roundRating || 'TBD' }}</div>
+              </div>
+            </div>
           </div>
-          <div class="test-row">
-            <div class="datum-column lo-80px">
-              <div class="mat-small">Place</div>
-              <div *ngIf="s.tied" class="mat-h3">T{{s.runningPlace}}</div>
-              <div *ngIf="!s.tied" class="mat-h3">{{s.runningPlace}}</div>
-            </div>
-            <div class="datum-column lo-80px">
-              <div class="mat-small">Through</div>
-              <div class="mat-h3">{{s.played}}</div>
-            </div>
-            <div class="datum-column lo-80px">
-              <div class="mat-small">Tot v Par</div>
-              <div *ngIf="s.parThroughRound > 0" class="mat-h3">+{{s.parThroughRound}}</div>
-              <div *ngIf="s.parThroughRound === 0" class="mat-h3">Even</div>
-              <p *ngIf="s.parThroughRound < 0" class="mat-h3" style="color: red">{{s.parThroughRound}}</p>
-            </div>
-            <div class="datum-column lo-80px">
-              <div class="mat-small">Rnd v Par</div>
-              <div *ngIf="s.roundToPar > 0" class="mat-h3">+{{s.roundToPar}}</div>
-              <div *ngIf="s.roundToPar === 0" class="mat-h3">Even</div>
-              <p *ngIf="s.roundToPar < 0" class="mat-h3" style="color: red">{{s.roundToPar}}</p>
-            </div>
-            <div class="datum-column lo-80px">
-              <div class="mat-small">Round Rating</div>
-              <div class="mat-h3">{{s.roundRating || 'TBD'}}</div>
-            </div>
-          </div>
-        </div>
+        </mat-expansion-panel-header>
+        <app-small-screen-score-details [resultId]="s.resultId"></app-small-screen-score-details>
 
-      </mat-card-content>
-    </ng-container>
+      </mat-expansion-panel>
+    </mat-accordion>
   </mat-card>
 </div>
 <!--<div class="mat-h1">mat-h1</div>-->
