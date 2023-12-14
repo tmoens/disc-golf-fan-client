@@ -6,16 +6,28 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.app-content {
+  height: 100vh;  /* height of the viewport */
+  background: url('assets/images/small-background.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
 .fill-remaining-space {
   flex: 1 1 auto;
 }
 
+.x-small-page {
+  margin: 0 auto;
+  padding-top: 20px;
+  max-width: 500px;
+}
+
 .small-page {
   margin: 0 auto;
-  max-width: 500px;
-  display: flex;
-  justify-content: center; /* Center horizontally */
+  max-width: 959px;
 }
 
 
@@ -98,4 +110,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .lo-160px {
   flex-basis: 160px;
+}
+
+.text-red {
+  color: red;
 }

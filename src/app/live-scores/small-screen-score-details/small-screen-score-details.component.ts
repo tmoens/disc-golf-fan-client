@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import {PlayerResultDto} from '../../DTOs/player-result-dto';
 import {SmallScreenHoleScoreComponent} from '../small-screen-hole-score/small-screen-hole-score.component';
 import {LiveScoresService} from '../live-scores.service';
+import {SmallScreenScorelineComponent} from '../small-screen-scoreline/small-screen-scoreline.component';
+import {GolfScoreComponent} from '../golf-score/golf-score.component';
+import {MatListModule} from '@angular/material/list';
 
 @Component({
   selector: 'app-small-screen-score-details',
   standalone: true,
-  imports: [CommonModule, SmallScreenHoleScoreComponent],
+  imports: [CommonModule, SmallScreenHoleScoreComponent, SmallScreenScorelineComponent, GolfScoreComponent, MatListModule],
   templateUrl: './small-screen-score-details.component.html',
   styleUrl: './small-screen-score-details.component.scss'
 })

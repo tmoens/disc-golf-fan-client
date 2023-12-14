@@ -16,7 +16,7 @@ export class BreakpointService {
     return this.breakpointObserver
       .observe([Breakpoints.Medium, Breakpoints.Large, Breakpoints.XLarge])
       .pipe(map(result => {
-        console.log(JSON.stringify(result, null, 2));
+        // console.log(JSON.stringify(result, null, 2));
         return result.matches;
       }));
   }

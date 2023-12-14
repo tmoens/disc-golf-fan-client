@@ -8,11 +8,13 @@ import {Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {SmallScreenScoreDetails} from './small-screen-score-details/small-screen-score-details.component';
 import {LiveScoresService} from './live-scores.service';
+import {MatButtonModule} from '@angular/material/button';
+import {SmallScreenScorelineComponent} from './small-screen-scoreline/small-screen-scoreline.component';
 
 @Component({
   selector: 'app-live-scores',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule, MatExpansionModule, SmallScreenScoreDetails],
+  imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule, MatExpansionModule, SmallScreenScoreDetails, MatButtonModule, SmallScreenScorelineComponent],
   templateUrl: './live-scores.component.html',
   styleUrl: './live-scores.component.scss'
 })
@@ -27,6 +29,8 @@ export class LiveScoresComponent implements OnInit {
   ngOnInit() {
     if (this.fanService.fan && this.fanService.fan.favourites.length < 1) {
       this.router.navigate(['/manage-favourites']).then();
+    } else {
+      this.fanService.getScores();
     }
   }
 
@@ -34,6 +38,9 @@ export class LiveScoresComponent implements OnInit {
     return this.liveScoreService.activeResultId === resultId;
   }
 
+  onManageFavourites() {
+    this.router.navigate(['/manage-favourites']).then();
+  }
   async openPanel(resultId: number) {
     // Opening one panel automatically closes any other open panel
     // So both (opened) and (closed) are fired.
@@ -43,6 +50,7 @@ export class LiveScoresComponent implements OnInit {
     await new Promise((resolve) => setTimeout(resolve, 1));
     this.liveScoreService.activeResultId = resultId;
   }
+
   closePanel() {
     this.liveScoreService.activeResultId = null;
   }

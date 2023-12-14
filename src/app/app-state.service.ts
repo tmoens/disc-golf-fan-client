@@ -24,7 +24,7 @@ export class AppStateService {
     this.router.events.subscribe( event => {
       if (event instanceof NavigationEnd) {
         if (event.urlAfterRedirects) {
-          console.log(JSON.stringify(event));
+          // console.log(JSON.stringify(event));
           this.activeTool.set(event.urlAfterRedirects.substring(1));
         }
       }

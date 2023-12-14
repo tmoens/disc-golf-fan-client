@@ -6,7 +6,7 @@ export class RoundDto {
   @Expose() liveRoundId!: number;
   @Expose() divisionName!: string;
   @Expose() tournamentId!: number;
-  @Expose() round!: string;
+  @Expose() roundName!: string;
   @Expose() completed!: boolean;
   @Expose() holeNames!: string[];
   @Expose() holeLengths!: number[];

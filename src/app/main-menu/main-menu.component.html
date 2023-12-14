@@ -24,8 +24,13 @@
     <mat-icon>login</mat-icon>
     Sign In
   </button>
-  <button mat-menu-item [disabled]="!authService.isAuthenticated()" (click)="onLogout()">
+  <button mat-menu-item [disabled]="logoutDisabled()" (click)="onLogout()">
     <mat-icon>logout</mat-icon>
     Sign Out
+  </button>
+  <button mat-menu-item [disabled]="welcomeDisabled()"
+          [routerLink]="['/' + AppTools.WELCOME_PAGE]">
+    <mat-icon>home</mat-icon>
+    Home Page
   </button>
 </mat-menu>

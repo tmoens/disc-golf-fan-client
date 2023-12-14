@@ -85,20 +85,22 @@ export class AuthService {
 
   logout() {
     // remove user from local storage to log user out
-    this.removeAccessToken();
-    this.removeRefreshToken();
     return this.http.get<any>(
       `${this.serverUrl}/auth/logout`,
       { headers: this.createAccessHeader() }).pipe(
       map(() => {
-        // nothing really to do here
-      })
+        this.removeAccessToken();
+        this.removeRefreshToken();
+      }),
     );
   }
 
   // refresh is used in the verb sense here.
   // We are refreshing the accessToken using the (noun sense) refreshToken
   refreshAccessToken(): Observable<any> {
+    if (!this.isAuthenticated()) {
+      return of(null);
+    }
     return this.http.get<any>(
       `${this.serverUrl}/auth/refresh-access-token`,
       { headers: this.createRefreshHeader() }).pipe(

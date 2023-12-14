@@ -1,15 +1,8 @@
-.live-score-row {
+.scoreline-row {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
-}
-
-.live-score-column {
-  display: flex;
-  flex: auto;
-  flex-direction: column;
-  justify-content: center;
 }
 
 .datum-column {
@@ -21,8 +14,4 @@
 
 .mat-h3 {
   margin: 0 0;
-}
-
-.mat-expansion-panel-header {
-  height: auto !important;
 }

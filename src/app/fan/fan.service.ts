@@ -33,8 +33,8 @@ export class FanService implements OnDestroy {
       }
     });
 
-    this.pollingSubscription = interval(6000).subscribe(() => {
-      if (this.fan) {
+    this.pollingSubscription = interval(60000).subscribe(() => {
+      if (this.authService.isAuthenticated() && this.fan) {
         this.getScores(this.fan.id);
       }
     })
@@ -59,8 +59,14 @@ export class FanService implements OnDestroy {
     }
   }
 
-  getScores(fanId: string) {
-    if (fanId)
+  getScores(fanId?: string) {
+    if (!fanId) {
+      if (!this.fan) {
+        return;
+      } else {
+        fanId = this.fan.id;
+      }
+    }
       this.loaderService.getScoresForFan(fanId).subscribe((data) => {
         if (!data) {
           this.scoresSig.set([]);
@@ -73,6 +79,14 @@ export class FanService implements OnDestroy {
           this.scoresSig.set(scores)
         }
       });
+  }
+
+  fanHasFavorites(): boolean {
+    if (this.fan) {
+      return this.fan.favourites.length > 0;
+    } else {
+      return false;
+    }
   }
 
   ngOnDestroy() {

@@ -1,7 +1,8 @@
-import {Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
+import {Injectable, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {PlayerResultDto} from '../DTOs/player-result-dto';
 import {interval, lastValueFrom, Subscription} from 'rxjs';
+import {AuthService} from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class LiveScoresService implements OnDestroy {
   // as it updates.  This shrieks Angular Signal so here it is...
   activeResultSig: WritableSignal<PlayerResultDto | null> = signal<PlayerResultDto | null>(null);
 
-  // This is the result the user is watching.
+  // This is the id of the detailed result for a player in a round in a division
+  // in a tournament that is being watched in an expansion panel.
   private _activeResultId: number | null = null;
   get activeResultId(): number | null {
     return this._activeResultId;
@@ -33,13 +35,13 @@ export class LiveScoresService implements OnDestroy {
 
   constructor(
     private loaderService: LoaderService,
+    private authService: AuthService,
   ) {
-    this.pollingSubscription = interval(2000).subscribe(() => {
-      if (this.activeResultId) {
+    this.pollingSubscription = interval(60000).subscribe(() => {
+      if (this.authService.isAuthenticated() && this.activeResultId) {
         this.getActiveResults().then();
       }
     })
-
   }
 
   async getActiveResults() {
