@@ -1,0 +1,60 @@
+<mat-card class="small-page">
+  <mat-card-header>
+    <mat-toolbar>
+      <span>Disc Golf Fan - Live Scores</span>
+      <div class="fill-remaining-space"></div>
+      <app-main-menu></app-main-menu>
+    </mat-toolbar>
+  </mat-card-header>
+
+  <!-- In case there are no scores to report for the fan -->
+  <mat-card *ngIf="fanService.scoresSig().length === 0">
+    <mat-card-header>None of your favourites appear to be playing a tournament at the moment.</mat-card-header>
+    <mat-card-header>A new feature is coming soon to tell you when each of your favourites is planning to play next.</mat-card-header>
+    <mat-card-header>In the meantime, feel free to add some new favourites!</mat-card-header>
+    <mat-card-actions align="end" class="lo-gap20">
+      <button mat-raised-button color="primary" (click)="onManageFavourites()">Manage Favourites</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- There are scores to report -->
+  <mat-accordion *ngIf="fanService.fanHasFavorites()">
+    <mat-expansion-panel
+      *ngFor="let s of fanService.scoresSig()"
+      [expanded]="isExpanded(s.resultId)"
+      (closed)="closePanel()"
+      (opened)="openPanel(s.resultId)">
+      <mat-expansion-panel-header>
+        <div class="live-score-column">
+          <div class="live-score-row mat-h3">
+            <a [href]="'https://pdga.com/player/' + s.pdgaNum" target="_blank">
+              {{ s.playerName }}
+            </a>
+            {{ s.divisionName }} Round: {{ s.roundNumber }}</div>
+          <div class="live-score-row mat-small">
+            <a [href]="'https://pdga.com/tour/event/' + s.tournamentId" target="_blank">
+              {{ s.tournamentName }}
+            </a>
+          </div>
+          <app-small-screen-scoreline [scoreline]="s"></app-small-screen-scoreline>
+        </div>
+      </mat-expansion-panel-header>
+      <app-small-screen-score-details [resultId]="s.resultId"></app-small-screen-score-details>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>
+<!--<div class="mat-h1">mat-h1</div>-->
+<!--<div class="mat-heading">mat-heading</div>-->
+<!--<div class="mat-h2">mat-h2</div>-->
+<!--<div class="mat-title">mat-title</div>-->
+<!--<div class="mat-h3">mat-h3</div>-->
+<!--<div class="mat-subheading-1">mat-subheading-1</div>-->
+<!--<div class="mat-subheading-2">mat-subheading-2</div>-->
+<!--<div class="mat-h4">Hello dolly!</div>-->
+<!--<div class="mat-caption">caption</div>-->
+<!--<div class="mat-small">mat-small</div>-->
+<!--<div class="mat-body">mat-body</div>-->
+<!--<div class="mat-body-1">mat-body1</div>-->
+<!--<div class="mat-body-strong">mat-body-strong</div>-->
+<!--<div class="mat-body-2">mat-body-2</div>-->
+<!--<div class="mat-body">mat-body-2</div>-->

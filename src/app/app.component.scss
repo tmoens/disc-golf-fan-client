@@ -1,0 +1,10 @@
+// push everything after this in flexLayout to the end of the layout
+// For example, use this in a toolbar to push the login button to the right.
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.centered {
+  margin: 0 auto;
+  max-width: 960px;
+}

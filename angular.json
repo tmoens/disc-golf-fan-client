@@ -33,7 +33,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "validator"
+            ]
           },
           "configurations": {
             "production": {
@@ -110,5 +113,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "12d7bde6-260f-452b-9f70-178581fe4135"
   }
 }

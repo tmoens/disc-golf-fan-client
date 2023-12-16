@@ -1,0 +1,25 @@
+<div class="scoreline-row">
+  <div class="datum-column lo-80px">
+    <div class="mat-small">Place</div>
+    <div *ngIf="!scoreline.runningPlace" class="mat-h3">-</div>
+    <div *ngIf="scoreline.tied" class="mat-h3">T{{ scoreline.runningPlace }}</div>
+    <div *ngIf="!scoreline.tied" class="mat-h3">{{ scoreline.runningPlace }}</div>
+  </div>
+  <div class="datum-column lo-80px">
+    <div class="mat-small">Through</div>
+    <div class="mat-h3" *ngIf="!scoreline.played">-</div>
+    <div class="mat-h3" *ngIf="scoreline.played">{{ scoreline.played }}</div>
+  </div>
+  <div class="datum-column lo-80px">
+    <div class="mat-small">Tot v Par</div>
+    <app-golf-score [score]="scoreline.parThroughRound"></app-golf-score>
+  </div>
+  <div class="datum-column lo-80px">
+    <div class="mat-small">Rnd v Par</div>
+    <app-golf-score [score]="scoreline.roundToPar"></app-golf-score>
+  </div>
+  <div class="datum-column lo-80px">
+    <div class="mat-small">Round Rating</div>
+    <div class="mat-h3">{{ scoreline.roundRating || 'TBD' }}</div>
+  </div>
+</div>

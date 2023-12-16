@@ -1,0 +1,41 @@
+<div class="x-small-page">
+  <mat-card>
+    <mat-card-header>
+      <mat-toolbar>
+        <span>Disc Golf Fan - Manage Favorites</span>
+        <div class="fill-remaining-space"></div>
+        <app-main-menu></app-main-menu>
+      </mat-toolbar>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="lo-row">
+        <mat-form-field floatLabel="always" class="lo-160px">
+          <mat-label>New Favourite's PDGA#</mat-label>
+          <input matInput type="number" [formControl]="pdgaNumberFC">
+          <mat-hint>{{ getHint() }}</mat-hint>
+        </mat-form-field>
+        <button mat-button *ngIf="player  && !isPlayerAlreadyFavourite(player.id)" color="primary"
+                (click)="addFavourite()">
+          <mat-icon>add</mat-icon>
+          Add {{ player.name }}
+        </button>
+        <span *ngIf="player && isPlayerAlreadyFavourite(player.id)">{{ player.name }} is a favourite</span>
+        <span *ngIf="!player && !isLoadingPlayer"><mat-icon>arrow_back</mat-icon></span>
+        <span *ngIf="!player && !isLoadingPlayer">Choose a new Favourite</span>
+      </div>
+
+  <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap10">
+    <div *ngFor="let fav of fanService.fan?.favourites" cdkDrag>
+        <div class="lo-row">
+          <mat-icon cdkDragHandle color="primary" class="lo-40px">drag_indicator</mat-icon>
+          <mat-icon (click)="deleteFavourite(fav)" color="primary" class="lo-40px">delete</mat-icon>
+          <span class="lo-100px">#{{ fav.playerId }}</span>
+          <span>{{ fav.playerName }}</span>
+        </div>
+    </div>
+  </div>
+    </mat-card-content>
+  </mat-card>
+
+
+</div>

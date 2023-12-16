@@ -1,0 +1,39 @@
+<div class="x-small-page">
+  <mat-card>
+    <mat-card-header>
+      <mat-toolbar>
+        <span>Disc Golf Fan Sign In</span>
+        <div class="fill-remaining-space"></div>
+        <app-main-menu></app-main-menu>
+      </mat-toolbar>
+    </mat-card-header>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-card-content>
+        <div class="lo-column">
+          <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+            <mat-error *ngIf="loginForm.controls['email'].hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="loginForm.controls['email'].hasError('email')">Not a valid email</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" floatLabel="always">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password">
+            <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Password is required</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="loginError" class="login-error">{{ loginError }}</div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-raised-button color="primary" [disabled]="!loginForm.valid" type="submit">Sign In</button>
+      </mat-card-actions>
+      <mat-card-actions align="end">
+        <a routerLink="/forgot-password">Forgot Password?</a>
+      </mat-card-actions>
+    </form>
+
+  </mat-card>
+</div>

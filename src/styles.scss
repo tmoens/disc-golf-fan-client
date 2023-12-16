@@ -1,1 +1,126 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.app-content {
+  height: 100vh;  /* height of the viewport */
+  background: url('assets/images/small-background.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+/* Large devices (desktops) */
+@media (min-width: 960px) {
+  .app-content {
+    background-image: url('assets/images/large-background.jpg');
+  }
+}
+
+
+.fill-remaining-space {
+  flex: 1 1 auto;
+}
+
+.x-small-page {
+  margin: 0 auto;
+  padding-top: 10px;
+  max-width: 500px;
+}
+
+.small-page {
+  margin: 0 auto;
+  padding-top: 10px;
+  max-width: 959px;
+}
+
+
+.lo-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 5px;
+}
+
+.lo-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.lo-full {
+  flex: 1;
+}
+
+.lo-justify-start {
+  justify-content: start;
+}
+
+.lo-justify-center {
+  justify-content: center;
+}
+
+.lo-justify-end {
+  justify-content: end;
+}
+
+.lo-justify-space-between {
+  justify-content: space-between;
+}
+
+.lo-align-center {
+  align-items: center;
+}
+
+.lo-gap5 {
+  gap: 5px;
+}
+
+.lo-gap10 {
+  gap: 10px;
+}
+
+.lo-gap20 {
+  gap: 20px;
+}
+
+.lo-gap64 {
+  gap: 64px;
+}
+
+.lo-10px {
+  flex-basis: 10px;
+}
+
+.lo-40px {
+  flex-basis: 40px;
+}
+
+.lo-60px {
+  flex-basis: 60px;
+}
+
+.lo-80px {
+  flex-basis: 80px;
+}
+
+.lo-100px {
+  flex-basis: 100px;
+}
+
+.lo-120px {
+  flex-basis: 120px;
+}
+
+.lo-160px {
+  flex-basis: 160px;
+}
+
+.text-red {
+  color: red;
+}
