@@ -15,18 +15,27 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-size: cover;
 }
 
+/* Large devices (desktops) */
+@media (min-width: 960px) {
+  .app-content {
+    background-image: url('assets/images/large-background.jpg');
+  }
+}
+
+
 .fill-remaining-space {
   flex: 1 1 auto;
 }
 
 .x-small-page {
   margin: 0 auto;
-  padding-top: 20px;
+  padding-top: 10px;
   max-width: 500px;
 }
 
 .small-page {
   margin: 0 auto;
+  padding-top: 10px;
   max-width: 959px;
 }
 

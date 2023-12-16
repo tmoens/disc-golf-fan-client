@@ -1,12 +1,14 @@
 <div class="scoreline-row">
   <div class="datum-column lo-80px">
     <div class="mat-small">Place</div>
+    <div *ngIf="!scoreline.runningPlace" class="mat-h3">-</div>
     <div *ngIf="scoreline.tied" class="mat-h3">T{{ scoreline.runningPlace }}</div>
     <div *ngIf="!scoreline.tied" class="mat-h3">{{ scoreline.runningPlace }}</div>
   </div>
   <div class="datum-column lo-80px">
     <div class="mat-small">Through</div>
-    <div class="mat-h3">{{ scoreline.played }}</div>
+    <div class="mat-h3" *ngIf="!scoreline.played">-</div>
+    <div class="mat-h3" *ngIf="scoreline.played">{{ scoreline.played }}</div>
   </div>
   <div class="datum-column lo-80px">
     <div class="mat-small">Tot v Par</div>
