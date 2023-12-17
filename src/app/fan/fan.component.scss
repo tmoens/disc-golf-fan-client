@@ -9,3 +9,13 @@ mat-card {
 mat-card-content, mat-card-actions, mat-card-header, mat-card-footer {
   padding: 16px;
 }
+
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}

@@ -28,7 +28,7 @@ export class FanComponent implements OnInit {
 
   ngOnInit() {
     this.pdgaNumberFC.valueChanges
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(200))
       .subscribe((data) => this.onPdgaNumberChange(data));
   }
 
@@ -59,7 +59,7 @@ export class FanComponent implements OnInit {
 
   getHint(): string | null {
     if (this.isLoadingPlayer) {
-      return 'Looking up player information...'
+      return 'Doing lookup...'
     }
     if (this.lookupFailed) {
       return `Player ${this.pdgaNumberFC.value} not found.`;
@@ -71,6 +71,7 @@ export class FanComponent implements OnInit {
     if (!this.fanService.fan || !this.player) {
       return;
     }
+    this.pdgaNumberFC.setValue(null);
     const newFavourite: AddFavouriteDto = plainToInstance(AddFavouriteDto, {
       playerId: this.player.id,
       fanId: this.fanService.fan.id,
