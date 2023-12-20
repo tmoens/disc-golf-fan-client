@@ -1,8 +1,9 @@
-import {Injectable, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
+import {Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {PlayerResultDto} from '../DTOs/player-result-dto';
-import {interval, lastValueFrom, Subscription} from 'rxjs';
-import {AuthService} from '../auth/auth.service';
+import {interval, Subscription} from 'rxjs';
+import {AppStateService} from '../app-state.service';
+import {AppTools} from '../../assets/app-tools';
 
 @Injectable({
   providedIn: 'root'
@@ -25,36 +26,62 @@ export class LiveScoresService implements OnDestroy {
   set activeResultId(value: number | null) {
     if (value !== this._activeResultId) {
       this._activeResultId = value;
-      this.getActiveResults().then();
+      this.getActiveResults();
     }
   }
 
+  // We watch the app state to see if we should be polling the server or not.
+  appStateSubscription: Subscription;
+
   // We will poll the server to update the player result periodically.
   // keep track of this so we can unsubscribe later.
-  pollingSubscription: Subscription;
+  pollingSubscription!: Subscription;
 
   constructor(
     private loaderService: LoaderService,
-    private authService: AuthService,
+    private appStateService: AppStateService
   ) {
-    this.pollingSubscription = interval(60000).subscribe(() => {
-      if (this.authService.isAuthenticated() && this.activeResultId) {
-        this.getActiveResults().then();
+    this.appStateSubscription = this.appStateService.activeTool.subscribe((activeTool: string) => {
+      if (activeTool !== AppTools.LIVE_SCORES.route) {
+        this.stopPolling();
       }
     })
   }
 
-  async getActiveResults() {
+  getActiveResults() {
     if (this.activeResultId) {
-      this.activeResultSig.set(await lastValueFrom(this.loaderService.getScoreline(this.activeResultId)));
+      this.loaderService.getScoreline(this.activeResultId).subscribe((playerResults) => {
+        if (!playerResults) {
+          this.activeResultSig.set(null);
+        } else {
+          this.activeResultSig.set(playerResults);
+        }
+      });
     } else {
       this.activeResultSig.set(null);
     }
   }
 
+  startPolling() {
+    this.stopPolling()
+     this.getActiveResults();
+      this.pollingSubscription = interval(5000).subscribe(() => {
+        this.getActiveResults();
+      });
+    }
+
+    stopPolling() {
+      if (this.pollingSubscription) {
+        this.pollingSubscription.unsubscribe();
+      }
+    }
+
   ngOnDestroy() {
     if (this.pollingSubscription) {
       this.pollingSubscription.unsubscribe();
+    }
+    if (this.appStateSubscription) {
+      this.appStateSubscription.unsubscribe();
     }
   }
 }

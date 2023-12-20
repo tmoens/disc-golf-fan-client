@@ -45,7 +45,11 @@ export class LoginComponent {
         next: () => {
           this.loginStatus = LoginStatus.SUCCESS;
           this.loginError = null;
-          this.router.navigate(['/live-scores']).then();
+          if (this.authService.intendedPath) {
+            this.router.navigate([this.authService.intendedPath]).then();
+          } else {
+            this.router.navigate(['/live-scores']).then();
+          }
         },
         error: (error) => {
           this.loginStatus = LoginStatus.FAIL;

@@ -5,6 +5,10 @@ import {Router} from '@angular/router';
 import {Observable, switchMap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 
+// The purpose of this is to refresh the user's access token using their
+// refresh token.  For the life of me, I do not understand what security this
+// truly adds, but ok it's the way I've seen recommended a million times.
+
 @Injectable()
 export class UnauthorizedInterceptor implements HttpInterceptor {
   constructor(
@@ -29,10 +33,10 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     // Call the refresh token service
     return this.authService.refreshAccessToken().pipe(
-      switchMap((token: any) => {
+      switchMap((_token: any) => {
         // Set the new token in the header and retry the original request
         const authReq = request.clone({
-          headers: request.headers.set('Authorization', `Bearer ${this.authService.accessTokenSig()}`)
+          headers: request.headers.set('Authorization', `Bearer ${this.authService.accessToken}`)
         });
         return next.handle(authReq);
       }),

@@ -48,7 +48,7 @@ export class LoaderService {
   }
 
   getScoresForFan( id: string): Observable<BriefPlayerResultDto[] | null> {
-    const url = `${this.serverUrl}/fan/get-stats/${id}`
+    const url = `${this.serverUrl}/fan/get-scores/${id}`
     return this.http.get<BriefPlayerResultDto[]>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, []))
@@ -87,6 +87,32 @@ export class LoaderService {
       );
   }
 
+  // =============================== Admin type things =========================
+  getTournamentRosterChanges(): Observable<any> {
+    const url = `${this.serverUrl}/round/tournament-roster-changes`
+    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  getPdgaApiRequestQueueStatus(): Observable<any> {
+    const url = `${this.serverUrl}/pdga-api/request-queue`
+    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  // get cron job status
+  getCronJobStatus(): Observable<any> {
+      const url = `${this.serverUrl}/cron-status`;
+      return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+        .pipe(
+          catchError(this.handleErrorAndShowSnackbar(url, null))
+        );
+  }
+
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -104,7 +130,7 @@ export class LoaderService {
    * it is finished doing it's business.
    */
 
-  private handleErrorAndShowSnackbar<T>(operation = 'operation', resultOnError?: T) {
+  private handleErrorAndShowSnackbar<T>(_operation = 'operation', resultOnError?: T) {
     return (error: any): Observable<T | null> => {
       this.message.open(`${error.error.message} || ${error.status}`,
           'Dismiss', {duration: 5000});

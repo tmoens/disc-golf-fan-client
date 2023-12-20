@@ -1,0 +1,42 @@
+<mat-card class="small-page">
+  <mat-card-header>
+    <mat-toolbar>
+      <span>Disc Golf Fan - Admin Dashboard</span>
+      <div class="fill-remaining-space"></div>
+      <app-main-menu></app-main-menu>
+    </mat-toolbar>
+  </mat-card-header>
+
+  <mat-accordion>
+    <mat-expansion-panel (opened)="onCronStatusOpened()">
+      <mat-expansion-panel-header>Cron Job Status</mat-expansion-panel-header>
+      <mat-list>
+        <mat-list-item *ngFor="let item of adminDashboardService.cronJobStatus">
+          {{item.jobName}} {{item.nextFireDate}}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="onPdgaApiRequestQueueStatusOpened()">
+      <mat-expansion-panel-header>Whats in the request queue to the PDGA</mat-expansion-panel-header>
+      <h3 *ngIf="adminDashboardService.pdgaApiRequestQueueStatus.length === 0">
+        No requests are currently in the queue to the PDGA API.
+      </h3>
+      <mat-list>
+        <mat-list-item *ngFor="let item of adminDashboardService.pdgaApiRequestQueueStatus">
+          {{item.id}} {{item.priority}}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="onRosterChangeStatusOpened()">
+      <mat-expansion-panel-header>Rosters changing during play</mat-expansion-panel-header>
+      <h3 *ngIf="adminDashboardService.pdgaApiRequestQueueStatus.length === 0">
+        None of the live tournaments have had a roster change during play.
+      </h3>
+      <mat-list>
+        <mat-list-item *ngFor="let item of adminDashboardService.tournamentRosterChangeStatus">
+          {{item.tournamentId}} {{item.rosterChanges}}
+        </mat-list-item>
+      </mat-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+</mat-card>

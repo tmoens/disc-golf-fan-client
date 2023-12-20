@@ -1,21 +1,20 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import { Injectable } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppStateService {
-  activeTool: WritableSignal<string> = signal<string>('');
+  activeTool = new BehaviorSubject<string>('');
 
-  constructor(
-    private router: Router,
-  ) {
+  constructor(private router: Router) {
     this.watchRouterChanges();
   }
 
   initializeAppState(): Promise<any> {
-    return new Promise ((resolve, reject) => {
-      this.activeTool.set('');
+    return new Promise ((resolve, _reject) => {
+      this.activeTool.next('');
       resolve(true);
     });
   }
@@ -25,10 +24,9 @@ export class AppStateService {
       if (event instanceof NavigationEnd) {
         if (event.urlAfterRedirects) {
           // console.log(JSON.stringify(event));
-          this.activeTool.set(event.urlAfterRedirects.substring(1));
+          this.activeTool.next(event.urlAfterRedirects.substring(1));
         }
       }
     });
   }
-
 }

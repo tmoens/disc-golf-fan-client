@@ -2,25 +2,30 @@
   <mat-icon color="primary">menu</mat-icon>
 </button>
 <mat-menu #mainMenu="matMenu">
+  <button *ngIf="authenticatedUserIsAdmin()" mat-menu-item
+          [routerLink]="['/' + AppTools.ADMIN_DASHBOARD.route]">
+    <mat-icon>manage_accounts</mat-icon>
+    {{AppTools.ADMIN_DASHBOARD.displayName}}
+  </button>
   <button mat-menu-item
           [disabled]="manageFavouritesDisabled()"
-          [routerLink]="['/' + AppTools.MANAGE_FAVOURITES]">
+          [routerLink]="['/' + AppTools.MANAGE_FAVOURITES.route]">
     <mat-icon>manage_accounts</mat-icon>
     Manage Favourites
   </button>
   <button mat-menu-item
           [disabled]="liveScoresDisabled()"
-          [routerLink]="['/' + AppTools.LIVE_SCORES]">
+          [routerLink]="['/' + AppTools.LIVE_SCORES.route]">
     <mat-icon>sync_alt</mat-icon>
     Live Scores
   </button>
   <button mat-menu-item [disabled]="registrationDisabled()"
-          [routerLink]="['/' + AppTools.REGISTER]">
+          [routerLink]="['/' + AppTools.REGISTER.route]">
     <mat-icon>app_registration</mat-icon>
     Register
   </button>
   <button mat-menu-item [disabled]="loginDisabled()"
-  [routerLink]="['/' + AppTools.LOGIN]">
+  [routerLink]="['/' + AppTools.LOGIN.route]">
     <mat-icon>login</mat-icon>
     Sign In
   </button>
@@ -29,8 +34,8 @@
     Sign Out
   </button>
   <button mat-menu-item [disabled]="welcomeDisabled()"
-          [routerLink]="['/' + AppTools.WELCOME_PAGE]">
+          [routerLink]="['/' + AppTools.WELCOME.route]">
     <mat-icon>home</mat-icon>
-    Home Page
+    Welcome Page
   </button>
 </mat-menu>

@@ -78,7 +78,7 @@ export class FanComponent implements OnInit {
       order: -1
     });
     this.loaderService.addFavourite(newFavourite).subscribe(() => {
-      this.fanService.reloadFan();
+      this.fanService.loadFan();
     })
   }
 
@@ -102,7 +102,7 @@ export class FanComponent implements OnInit {
 
   deleteFavourite(favourite: FavouriteDto) {
     this.loaderService.deleteFavourite(favourite).subscribe(() => {
-      this.fanService.reloadFan();
+      this.fanService.loadFan();
     })
   }
 

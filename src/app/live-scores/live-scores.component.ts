@@ -49,9 +49,11 @@ export class LiveScoresComponent implements OnInit {
     // Wait a tick for Close to fire first.
     await new Promise((resolve) => setTimeout(resolve, 1));
     this.liveScoreService.activeResultId = resultId;
+    this.liveScoreService.startPolling();
   }
 
   closePanel() {
+    this.liveScoreService.stopPolling();
     this.liveScoreService.activeResultId = null;
   }
 }

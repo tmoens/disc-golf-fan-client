@@ -6,11 +6,13 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {BreakpointService} from '../breakpoint.service';
+import {MainMenuComponent} from '../main-menu/main-menu.component';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-welcome-page',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MainMenuComponent, MatToolbarModule],
   templateUrl: './welcome-page.component.html',
   styleUrl: './welcome-page.component.scss'
 })

@@ -5,9 +5,10 @@ import {MatMenuModule} from '@angular/material/menu';
 import {AuthService} from '../auth/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import {AppStateService} from '../app-state.service';
-import {AppTools} from '../app-helpers/app-tool-types';
 import {FanService} from '../fan/fan.service';
 import {MatButtonModule} from '@angular/material/button';
+import {AppTools} from '../../assets/app-tools';
+import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
 
 @Component({
   selector: 'app-main-menu',
@@ -27,21 +28,21 @@ export class MainMenuComponent {
 
   manageFavouritesDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
-      this.appStateService.activeTool() === AppTools.MANAGE_FAVOURITES);
+      this.appStateService.activeTool.value === AppTools.MANAGE_FAVOURITES.route);
   }
   liveScoresDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
       !this.fanService.fanHasFavorites() ||
-      this.appStateService.activeTool() === AppTools.LIVE_SCORES);
+      this.appStateService.activeTool.value === AppTools.LIVE_SCORES.route);
   }
   registrationDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.activeTool() === AppTools.REGISTER);
+      this.appStateService.activeTool.value === AppTools.REGISTER.route);
   }
 
   loginDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.activeTool() === AppTools.LOGIN);
+      this.appStateService.activeTool.value === AppTools.LOGIN.route);
   }
 
   logoutDisabled(): boolean {
@@ -49,12 +50,16 @@ export class MainMenuComponent {
   }
 
   welcomeDisabled(): boolean {
-    return (this.appStateService.activeTool() === AppTools.WELCOME_PAGE);
+    return (this.appStateService.activeTool.value === AppTools.WELCOME.route);
   }
 
   onLogout() {
     this.authService.logout().subscribe(); // You have to subscribe or the logout will not happen.
-    this.router.navigate([`/${AppTools.WELCOME_PAGE}`]).then();
+    this.router.navigate([`/${AppTools.WELCOME.route}`]).then();
+  }
+
+  authenticatedUserIsAdmin(): boolean {
+    return this.authService.authenticatedUserCanPerformRole(ADMIN_ROLE);
   }
 
   protected readonly AppTools = AppTools;

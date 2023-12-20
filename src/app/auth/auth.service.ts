@@ -1,4 +1,4 @@
-import {Injectable, signal, WritableSignal} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, map, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
@@ -9,26 +9,55 @@ import {LoginResponseDto} from './auth-related-dtos/login-response-dto';
 import {RefreshAccessTokenResponseDto} from './auth-related-dtos/refresh-access-token-response-dto';
 import {ForgotPasswordDto} from './auth-related-dtos/forgot-password-dto';
 import {ResetPasswordDto} from './auth-related-dtos/reset-password-dto';
+import {UserRoles} from './auth-related-dtos/roles';
+import {RefreshTokenPayload} from './auth-related-dtos/refresh-token-payload';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
-  authenticatedUserIdSig: WritableSignal<string> = signal<string>('');
-  accessTokenSig: WritableSignal<string> = signal<string>('');
-  refreshTokenSig: WritableSignal<string> = signal<string>('');
+  private _refreshToken: string = '';
+  get refreshToken(): string {
+    return this._refreshToken;
+  }
+
+  set refreshToken(token: string) {
+    if (!token || this.isTokenExpired(token)) {
+      token = ''
+    }
+    localStorage.setItem('refreshToken', token);
+    this._refreshToken = token;
+  }
+
+  private _accessToken: string = ''
+  get accessToken(): string {
+    return this._accessToken;
+  }
+
+  set accessToken(token: string) {
+    if (!token || this.isTokenExpired(token)) {
+      token = ''
+    }
+    localStorage.setItem('accessToken', token);
+    this._accessToken = token;
+  }
+
+
+  // this is where the user was trying to navigate to when they were forced to log in.
+  intendedPath: string = '';
+
   serverUrl: string;
 
   constructor(
     private http: HttpClient,
     ) {
-
+    // reload access tokens after browser refresh or re-open of application
     const storedAccessToken: string | null = (localStorage.getItem('accessToken'));
-    if (storedAccessToken) this.setAccessToken(storedAccessToken);
+    if (storedAccessToken) this.accessToken = storedAccessToken
 
     const storedRefreshToken: string | null = (localStorage.getItem('refreshToken'));
-    if (storedRefreshToken) this.setRefreshToken(storedRefreshToken);
+    if (storedRefreshToken) this.refreshToken = storedRefreshToken;
 
     if (environment.production) {
       this.serverUrl = location.origin + '/dg-fan-server';
@@ -37,39 +66,18 @@ export class AuthService {
     }
   }
 
-  public setAccessToken(token: string) {
-    if (!token || this.isTokenExpired(token)) {
-      this.removeAccessToken();
-    } else {
-      localStorage.setItem('accessToken', token);
-      this.accessTokenSig.set(token);
-    }
-  }
-
-  public async setRefreshToken(token: string) {
-    if (!token || this.isTokenExpired(token, 60)) {
-      this.removeRefreshToken();
-    } else {
-      localStorage.setItem('refreshToken', token);
-      this.refreshTokenSig.set(token);
-      const fanId = this.decryptToken(token).id
-      this.authenticatedUserIdSig.set(fanId);
-    }
-  }
-
   // As long as there is a valid refresh token, we are deemed authenticated
-  public isAuthenticated() {
-    return !!this.refreshTokenSig();
+  public isAuthenticated(): boolean {
+    return !!this.refreshToken;
   }
 
-  public removeAccessToken() {
-    localStorage.removeItem('accessToken');
-    this.accessTokenSig.set('');
-  }
-
-  public removeRefreshToken() {
-    localStorage.removeItem('refreshToken');
-    this.refreshTokenSig.set('');
+  getAuthenticatedUserId(): string | null {
+    const tokenPayload: RefreshTokenPayload | null = this.decryptToken(this.refreshToken);
+    if (tokenPayload && tokenPayload.id) {
+      return tokenPayload.id;
+    } else {
+      return null;
+    }
   }
 
   // Processing a login.  Normal case is to update local state and be done.
@@ -77,8 +85,8 @@ export class AuthService {
   login(loginDto: LoginDto): Observable<any> {
     return this.http.post<any>(`${this.serverUrl}/auth/login`, loginDto).pipe(
       map((loginResponse: LoginResponseDto) => {
-        this.setAccessToken(loginResponse.accessToken);
-        this.setRefreshToken(loginResponse.refreshToken);
+        this.accessToken = loginResponse.accessToken;
+        this.refreshToken = loginResponse.refreshToken;
       })
     );
   }
@@ -89,28 +97,30 @@ export class AuthService {
       `${this.serverUrl}/auth/logout`,
       { headers: this.createAccessHeader() }).pipe(
       map(() => {
-        this.removeAccessToken();
-        this.removeRefreshToken();
+        this.accessToken = '';
+        this.refreshToken = '';
       }),
     );
   }
 
   // refresh is used in the verb sense here.
-  // We are refreshing the accessToken using the (noun sense) refreshToken
+  // We are refreshing the accessToken using the refreshToken (refresh is a noun in refreshToken)
   refreshAccessToken(): Observable<any> {
+    // cannot refresh the access token if not authenticated.
     if (!this.isAuthenticated()) {
       return of(null);
     }
+
     return this.http.get<any>(
       `${this.serverUrl}/auth/refresh-access-token`,
       { headers: this.createRefreshHeader() }).pipe(
       map((response: RefreshAccessTokenResponseDto) => {
-        this.setAccessToken(response.accessToken);
+        this.accessToken = response.accessToken;
       }),
       catchError(error => {
         console.error('Error occurred while refreshing access token:', error);
-        this.removeRefreshToken(); // Call removeRefreshToken on error
-        return throwError(() => error); // Re-throw the error for further handling if necessary
+        this.refreshToken = '';
+        return throwError(() => error);
       })
     );
   }
@@ -149,11 +159,11 @@ export class AuthService {
 
 
   createAccessHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.accessTokenSig()}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`)
   }
 
   createRefreshHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshTokenSig()}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`)
   }
 
   // find out if the token will expire within the next 65 seconds.
@@ -176,6 +186,14 @@ export class AuthService {
     } else {
       return null;
     }
+  }
+
+  authenticatedUserCanPerformRole(roleInQuestion?: string): boolean {
+    if (!roleInQuestion) return true;
+    if (!(this.isAuthenticated())) {
+      return false;
+    }
+    return UserRoles.isAuthorized(this.decryptToken(this.refreshToken).role, roleInQuestion);
   }
 
   private handleError() {
