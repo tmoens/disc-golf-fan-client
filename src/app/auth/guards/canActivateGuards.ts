@@ -17,6 +17,5 @@ export const authenticatedGuard: CanActivateFn =
 export const roleGuard: CanActivateFn =
   (route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) => {
     const authService = inject(AuthService);
-    console.log(`hit role guard`);
   return (authService.authenticatedUserCanPerformRole(route.data['permittedRole']))
 }

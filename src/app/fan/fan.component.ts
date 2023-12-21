@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {FavouriteDto} from '../DTOs/favourite-dto';
 import {FormControl} from '@angular/forms';
-import {debounceTime, lastValueFrom} from 'rxjs';
+import {debounceTime} from 'rxjs';
 import {PlayerDto} from '../DTOs/player-dto';
 import {plainToInstance} from 'class-transformer';
 import {AddFavouriteDto} from '../DTOs/add-favourite-dto';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {FanService} from './fan.service';
 
 @Component({
@@ -78,21 +78,8 @@ export class FanComponent implements OnInit {
       order: -1
     });
     this.loaderService.addFavourite(newFavourite).subscribe(() => {
-      this.fanService.loadFan();
+      this.fanService.reload();
     })
-  }
-
-  async reorderFavourites() {
-    if (this.fanService.fan) {
-      let index = -1;
-      for (const f of this.fanService.fan.favourites) {
-        index++;
-        if (f.order !== index) {
-          f.order = index;
-          await lastValueFrom(this.loaderService.updateFavourite(f));
-        }
-      }
-    }
   }
 
   // TODO When we get around to doing nicknames for our favourites
@@ -102,16 +89,12 @@ export class FanComponent implements OnInit {
 
   deleteFavourite(favourite: FavouriteDto) {
     this.loaderService.deleteFavourite(favourite).subscribe(() => {
-      this.fanService.loadFan();
+      this.fanService.reload();
     })
   }
 
   onDrop(event: CdkDragDrop<FavouriteDto[]>) {
-    if (event.previousIndex === event.currentIndex) { return; }
-    if (this.fanService.fan) {
-      moveItemInArray(this.fanService.fan.favourites, event.previousIndex, event.currentIndex);
-      this.reorderFavourites().then();
-    }
+    this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
   }
 
 }

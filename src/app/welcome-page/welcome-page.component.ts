@@ -5,7 +5,6 @@ import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
-import {BreakpointService} from '../breakpoint.service';
 import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
@@ -20,11 +19,7 @@ export class WelcomePageComponent {
 
   constructor(
     private router: Router,
-    private breakpointService: BreakpointService,
   ) {
-    this.breakpointService.isLargeScreen().subscribe(value => {
-      console.log(`From welcome page: ${value}`)
-    })
   }
 
   register() {

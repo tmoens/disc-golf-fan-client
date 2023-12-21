@@ -3,6 +3,9 @@
     <mat-toolbar>
       <span>Disc Golf Fan - Live Scores</span>
       <div class="fill-remaining-space"></div>
+      <button mat-icon-button matTooltip="Add new favourites" (click)="openAddFavouriteDialog()">
+        <mat-icon>add</mat-icon>
+      </button>
       <app-main-menu></app-main-menu>
     </mat-toolbar>
   </mat-card-header>
@@ -19,42 +22,33 @@
 
   <!-- There are scores to report -->
   <mat-accordion *ngIf="fanService.fanHasFavorites()">
-    <mat-expansion-panel
-      *ngFor="let s of fanService.scoresSig()"
-      [expanded]="isExpanded(s.resultId)"
-      (closed)="closePanel()"
-      (opened)="openPanel(s.resultId)">
-      <mat-expansion-panel-header>
-        <div class="live-score-column">
-          <div class="live-score-row mat-h3">
-            <a [href]="'https://pdga.com/player/' + s.pdgaNum" target="_blank">
-              {{ s.playerName }}
-            </a>
-            {{ s.divisionName }} Round: {{ s.roundNumber }}</div>
-          <div class="live-score-row mat-small">
-            <a [href]="'https://pdga.com/tour/event/' + s.tournamentId" target="_blank">
-              {{ s.tournamentName }}
-            </a>
+    <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap5">
+      <mat-expansion-panel cdkDrag
+        *ngFor="let s of fanService.scoresSig()"
+        [expanded]="isExpanded(s.resultId)"
+        (closed)="closePanel()"
+        (opened)="openPanel(s.resultId)">
+        <mat-expansion-panel-header>
+          <div class="live-score-row" style="width: 100%">
+            <mat-icon cdkDragHandle color="primary" class="lo-40px" matTooltip="Drag to reorder your favourites">drag_indicator</mat-icon>
+            <div class="live-score-column">
+              <div class="live-score-row mat-h3">
+                <a [href]="'https://pdga.com/player/' + s.pdgaNum" target="_blank">
+                  {{ s.playerName }}
+                </a>
+                {{ s.divisionName }} Round: {{ s.roundNumber }}
+              </div>
+              <div class="live-score-row mat-small">
+                <a [href]="'https://pdga.com/tour/event/' + s.tournamentId" target="_blank">
+                  {{ s.tournamentName }}
+                </a>
+              </div>
+              <app-small-screen-scoreline [scoreline]="s"></app-small-screen-scoreline>
+            </div>
           </div>
-          <app-small-screen-scoreline [scoreline]="s"></app-small-screen-scoreline>
-        </div>
-      </mat-expansion-panel-header>
-      <app-small-screen-score-details [resultId]="s.resultId"></app-small-screen-score-details>
-    </mat-expansion-panel>
+        </mat-expansion-panel-header>
+        <app-small-screen-score-details [resultId]="s.resultId"></app-small-screen-score-details>
+      </mat-expansion-panel>
+    </div>
   </mat-accordion>
 </mat-card>
-<!--<div class="mat-h1">mat-h1</div>-->
-<!--<div class="mat-heading">mat-heading</div>-->
-<!--<div class="mat-h2">mat-h2</div>-->
-<!--<div class="mat-title">mat-title</div>-->
-<!--<div class="mat-h3">mat-h3</div>-->
-<!--<div class="mat-subheading-1">mat-subheading-1</div>-->
-<!--<div class="mat-subheading-2">mat-subheading-2</div>-->
-<!--<div class="mat-h4">Hello dolly!</div>-->
-<!--<div class="mat-caption">caption</div>-->
-<!--<div class="mat-small">mat-small</div>-->
-<!--<div class="mat-body">mat-body</div>-->
-<!--<div class="mat-body-1">mat-body1</div>-->
-<!--<div class="mat-body-strong">mat-body-strong</div>-->
-<!--<div class="mat-body-2">mat-body-2</div>-->
-<!--<div class="mat-body">mat-body-2</div>-->
