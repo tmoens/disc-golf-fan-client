@@ -11,6 +11,7 @@ import {FavouriteDto} from './DTOs/favourite-dto';
 import {BriefPlayerResultDto} from './DTOs/brief-player-result-dto';
 import {AuthService} from './auth/auth.service';
 import {PlayerResultDto} from './DTOs/player-result-dto';
+import {UpcomingEventsDto} from './DTOs/upcoming-events.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,14 @@ export class LoaderService {
     return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  getUpcomingEvents(): Observable<UpcomingEventsDto[] | null> {
+    const url = `${this.serverUrl}/favourite/get-upcoming-events/${this.authService.getAuthenticatedUserId()}`;
+    return this.http.get<any>(url,{ headers: this.authService.createAccessHeader() })
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, []))
       );
   }
 

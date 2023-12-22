@@ -11,6 +11,7 @@ import {WelcomePageComponent} from './welcome-page/welcome-page.component';
 import {authenticatedGuard, roleGuard} from './auth/guards/canActivateGuards';
 import {AppTools} from '../assets/app-tools';
 import {AdminDashboardComponent} from './admin-dahdoard/admin-dashboard.component';
+import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,14 @@ const routes: Routes = [
     canActivate: [authenticatedGuard, roleGuard],
     data: {
       permittedRole: AppTools.MANAGE_FAVOURITES.requiredRole,
+    }
+  },
+  {
+    path: AppTools.UPCOMING_EVENTS.route,
+    component: UpcomingEventsComponent,
+    canActivate: [authenticatedGuard, roleGuard],
+    data: {
+      permittedRole: AppTools.UPCOMING_EVENTS.requiredRole,
     }
   },
   {

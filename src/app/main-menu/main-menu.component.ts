@@ -30,6 +30,11 @@ export class MainMenuComponent {
     return (!this.authService.isAuthenticated() ||
       this.appStateService.activeTool.value === AppTools.MANAGE_FAVOURITES.route);
   }
+  upcomingEventsDisabled(): boolean {
+    return (!this.authService.isAuthenticated() ||
+      !this.fanService.fanHasFavorites() ||
+      this.appStateService.activeTool.value === AppTools.UPCOMING_EVENTS.route);
+  }
   liveScoresDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
       !this.fanService.fanHasFavorites() ||

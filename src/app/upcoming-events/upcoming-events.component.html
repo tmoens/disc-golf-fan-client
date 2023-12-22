@@ -1,0 +1,43 @@
+<mat-card class="small-page">
+  <mat-toolbar>
+    <span>Disc Golf Fan - {{ AppTools.UPCOMING_EVENTS.displayName }}</span>
+    <div class="fill-remaining-space"></div>
+    <app-main-menu></app-main-menu>
+  </mat-toolbar>
+
+  <mat-card *ngIf="upcommingEvents.length === 0">
+    <mat-card-header>Looks like you don't have any favourites yet! Use the button below to add some.</mat-card-header>
+    <mat-card-actions align="end" class="lo-gap20">
+      <button mat-raised-button color="primary" (click)="onManageFavourites()">Manage Favourites</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card *ngIf="upcommingEvents.length > 0">
+    <mat-card-content>
+      <div class="lo-column lo-gap10">
+        <div *ngFor="let fav of upcommingEvents">
+          <div class="lo-row mat-h3">
+            <a [href]="'https://pdga.com/player/' + fav.id" target="_blank">
+              {{ fav.id }}
+            </a>
+            {{ fav.name }}
+          </div>
+          <div *ngIf="fav.upcomingTournaments.length === 0" class="mat-small">
+            No events entered.
+          </div>
+          <div *ngIf="fav.upcomingTournaments.length > 0">
+            <ng-container *ngFor="let tournament of fav.upcomingTournaments">
+              <div class="lo-row mat-small">
+                <div>{{ tournament.startDate }}</div>
+                <a [href]="'https://pdga.com/tour/event/' + tournament.id" target="_blank">
+                  {{ tournament.name }}
+                </a>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</mat-card>
+

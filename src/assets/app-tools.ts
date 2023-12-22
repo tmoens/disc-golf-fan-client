@@ -8,6 +8,13 @@ export class AppTools {
     USER_ROLE
   );
 
+  static readonly UPCOMING_EVENTS = new AppTools(
+    'Upcoming Events',
+    'upcoming-events',
+    `When are your favourites playing next?.`,
+    USER_ROLE
+  );
+
   static readonly MANAGE_FAVOURITES = new AppTools(
     'Manage Favourites',
     'manage-favourites',
