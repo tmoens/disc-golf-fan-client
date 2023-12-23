@@ -12,16 +12,12 @@ export class FanDto {
   @Type(() => FavouriteDto)
   @Expose() public favourites: FavouriteDto[] = [];
 
-  isFavourite(playerId: string): boolean {
+  isFavourite(playerId: number): boolean {
     for (const f of this.favourites) {
       if (f.playerId === playerId) {
         return true;
       }
     }
     return false;
-  }
-
-  sortFavourites() {
-    this.favourites.sort((a, b) => a.order - b.order);
   }
 }

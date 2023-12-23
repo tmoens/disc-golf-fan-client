@@ -7,7 +7,7 @@ import {AuthService} from '../auth/auth.service';
 import {interval, lastValueFrom, Subscription} from 'rxjs';
 import {AppTools} from '../../assets/app-tools';
 import {AppStateService} from '../app-state.service';
-import {moveItemInArray} from '@angular/cdk/drag-drop';
+import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -66,7 +66,6 @@ export class FanService implements OnDestroy {
     this.loaderService.getFanById(fanId).subscribe((data) => {
       if (data) {
         this.fan = plainToInstance(FanDto, data);
-        this.fan.sortFavourites();
       } else {
         this.fan = null;
       }
@@ -96,30 +95,16 @@ export class FanService implements OnDestroy {
     });
   }
 
-  moveFavourite(fromIndex: number, toIndex:number) {
-    if (!this.fan || fromIndex === toIndex) return;
-    // make sure the move is in bounds
-    if (fromIndex >= this.fan.favourites.length || toIndex >= this.fan.favourites.length) return;
-
-    // move the favourite to the new position in the array
-    moveItemInArray(this.fan.favourites, fromIndex, toIndex);
-
-    // now renumber the favourites according to their new positions in the array
-    this.reorderFavourites().then();
-  }
-
-  async reorderFavourites() {
-    if (!this.fan) return;
-    let index = -1;
-    for (const f of this.fan.favourites) {
-      index++;
-      if (f.order !== index) {
-        f.order = index;
-        await lastValueFrom(this.loaderService.updateFavourite(f));
-      }
-    }
+  async moveFavouriteBefore(reorderFavouriteDto: ReorderFavouriteDto) {
+    await lastValueFrom(this.loaderService.moveFavouriteBefore(reorderFavouriteDto));
     this.reload();
   }
+
+  async moveFavouriteAfter(reorderFavouriteDto: ReorderFavouriteDto) {
+    await lastValueFrom(this.loaderService.moveFavouriteAfter(reorderFavouriteDto));
+    this.reload();
+  }
+
   fanHasFavorites(): boolean {
     if (this.fan) {
       return this.fan.favourites.length > 0;

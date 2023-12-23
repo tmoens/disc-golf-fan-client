@@ -8,6 +8,7 @@ import {plainToInstance} from 'class-transformer';
 import {AddFavouriteDto} from '../DTOs/add-favourite-dto';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {FanService} from './fan.service';
+import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
 
 @Component({
   selector: 'app-fan',
@@ -32,7 +33,7 @@ export class FanComponent implements OnInit {
       .subscribe((data) => this.onPdgaNumberChange(data));
   }
 
-  isPlayerAlreadyFavourite(playerId: string): boolean {
+  isPlayerAlreadyFavourite(playerId: number): boolean {
     if (this.fanService.fan && this.player) {
       return this.fanService.fan.isFavourite(playerId);
     }
@@ -94,7 +95,20 @@ export class FanComponent implements OnInit {
   }
 
   onDrop(event: CdkDragDrop<FavouriteDto[]>) {
-    this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
-  }
+    // translate the drag from index to a player
+    const playerIdToBeMoved = this.fanService.fan?.favourites[event.previousIndex];
+    // translate the drop target to the player before or after which the playerToBeMoved was dropped
+    const playerIdTarget = this.fanService.fan?.favourites[event.currentIndex];
 
+    if (this.fanService.fan && playerIdTarget && playerIdToBeMoved) {
+      const reorderFavouriteDto =
+        new ReorderFavouriteDto(this.fanService.fan.id, playerIdToBeMoved.playerId, playerIdTarget.playerId);
+      if (event.previousIndex < event.currentIndex) {
+        this.fanService.moveFavouriteAfter(reorderFavouriteDto).then();
+      }
+      if (event.previousIndex > event.currentIndex) {
+        this.fanService.moveFavouriteBefore(reorderFavouriteDto).then();
+      }
+    }
+  }
 }

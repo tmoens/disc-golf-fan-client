@@ -82,7 +82,7 @@ export class AddFavouriteDialogComponent implements OnInit {
   }
 
 
-  isPlayerAlreadyFavourite(playerId: string): boolean {
+  isPlayerAlreadyFavourite(playerId: number): boolean {
     if (this.fanService.fan && this.player) {
       return this.fanService.fan.isFavourite(playerId);
     }

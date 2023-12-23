@@ -1,7 +1,7 @@
 import {Expose} from 'class-transformer';
 
 export class FavouriteDto {
-  @Expose() public playerId!: string;
+  @Expose() public playerId!: number;
   @Expose() public fanId!: string;
   @Expose() public order!: number;
   @Expose() public playerName!: string;
