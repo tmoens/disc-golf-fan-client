@@ -6,11 +6,11 @@ import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {instanceToInstance, plainToInstance} from 'class-transformer';
-import {PlayerDto} from '../../DTOs/player-dto';
+import {PlayerDto} from '../../DTOs/player.dto';
 import {LoaderService} from '../../loader.service';
 import {FanService} from '../fan.service';
 import {debounceTime} from 'rxjs';
-import {AddFavouriteDto} from '../../DTOs/add-favourite-dto';
+import {AddFavouriteDto} from '../../DTOs/add-favourite.dto';
 import {MatListModule} from '@angular/material/list';
 
 @Component({
@@ -35,18 +35,20 @@ export class AddFavouriteDialogComponent implements OnInit {
 
   ngOnInit() {
     this.pdgaNumberFC.valueChanges
-      .pipe(debounceTime(200))
-      .subscribe((data) => this.onPdgaNumberChange(data));
+      .pipe(debounceTime(500))
+      .subscribe((data) => {
+        this.isLoadingPlayer = true;
+        this.onPdgaNumberChange(data)
+        this.isLoadingPlayer = false;
+      });
   }
 
   onPdgaNumberChange(value: number | null) {
-    delete(this.player);
     if (!value) return;
-    this.isLoadingPlayer = true;
     if (!this.pdgaNumberFC.value) { return }
+    delete(this.player);
     this.loaderService.getPlayerById(this.pdgaNumberFC.value)
       .subscribe((data) => {
-        this.isLoadingPlayer = false;
         if (data) {
           this.lookupFailed = false;
           this.player = plainToInstance(PlayerDto, data);

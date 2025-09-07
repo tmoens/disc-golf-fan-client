@@ -166,7 +166,7 @@ export class AuthService {
     return new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`)
   }
 
-  // find out if the token will expire within the next 65 seconds.
+  // find out if the token will expire within the next however many seconds.
   isTokenExpired(token: string, withinSeconds: number = 0): boolean {
     const tokenPayload: any | null = this.decryptToken(token);
     if (tokenPayload && tokenPayload.exp) {

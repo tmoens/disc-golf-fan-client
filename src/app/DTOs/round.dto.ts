@@ -1,16 +1,24 @@
 import 'reflect-metadata';
 import {Expose, Type} from 'class-transformer';
-import {DivisionDto} from './division-dto';
+import {DivisionDto} from './division.dto';
 
 export class RoundDto {
   @Expose() liveRoundId!: number;
   @Expose() divisionName!: string;
   @Expose() tournamentId!: number;
   @Expose() roundName!: string;
+  @Expose() roundNumber: number = 0;
   @Expose() completed!: boolean;
   @Expose() holeNames!: string[];
   @Expose() holeLengths!: number[];
   @Expose() holePars!: number[];
+  @Expose() leaderScores!: number[];
+  @Expose() leaderPlayed!: number | null;
+  @Expose() leaderRoundToPar!: number | null;
+  @Expose() leaderParThroughRound!: number | null;
+  @Expose() averageScores!: number[];
+  @Expose() playCount!: number[];
+
   @Expose() pdgaLastUpdate!: string;
 
   @Type(() => DivisionDto)

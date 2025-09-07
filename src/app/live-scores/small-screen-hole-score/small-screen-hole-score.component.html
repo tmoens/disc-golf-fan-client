@@ -21,8 +21,8 @@
 </div>
 <div class="hole-score-container" *ngIf="scoreVsPar === 0">
   <div class="par">
-    <div *ngIf="holeScore !== null">{{ holeScore }}</div>
-    <div *ngIf="holeScore === null">-</div>
+    <div *ngIf="holeScore">{{ holeScore }}</div>
+    <div *ngIf="!holeScore">-</div>
   </div>
 </div>
 <div class="hole-score-container" *ngIf="scoreVsPar === 1">

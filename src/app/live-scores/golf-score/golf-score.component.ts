@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,6 +8,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './golf-score.component.html',
   styleUrl: './golf-score.component.scss'
 })
-export class GolfScoreComponent {
-  @Input() score!: number;
+export class GolfScoreComponent implements OnInit{
+  @Input() rawScore: number | null | undefined;
+  scoreIsBelowPar : boolean = false;
+
+  score: string = '';
+
+  ngOnInit() {
+    if (this.rawScore === undefined || this.rawScore === null) {
+      this.score = "-";
+    } else {
+      this.score = (this.rawScore) ? String(this.rawScore) : 'E';
+      if (this.rawScore < 0) this.scoreIsBelowPar = true;
+    }
+  }
 }

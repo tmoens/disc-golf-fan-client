@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <mat-form-field floatLabel="always" class="lo-160px">
     <mat-label>New Favourite's PDGA#</mat-label>
-    <input matInput type="number" [formControl]="pdgaNumberFC">
+    <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="isLoadingPlayer">
     <mat-hint>{{ getHint() }}</mat-hint>
   </mat-form-field>
   <button mat-button *ngIf="player  && !isPlayerAlreadyFavourite(player.id)"
@@ -13,7 +13,7 @@
   <div *ngIf="player && isPlayerAlreadyFavourite(player.id)">{{ player.name }} is already a favourite</div>
 </div>
 <div *ngIf="favouritesAdded.length > 0">
-<!--  list the players thta have been added-->
+<!--  list the players that have been added-->
   <mat-list>
     <mat-list-item *ngFor="let player of favouritesAdded">
       Added {{player.id}} {{ player.name }}

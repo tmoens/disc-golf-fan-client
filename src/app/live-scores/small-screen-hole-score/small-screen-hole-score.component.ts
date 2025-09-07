@@ -9,8 +9,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './small-screen-hole-score.component.scss'
 })
 export class SmallScreenHoleScoreComponent implements OnChanges {
-  @Input() holeScore!: number|null;
-  @Input() holePar!: number|null;
+  @Input() holeScore: number | undefined = 0; // 0 indicates not played.
+  @Input() holePar: number | undefined = 0;
 
   scoreVsPar: number = 0;
 
@@ -19,7 +19,7 @@ export class SmallScreenHoleScoreComponent implements OnChanges {
   }
 
   setScoreVsPar(): void {
-    if (this.holeScore === null || this.holePar === null) {
+    if (!this.holeScore || !this.holePar) {
       this.scoreVsPar = 0;
     } else {
       this.scoreVsPar = this.holeScore - this.holePar;

@@ -18,9 +18,8 @@
         <div *ngFor="let fav of upcommingEvents">
           <div class="lo-row mat-h3">
             <a [href]="'https://pdga.com/player/' + fav.id" target="_blank">
-              {{ fav.id }}
+              {{ fav.name }}
             </a>
-            {{ fav.name }}
           </div>
           <div *ngIf="fav.upcomingTournaments.length === 0" class="mat-small">
             No events entered.
@@ -28,7 +27,7 @@
           <div *ngIf="fav.upcomingTournaments.length > 0">
             <ng-container *ngFor="let tournament of fav.upcomingTournaments">
               <div class="lo-row mat-small">
-                <div>{{ tournament.startDate }}</div>
+                <div class="lo-100px">{{ tournament.startDate }}</div>
                 <a [href]="'https://pdga.com/tour/event/' + tournament.id" target="_blank">
                   {{ tournament.name }}
                 </a>

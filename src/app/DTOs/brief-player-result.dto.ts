@@ -1,5 +1,6 @@
 
 export class BriefPlayerResultDto {
+  liveRoundId!: number;
   resultId!: number;
   pdgaNum!: number;
   playerName!: string;

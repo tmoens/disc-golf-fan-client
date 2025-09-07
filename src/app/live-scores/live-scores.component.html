@@ -11,7 +11,7 @@
   </mat-card-header>
 
   <!-- In case there are no scores to report for the fan -->
-  <mat-card *ngIf="fanService.scoresSig().length === 0">
+  <mat-card *ngIf="liveScoreService.favouriteLiveScoresSig().length === 0">
     <mat-card-header>None of your favourites appear to be playing a tournament at the moment.</mat-card-header>
     <mat-card-header>A new feature is coming soon to tell you when each of your favourites is planning to play next.</mat-card-header>
     <mat-card-header>In the meantime, feel free to add some new favourites!</mat-card-header>
@@ -24,10 +24,10 @@
   <mat-accordion *ngIf="fanService.fanHasFavorites()">
     <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap5">
       <mat-expansion-panel cdkDrag
-        *ngFor="let s of fanService.scoresSig()"
-        [expanded]="isExpanded(s.resultId)"
+        *ngFor="let s of liveScoreService.favouriteLiveScoresSig()"
+        [expanded]="isExpanded(s)"
         (closed)="closePanel()"
-        (opened)="openPanel(s.resultId)">
+        (opened)="openPanel(s)">
         <mat-expansion-panel-header>
           <div class="live-score-row" style="width: 100%">
             <mat-icon cdkDragHandle color="primary" class="lo-24px" matTooltip="Drag to reorder your favourites">drag_indicator</mat-icon>
@@ -47,7 +47,7 @@
             </div>
           </div>
         </mat-expansion-panel-header>
-        <app-small-screen-score-details [resultId]="s.resultId"></app-small-screen-score-details>
+        <app-small-screen-score-details [briefPlayerResult]="s"></app-small-screen-score-details>
       </mat-expansion-panel>
     </div>
   </mat-accordion>

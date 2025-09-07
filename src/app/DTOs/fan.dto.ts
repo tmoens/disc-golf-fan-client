@@ -1,7 +1,7 @@
 import {Expose, Type} from 'class-transformer';
 import 'reflect-metadata';
-import {FavouriteDto} from './favourite-dto';
-import {UserDto} from './user-dto';
+import {FavouriteDto} from './favourite.dto';
+import {UserDto} from './user.dto';
 
 export class FanDto {
   @Expose() public id!: string;

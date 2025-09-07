@@ -10,7 +10,7 @@ import {ResetPasswordComponent} from './auth/reset-password/reset-password.compo
 import {WelcomePageComponent} from './welcome-page/welcome-page.component';
 import {authenticatedGuard, roleGuard} from './auth/guards/canActivateGuards';
 import {AppTools} from '../assets/app-tools';
-import {AdminDashboardComponent} from './admin-dahdoard/admin-dashboard.component';
+import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
 import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
 
 const routes: Routes = [

@@ -16,6 +16,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
 import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
+import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
 
 @Component({
   selector: 'app-live-scores',
@@ -33,11 +34,14 @@ export class LiveScoresComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if (!this.fanService.fan) {
+      await this.fanService.reload();
+    }
     if (this.fanService.fan && this.fanService.fan.favourites.length < 1) {
       this.router.navigate(['/manage-favourites']).then();
     } else {
-      this.fanService.getScores();
+      this.liveScoreService.loadFavouritesLiveScores();
     }
   }
 
@@ -52,43 +56,46 @@ export class LiveScoresComponent implements OnInit {
       }
     });
   }
-  isExpanded(resultId: number): boolean {
-    return this.liveScoreService.activeResultId === resultId;
+
+  isExpanded(briefPlayerResultDto: BriefPlayerResultDto): boolean {
+    const test = this.liveScoreService.isInFocus(briefPlayerResultDto);
+    return this.liveScoreService.isInFocus(briefPlayerResultDto);
   }
 
   onManageFavourites() {
     this.router.navigate(['/manage-favourites']).then();
   }
-  async openPanel(resultId: number) {
+
+  async openPanel(briefPlayerResult: BriefPlayerResultDto) {
     // Opening one panel automatically closes any other open panel
     // So both (opened) and (closed) are fired.
     // BUT when a new panel is opened, and if (opened) fires first, then closed fires,
     // the effect is that the newly opened panel will close.  So...
     // Wait a tick for Close to fire first.
     await new Promise((resolve) => setTimeout(resolve, 1));
-    this.liveScoreService.activeResultId = resultId;
-    this.liveScoreService.startPolling();
+    this.liveScoreService.setDetailFocus(briefPlayerResult);
   }
 
   closePanel() {
-    this.liveScoreService.stopPolling();
-    this.liveScoreService.activeResultId = null;
+    this.liveScoreService.unsetDetailFocus();
   }
 
-  onDrop(event: CdkDragDrop<any>) {
+  async onDrop(event: CdkDragDrop<any>) {
     // translate the drag from index to a player
-    const playerIdToBeMoved = this.fanService.scoresSig()[event.previousIndex]?.pdgaNum || 0;
+    const playerIdToBeMoved = this.liveScoreService.favouriteLiveScoresSig()[event.previousIndex]?.pdgaNum || 0;
     // translate the drop target to the player before or after which the playerToBeMoved was dropped
-    const playerIdTarget = this.fanService.scoresSig()[event.currentIndex]?.pdgaNum || 0;
+    const playerIdTarget = this.liveScoreService.favouriteLiveScoresSig()[event.currentIndex]?.pdgaNum || 0;
 
     if (this.fanService.fan && playerIdTarget && playerIdToBeMoved) {
       const reorderFavouriteDto =
         new ReorderFavouriteDto(this.fanService.fan.id, playerIdToBeMoved, playerIdTarget);
       if (event.previousIndex < event.currentIndex) {
-        this.fanService.moveFavouriteAfter(reorderFavouriteDto).then();
+        await this.fanService.moveFavouriteAfter(reorderFavouriteDto);
+        this.liveScoreService.loadFavouritesLiveScores();
       }
       if (event.previousIndex > event.currentIndex) {
-        this.fanService.moveFavouriteBefore(reorderFavouriteDto).then();
+        await this.fanService.moveFavouriteBefore(reorderFavouriteDto);
+        this.liveScoreService.loadFavouritesLiveScores();
       }
     }
   }

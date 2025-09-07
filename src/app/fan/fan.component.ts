@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {LoaderService} from '../loader.service';
-import {FavouriteDto} from '../DTOs/favourite-dto';
+import {FavouriteDto} from '../DTOs/favourite.dto';
 import {FormControl} from '@angular/forms';
 import {debounceTime} from 'rxjs';
-import {PlayerDto} from '../DTOs/player-dto';
+import {PlayerDto} from '../DTOs/player.dto';
 import {plainToInstance} from 'class-transformer';
-import {AddFavouriteDto} from '../DTOs/add-favourite-dto';
+import {AddFavouriteDto} from '../DTOs/add-favourite.dto';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
 import {FanService} from './fan.service';
 import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
@@ -29,8 +29,12 @@ export class FanComponent implements OnInit {
 
   ngOnInit() {
     this.pdgaNumberFC.valueChanges
-      .pipe(debounceTime(200))
-      .subscribe((data) => this.onPdgaNumberChange(data));
+      .pipe(debounceTime(500))
+      .subscribe((data) => {
+        this.isLoadingPlayer = true;
+        this.onPdgaNumberChange(data)
+        this.isLoadingPlayer = false;
+      });
   }
 
   isPlayerAlreadyFavourite(playerId: number): boolean {
@@ -42,13 +46,11 @@ export class FanComponent implements OnInit {
 
 
   onPdgaNumberChange(value: number | null) {
-    delete(this.player);
     if (!value) return;
-    this.isLoadingPlayer = true;
     if (!this.pdgaNumberFC.value) { return }
+    delete(this.player);
     this.loaderService.getPlayerById(this.pdgaNumberFC.value)
       .subscribe((data) => {
-        this.isLoadingPlayer = false;
         if (data) {
           this.lookupFailed = false;
           this.player = plainToInstance(PlayerDto, data);

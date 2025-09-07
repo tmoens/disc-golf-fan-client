@@ -1,3 +1,1 @@
-<span *ngIf="score === 0;" class="mat-h3">E</span>
-<span *ngIf="score < 0" class="mat-h3 text-red">{{score}}</span>
-<span *ngIf="score > 0" class="mat-h3">+{{score}}</span>
+<span class="mat-h3" [ngClass]="{'text-red': scoreIsBelowPar}">{{score}}</span>

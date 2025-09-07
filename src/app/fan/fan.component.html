@@ -11,7 +11,7 @@
       <div class="lo-row">
         <mat-form-field floatLabel="always" class="lo-160px">
           <mat-label>New Favourite's PDGA#</mat-label>
-          <input matInput type="number" [formControl]="pdgaNumberFC">
+          <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="isLoadingPlayer">
           <mat-hint>{{ getHint() }}</mat-hint>
         </mat-form-field>
         <button mat-button *ngIf="player  && !isPlayerAlreadyFavourite(player.id)" color="primary"
@@ -36,6 +36,4 @@
   </div>
     </mat-card-content>
   </mat-card>
-
-
 </div>

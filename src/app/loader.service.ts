@@ -4,13 +4,13 @@ import {Observable, of} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {catchError} from 'rxjs/operators';
 import {environment} from '../environments/environment';
-import {FanDto} from './DTOs/fan-dto';
-import {PlayerDto} from './DTOs/player-dto';
-import {AddFavouriteDto} from './DTOs/add-favourite-dto';
-import {FavouriteDto} from './DTOs/favourite-dto';
-import {BriefPlayerResultDto} from './DTOs/brief-player-result-dto';
+import {FanDto} from './DTOs/fan.dto';
+import {PlayerDto} from './DTOs/player.dto';
+import {AddFavouriteDto} from './DTOs/add-favourite.dto';
+import {FavouriteDto} from './DTOs/favourite.dto';
+import {BriefPlayerResultDto} from './DTOs/brief-player-result.dto';
 import {AuthService} from './auth/auth.service';
-import {PlayerResultDto} from './DTOs/player-result-dto';
+import {ScorelineDto} from './DTOs/scoreline.dto';
 import {UpcomingEventsDto} from './DTOs/upcoming-events.dto';
 import {ReorderFavouriteDto} from './DTOs/reorder-favourite.dto';
 
@@ -57,8 +57,16 @@ export class LoaderService {
       );
   }
 
-  getScoreline( id: number): Observable<PlayerResultDto | null> {
+  getScoreline( id: number): Observable<ScorelineDto | null> {
     const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${id}`
+    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
+  }
+
+  getDetailedScores( liveRoundId: number, resultId: number): Observable<ScorelineDto | null> {
+    const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${liveRoundId}/${resultId}`
     return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
