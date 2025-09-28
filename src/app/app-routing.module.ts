@@ -9,9 +9,9 @@ import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.co
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
 import {WelcomePageComponent} from './welcome-page/welcome-page.component';
 import {authenticatedGuard, roleGuard} from './auth/guards/canActivateGuards';
-import {AppTools} from '../assets/app-tools';
+import {AppTools} from './shared/app-tools';
 import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
-import {UpcomingEventsComponent} from './upcoming-events/upcoming-events.component';
+import {UpcomingTournamentsComponent} from './upcoming-tournaments/upcoming-tournaments.component';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
 
-  // User need to be logged in to navigate to these
+  // User needs to be logged in to navigate to these
   {
     path: AppTools.MANAGE_FAVOURITES.route,
     component: FanComponent,
@@ -31,7 +31,7 @@ const routes: Routes = [
   },
   {
     path: AppTools.UPCOMING_EVENTS.route,
-    component: UpcomingEventsComponent,
+    component: UpcomingTournamentsComponent,
     canActivate: [authenticatedGuard, roleGuard],
     data: {
       permittedRole: AppTools.UPCOMING_EVENTS.requiredRole,
@@ -95,4 +95,3 @@ const routes: Routes = [
 export class AppRoutingModule {
 
 }
-

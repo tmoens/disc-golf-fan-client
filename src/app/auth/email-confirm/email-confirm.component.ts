@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
+import { firstValueFrom } from 'rxjs';
+import { AppTools } from '../../shared/app-tools';
 import {AuthService} from '../auth.service';
 import {MainMenuComponent} from '../../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -29,29 +31,30 @@ export class EmailConfirmComponent {
     private router: Router,
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     const token = this.route.snapshot.queryParamMap.get('token');
-    if (token) {
-      this.authService.confirmEmail(token)
-        .subscribe(async (message) => {
-          if (message === null) {
-            this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
-            this.confirmationResultMessage = 'Your email was confirmed';
-            await new Promise(resolve => setTimeout(resolve, 2000)).then();
-            this.navigateToLogin();
-          } else {
-            this.confirmationStatus = ConfirmationStatus.FAILED;
-            this.confirmationResultMessage = message;
-          }
-        });
-    } else {
+    if (!token) {
       this.confirmationStatus = ConfirmationStatus.FAILED;
       this.confirmationResultMessage = `No token provided. You been goofin' wit' da bees?`;
+      return;
+    }
+
+    const message = await firstValueFrom(this.authService.confirmEmail(token));
+    if (message === null) {
+      this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
+      this.confirmationResultMessage = 'Your email was confirmed';
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      this.navigateToLogin();
+    } else {
+      this.confirmationStatus = ConfirmationStatus.FAILED;
+      this.confirmationResultMessage = message;
     }
   }
 
   navigateToLogin()
   {
-    this.router.navigate(['/login']).then();
+     void this.router.navigate([`/${AppTools.LOGIN.route}`]);
   }
+
+  protected readonly AppTools = AppTools;
 }

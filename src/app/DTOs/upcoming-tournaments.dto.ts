@@ -1,6 +1,6 @@
 import {MiniTournamentDto} from './mini-tournament.dto';
 
-export class UpcomingEventsDto {
+export class UpcomingTournamentsDto {
   id!: number;
   name!: string;
   nickname?: string;

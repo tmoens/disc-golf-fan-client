@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-header>
       <mat-toolbar>
-        <span>Disc Golf Fan - Manage Favorites</span>
+        <span>Disc Golf Fan - {{ AppTools.MANAGE_FAVOURITES.displayName }}</span>
         <div class="fill-remaining-space"></div>
         <app-main-menu></app-main-menu>
       </mat-toolbar>
@@ -10,7 +10,7 @@
     <mat-card-content>
       <div class="lo-row">
         <mat-form-field floatLabel="always" class="lo-160px">
-          <mat-label>New Favourite's PDGA#</mat-label>
+          <mat-label>New Favorite's PDGA#</mat-label>
           <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="isLoadingPlayer">
           <mat-hint>{{ getHint() }}</mat-hint>
         </mat-form-field>
@@ -19,9 +19,9 @@
           <mat-icon>add</mat-icon>
           Add {{ player.name }}
         </button>
-        <span *ngIf="player && isPlayerAlreadyFavourite(player.id)">{{ player.name }} is a favourite</span>
+        <span *ngIf="player && isPlayerAlreadyFavourite(player.id)">{{ player.name }} is a favorite</span>
         <span *ngIf="!player && !isLoadingPlayer"><mat-icon>arrow_back</mat-icon></span>
-        <span *ngIf="!player && !isLoadingPlayer">Choose a new Favourite</span>
+        <span *ngIf="!player && !isLoadingPlayer">Choose a new Favorite</span>
       </div>
 
   <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap10">

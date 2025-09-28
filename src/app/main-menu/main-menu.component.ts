@@ -7,7 +7,7 @@ import {Router, RouterLink} from '@angular/router';
 import {AppStateService} from '../app-state.service';
 import {FanService} from '../fan/fan.service';
 import {MatButtonModule} from '@angular/material/button';
-import {AppTools} from '../../assets/app-tools';
+import {AppTools} from '../shared/app-tools';
 import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
 
 @Component({
@@ -28,26 +28,26 @@ export class MainMenuComponent {
 
   manageFavouritesDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
-      this.appStateService.activeTool.value === AppTools.MANAGE_FAVOURITES.route);
+      this.appStateService.isActive(AppTools.MANAGE_FAVOURITES.route));
   }
   upcomingEventsDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
-      !this.fanService.fanHasFavorites() ||
-      this.appStateService.activeTool.value === AppTools.UPCOMING_EVENTS.route);
+      !this.fanService.fanHasFavourites() ||
+      this.appStateService.isActive(AppTools.UPCOMING_EVENTS.route));
   }
   liveScoresDisabled(): boolean {
     return (!this.authService.isAuthenticated() ||
-      !this.fanService.fanHasFavorites() ||
-      this.appStateService.activeTool.value === AppTools.LIVE_SCORES.route);
+      !this.fanService.fanHasFavourites() ||
+      this.appStateService.isActive(AppTools.LIVE_SCORES.route));
   }
   registrationDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.activeTool.value === AppTools.REGISTER.route);
+      this.appStateService.isActive(AppTools.REGISTER.route));
   }
 
   loginDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.activeTool.value === AppTools.LOGIN.route);
+      this.appStateService.isActive(AppTools.LOGIN.route));
   }
 
   logoutDisabled(): boolean {
@@ -55,12 +55,12 @@ export class MainMenuComponent {
   }
 
   welcomeDisabled(): boolean {
-    return (this.appStateService.activeTool.value === AppTools.WELCOME.route);
+    return this.appStateService.isActive(AppTools.WELCOME.route);
   }
 
   onLogout() {
-    this.authService.logout().subscribe(); // You have to subscribe or the logout will not happen.
-    this.router.navigate([`/${AppTools.WELCOME.route}`]).then();
+    this.authService.logout().subscribe(); // trigger logout
+    void this.router.navigate([`/${AppTools.WELCOME.route}`]);
   }
 
   authenticatedUserIsAdmin(): boolean {

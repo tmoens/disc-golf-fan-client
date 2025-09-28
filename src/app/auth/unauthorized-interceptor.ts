@@ -1,5 +1,6 @@
 import {Injectable, Injector} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { AppTools } from '../shared/app-tools';
 import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 import {Observable, switchMap, throwError} from 'rxjs';
@@ -42,7 +43,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
       }),
       catchError((err) => {
         // If refreshing fails (e.g., refresh token is also expired), redirect to login
-        this.router.navigate(['/login']).then();  // Adjust this route to your application's login route
+        void this.router.navigate([`/${AppTools.LOGIN.route}`]);
         return throwError(() => err);
       })
     );

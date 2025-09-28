@@ -43,7 +43,6 @@ export class AuthService {
     this._accessToken = token;
   }
 
-
   // this is where the user was trying to navigate to when they were forced to log in.
   intendedPath: string = '';
 
@@ -62,7 +61,7 @@ export class AuthService {
     if (environment.production) {
       this.serverUrl = location.origin + '/dg-fan-server';
     } else {
-      this.serverUrl = 'http://localhost:3000';
+      this.serverUrl = environment.apiBaseUrl;
     }
   }
 
@@ -80,17 +79,21 @@ export class AuthService {
     }
   }
 
-  // Processing a login.  Normal case is to update local state and be done.
-  // If there was an HTTP Error, we try to make a nice message and throw an error.
-  login(loginDto: LoginDto): Observable<any> {
-    return this.http.post<any>(`${this.serverUrl}/auth/login`, loginDto).pipe(
+  // Processing a login.  A normal case is to update the local state and be done.
+  // If there was an HTTP Error, we normalize a nice message and rethrow a string for the component to show.
+  login(loginDto: LoginDto): Observable<void> {
+    return this.http.post<LoginResponseDto>(`${this.serverUrl}/auth/login`, loginDto).pipe(
       map((loginResponse: LoginResponseDto) => {
         this.accessToken = loginResponse.accessToken;
         this.refreshToken = loginResponse.refreshToken;
+        return; // void
+      }),
+      catchError(err => {
+        const message = this.extractErrorMessage(err, 'Sign-in failed. Please try again.');
+        return throwError(() => message);
       })
     );
   }
-
   logout() {
     // remove user from local storage to log user out
     return this.http.get<any>(
@@ -198,7 +201,28 @@ export class AuthService {
 
   private handleError() {
     return (error: any): Observable<string> => {
-      return of(error.error.message);
+      return of(this.extractErrorMessage(error, 'Request failed. Please try again.'));
     };
+  }
+
+  /**
+   * Extracts a human-friendly message from various HttpErrorResponse shapes.
+   * Falls back to a sensible default if nothing useful is present.
+   */
+  private extractErrorMessage(error: any, fallback: string): string {
+    // Common server shapes: { error: { message } }, { message }, plain string
+    const msg =
+      error?.error?.message ??
+      error?.message ??
+      (typeof error === 'string' ? error : null);
+
+    // Optionally surface specific status codes
+    if (!msg && error?.status) {
+      if (error.status === 0) return 'Cannot reach server. Check your network and try again.';
+      if (error.status >= 500) return 'The server encountered a problem. Please try again later.';
+      if (error.status === 401) return 'Invalid email or password.';
+    }
+
+    return msg || fallback;
   }
 }

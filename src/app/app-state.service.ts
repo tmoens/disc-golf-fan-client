@@ -1,12 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppStateService {
-  activeTool = new BehaviorSubject<string>('');
+  // Signal holding the first non-empty path segment of the current URL (the "active tool")
+  activeTool = signal<string>('');
 
   constructor(private router: Router) {
     this.watchRouterChanges();
@@ -14,19 +15,25 @@ export class AppStateService {
 
   initializeAppState(): Promise<any> {
     return new Promise ((resolve, _reject) => {
-      this.activeTool.next('');
+      this.activeTool.set('');
       resolve(true);
     });
   }
 
   private watchRouterChanges() {
-    this.router.events.subscribe( event => {
-      if (event instanceof NavigationEnd) {
-        if (event.urlAfterRedirects) {
-          // console.log(JSON.stringify(event));
-          this.activeTool.next(event.urlAfterRedirects.substring(1));
-        }
-      }
-    });
+    this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(event => {
+        const url = event.urlAfterRedirects || '';
+        // Strip query/fragment, split path, take first non-empty segment
+        const firstSegment =
+          url.split('?')[0].split('#')[0].split('/').find(Boolean) || '';
+        this.activeTool.set(firstSegment);
+      });
+  }
+
+  // Convenience helper for consumers
+  isActive(route: string): boolean {
+    return this.activeTool() === route;
   }
 }

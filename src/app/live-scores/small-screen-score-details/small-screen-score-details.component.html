@@ -1,4 +1,4 @@
-<div class="lo-column" *ngIf="liveScoreService.detailedScores">
+<div class="lo-column" *ngIf="liveScoreService.detailedScores() as ds">
   <div class="hole-score-row">
     <p class="lo-40-centered mat-small">Hole</p>
     <p class="lo-60-centered mat-small">Distance</p>
@@ -9,38 +9,38 @@
   </div>
 
   <div class="lo-column lo-gap5">
-    <div *ngFor="let h of liveScoreService.detailedScores.round.holeNames; let i = index" class="hole-score-row">
-      <div class="lo-40-centered">{{ liveScoreService.detailedScores.round.holeNames[i] }}</div>
-      <div class="lo-60-centered">{{ liveScoreService.detailedScores.round.holeLengths[i] }}</div>
-      <div class="lo-40-centered">{{ liveScoreService.detailedScores.round.holePars[i] }}</div>
-      <app-small-screen-hole-score class="lo-40-centered" [holeScore]="liveScoreService.detailedScores.holeScores[i]"
-                                   [holePar]="liveScoreService.detailedScores.round.holePars[i]"></app-small-screen-hole-score>
-      <app-small-screen-hole-score class="lo-40-centered" [holeScore]="liveScoreService.detailedScores.round.leaderScores[i]"
-                                   [holePar]="liveScoreService.detailedScores.round.holePars[i]"></app-small-screen-hole-score>
-      <div class="lo-40-centered" *ngIf="liveScoreService.detailedScores.round.averageScores[i] > 0">
-        <span>{{ liveScoreService.detailedScores.round.averageScores[i] | number:"1.2-2" }}</span>
-        <span *ngIf="!liveScoreService.detailedScores.round.completed">({{liveScoreService.detailedScores.round.playCount[i]}})</span>
+    <div *ngFor="let h of ds.round.holeNames; let i = index" class="hole-score-row">
+      <div class="lo-40-centered">{{ ds.round.holeNames[i] }}</div>
+      <div class="lo-60-centered">{{ ds.round.holeLengths[i] }}</div>
+      <div class="lo-40-centered">{{ ds.round.holePars[i] }}</div>
+      <app-small-screen-hole-score class="lo-40-centered" [holeScore]="ds.holeScores[i]"
+                                   [holePar]="ds.round.holePars[i]"></app-small-screen-hole-score>
+      <app-small-screen-hole-score class="lo-40-centered" [holeScore]="ds.round.leaderScores[i]"
+                                   [holePar]="ds.round.holePars[i]"></app-small-screen-hole-score>
+      <div class="lo-40-centered" *ngIf="ds.round.averageScores[i] > 0">
+        <span>{{ ds.round.averageScores[i] | number:"1.2-2" }}</span>
+        <span *ngIf="!ds.round.completed">({{ds.round.playCount[i]}})</span>
       </div>
-      <div class="lo-40-centered" *ngIf="liveScoreService.detailedScores.round.averageScores[i] === 0">-</div>
+      <div class="lo-40-centered" *ngIf="ds.round.averageScores[i] === 0">-</div>
     </div>
     <mat-divider></mat-divider>
-    <div *ngIf="liveScoreService.detailedScores.round.roundNumber > 1" class="hole-score-row">
+    <div *ngIf="ds.round.roundNumber > 1" class="hole-score-row">
       <div class="lo-155-left">Round vs par</div>
       <div class="lo-40-centered">
-        <app-golf-score [rawScore]="liveScoreService.detailedScores.roundToPar"></app-golf-score>
+        <app-golf-score [rawScore]="ds.roundToPar"></app-golf-score>
       </div>
       <div class="lo-40-centered">
-        <app-golf-score [rawScore]="liveScoreService.detailedScores.round.leaderRoundToPar"></app-golf-score>
+        <app-golf-score [rawScore]="ds.round.leaderRoundToPar"></app-golf-score>
       </div>
       <div class="lo-40-centered">-</div>
     </div>
     <div class="hole-score-row">
       <div class="lo-155-left">Tournament vs par</div>
       <div class="lo-40-centered">
-        <app-golf-score [rawScore]="liveScoreService.detailedScores.parThroughRound"></app-golf-score>
+        <app-golf-score [rawScore]="ds.parThroughRound"></app-golf-score>
       </div>
       <div class="lo-40-centered">
-        <app-golf-score [rawScore]="liveScoreService.detailedScores.round.leaderParThroughRound"></app-golf-score>
+        <app-golf-score [rawScore]="ds.round.leaderParThroughRound"></app-golf-score>
       </div>
       <div class="lo-40-centered">-</div>
     </div>

@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
+import { AppTools } from '../../shared/app-tools';
 import {AuthService} from '../auth.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -67,10 +68,12 @@ export class ResetPasswordComponent implements OnInit {
 
   // It would be exceedingly weird for this to ever happen in production
   navigateToForgotPassword() {
-    this.router.navigate(['/forgot-password']).then();
+    void this.router.navigate([`/${AppTools.FORGOT_PASSWORD.route}`]);
   }
 
   navigateToLogin() {
-    this.router.navigate(['/login']).then();
+    void this.router.navigate([`/${AppTools.LOGIN.route}`]);
   }
+
+  protected readonly AppTools = AppTools;
 }

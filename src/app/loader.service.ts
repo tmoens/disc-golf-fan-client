@@ -11,7 +11,7 @@ import {FavouriteDto} from './DTOs/favourite.dto';
 import {BriefPlayerResultDto} from './DTOs/brief-player-result.dto';
 import {AuthService} from './auth/auth.service';
 import {ScorelineDto} from './DTOs/scoreline.dto';
-import {UpcomingEventsDto} from './DTOs/upcoming-events.dto';
+import {UpcomingTournamentsDto} from './DTOs/upcoming-tournaments.dto';
 import {ReorderFavouriteDto} from './DTOs/reorder-favourite.dto';
 
 @Injectable({
@@ -29,7 +29,7 @@ export class LoaderService {
     if (environment.production) {
       this.serverUrl = location.origin + '/dg-fan-server';
     } else {
-      this.serverUrl = 'http://localhost:3000';
+      this.serverUrl = environment.apiBaseUrl;
     }
   }
 
@@ -73,7 +73,7 @@ export class LoaderService {
       );
   }
 
-  getUpcomingEvents(): Observable<UpcomingEventsDto[] | null> {
+  getUpcomingEvents(): Observable<UpcomingTournamentsDto[] | null> {
     const url = `${this.serverUrl}/favourite/get-upcoming-events/${this.authService.getAuthenticatedUserId()}`;
     return this.http.get<any>(url,{ headers: this.authService.createAccessHeader() })
       .pipe(

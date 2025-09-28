@@ -2,6 +2,10 @@ import 'reflect-metadata';
 import {Expose, Type} from 'class-transformer';
 import {DivisionDto} from './division.dto';
 
+/**
+ * Metadata for a single round, including per-hole details and leader info.
+ * Used to enrich ScorelineDto with context (pars, lengths, averages, etc).
+ */
 export class RoundDto {
   @Expose() liveRoundId!: number;
   @Expose() divisionName!: string;

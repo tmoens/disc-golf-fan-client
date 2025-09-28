@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {LoaderService} from '../loader.service';
-import {UpcomingEventsDto} from '../DTOs/upcoming-events.dto';
+import {UpcomingTournamentsDto} from '../DTOs/upcoming-tournaments.dto';
 import {lastValueFrom} from 'rxjs';
 import {MatCardModule} from '@angular/material/card';
-import {AppTools} from '../../assets/app-tools';
+import {AppTools} from '../shared/app-tools';
 import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MainMenuComponent} from '../main-menu/main-menu.component';
@@ -13,14 +13,14 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
-  selector: 'app-upcoming-events',
+  selector: 'app-upcoming-tournaments',
   standalone: true,
   imports: [CommonModule, MatCardModule, MatButtonModule, MainMenuComponent, MatIconModule, MatToolbarModule, MatTooltipModule],
-  templateUrl: './upcoming-events.component.html',
-  styleUrl: './upcoming-events.component.scss'
+  templateUrl: './upcoming-tournaments.component.html',
+  styleUrl: './upcoming-tournaments.component.scss'
 })
-export class UpcomingEventsComponent implements OnInit {
-  upcommingEvents: UpcomingEventsDto[] = [];
+export class UpcomingTournamentsComponent implements OnInit {
+  upcomingTournaments: UpcomingTournamentsDto[] = [];
   constructor(
     private loaderService: LoaderService,
     private router: Router,
@@ -30,13 +30,13 @@ export class UpcomingEventsComponent implements OnInit {
   async ngOnInit() {
     const results = await lastValueFrom(this.loaderService.getUpcomingEvents());
     if (!results) {
-      this.upcommingEvents = [];
+      this.upcomingTournaments = [];
     } else {
-      this.upcommingEvents = results;
+      this.upcomingTournaments = results;
     }
   }
   onManageFavourites() {
-    this.router.navigate([AppTools.MANAGE_FAVOURITES.route]).then();
+    void this.router.navigate([AppTools.MANAGE_FAVOURITES.route]);
   }
 
   protected readonly AppTools = AppTools;

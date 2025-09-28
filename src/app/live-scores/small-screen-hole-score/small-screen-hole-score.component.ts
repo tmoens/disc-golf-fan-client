@@ -9,9 +9,22 @@ import { CommonModule } from '@angular/common';
   styleUrl: './small-screen-hole-score.component.scss'
 })
 export class SmallScreenHoleScoreComponent implements OnChanges {
+  /**
+   * Score achieved on this hole.
+   * Undefined or 0 indicates the hole has not been played yet.
+   */
   @Input() holeScore: number | undefined = 0; // 0 indicates not played.
+
+
+  /**
+   * Par for this hole.
+   */
   @Input() holePar: number | undefined = 0;
 
+  /**
+   * scoreVsPar = holeScore - holePar
+   * Used to drive UI (e.g., birdie/eagle/bogey styles).
+   */
   scoreVsPar: number = 0;
 
   ngOnChanges() {

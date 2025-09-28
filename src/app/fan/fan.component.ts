@@ -7,6 +7,7 @@ import {PlayerDto} from '../DTOs/player.dto';
 import {plainToInstance} from 'class-transformer';
 import {AddFavouriteDto} from '../DTOs/add-favourite.dto';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
+import { AppTools } from '../shared/app-tools';
 import {FanService} from './fan.service';
 import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
 
@@ -113,4 +114,6 @@ export class FanComponent implements OnInit {
       }
     }
   }
+
+  protected readonly AppTools = AppTools;
 }

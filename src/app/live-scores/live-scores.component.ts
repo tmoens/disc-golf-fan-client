@@ -1,11 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
 import {FanService} from '../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
 import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { AppTools } from '../shared/app-tools';
 import {SmallScreenScoreDetails} from './small-screen-score-details/small-screen-score-details.component';
 import {LiveScoresService} from './live-scores.service';
 import {MatButtonModule} from '@angular/material/button';
@@ -39,35 +41,33 @@ export class LiveScoresComponent implements OnInit {
       await this.fanService.reload();
     }
     if (this.fanService.fan && this.fanService.fan.favourites.length < 1) {
-      this.router.navigate(['/manage-favourites']).then();
+      void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
     } else {
       this.liveScoreService.loadFavouritesLiveScores();
     }
   }
 
-  openAddFavouriteDialog(): void {
+  async openAddFavouriteDialog(): Promise<void> {
     const dialogRef = this.dialog.open(AddFavouriteDialogComponent, {
       width: '350px',
       position: { top: '100px' },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-      }
-    });
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result) {
+    }
   }
 
   isExpanded(briefPlayerResultDto: BriefPlayerResultDto): boolean {
-    const test = this.liveScoreService.isInFocus(briefPlayerResultDto);
     return this.liveScoreService.isInFocus(briefPlayerResultDto);
   }
 
   onManageFavourites() {
-    this.router.navigate(['/manage-favourites']).then();
+    void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
   }
 
   async openPanel(briefPlayerResult: BriefPlayerResultDto) {
-    // Opening one panel automatically closes any other open panel
+    // Opening one panel automatically closes any other open panel.
     // So both (opened) and (closed) are fired.
     // BUT when a new panel is opened, and if (opened) fires first, then closed fires,
     // the effect is that the newly opened panel will close.  So...
@@ -82,9 +82,9 @@ export class LiveScoresComponent implements OnInit {
 
   async onDrop(event: CdkDragDrop<any>) {
     // translate the drag from index to a player
-    const playerIdToBeMoved = this.liveScoreService.favouriteLiveScoresSig()[event.previousIndex]?.pdgaNum || 0;
+    const playerIdToBeMoved = this.liveScoreService.favouriteLiveScores()[event.previousIndex]?.pdgaNum || 0;
     // translate the drop target to the player before or after which the playerToBeMoved was dropped
-    const playerIdTarget = this.liveScoreService.favouriteLiveScoresSig()[event.currentIndex]?.pdgaNum || 0;
+    const playerIdTarget = this.liveScoreService.favouriteLiveScores()[event.currentIndex]?.pdgaNum || 0;
 
     if (this.fanService.fan && playerIdTarget && playerIdToBeMoved) {
       const reorderFavouriteDto =
@@ -99,4 +99,6 @@ export class LiveScoresComponent implements OnInit {
       }
     }
   }
+
+  protected readonly AppTools = AppTools;
 }

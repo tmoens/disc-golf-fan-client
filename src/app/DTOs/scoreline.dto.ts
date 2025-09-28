@@ -2,6 +2,10 @@ import {Expose, Type} from 'class-transformer';
 import 'reflect-metadata';
 import {RoundDto} from './round.dto';
 
+/**
+ * A player's scoreline for the current live round, including totals and per-hole scores.
+ * Joined with RoundDto for per-hole metadata.
+ */
 export class ScorelineDto {
   @Expose() resultId!: number;
   @Expose() liveRoundId!: number;

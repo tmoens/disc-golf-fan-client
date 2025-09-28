@@ -12,6 +12,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {SmallScreenScoreDetails} from '../live-scores/small-screen-score-details/small-screen-score-details.component';
 import {SmallScreenScorelineComponent} from '../live-scores/small-screen-scoreline/small-screen-scoreline.component';
+import { AppTools } from '../shared/app-tools';
 import {AdminDashboardService} from './admin-dashboard.service';
 import {MatListModule} from '@angular/material/list';
 import {AuthService} from '../auth/auth.service';
@@ -45,4 +46,5 @@ export class AdminDashboardComponent {
     this.authService.authenticatedUserCanPerformRole(ADMIN_ROLE)
   }
 
+  protected readonly AppTools = AppTools;
 }

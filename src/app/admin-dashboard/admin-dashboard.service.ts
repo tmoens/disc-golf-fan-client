@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, effect } from '@angular/core';
 import {interval, Subscription} from 'rxjs';
+import { environment } from '../../environments/environment';
 import {AppStateService} from '../app-state.service';
 import {LoaderService} from '../loader.service';
-import {AppTools} from '../../assets/app-tools';
+import {AppTools} from '../shared/app-tools';
 import {CronJobStatusDto} from './cron-job-status.dto';
 import {PdgaApiRequestSummaryDto} from './pdga-api-request-summary.dto';
 import {TournamentRosterChangeDto} from './tournament-roster-change.dto';
@@ -14,7 +15,9 @@ export class AdminDashboardService {
   constructor(    private appStateService: AppStateService,
                   private loaderService: LoaderService,
   ) {
-    this.appStateSubscription = this.appStateService.activeTool.subscribe((activeTool: string) => {
+    // React to signal changes
+    effect(() => {
+      const activeTool = this.appStateService.activeTool();
       if (activeTool !== AppTools.LIVE_SCORES.route) {
         this.stopPolling();
       }
@@ -47,10 +50,6 @@ export class AdminDashboardService {
     this._tournamentRosterChangeStatus = value;
   }
 
-  // We watch the app state to see if we should be polling the server or not.
-  appStateSubscription: Subscription;
-
-
   stopPolling() {
     if (this.pollingSubscription) this.pollingSubscription.unsubscribe();
   }
@@ -58,7 +57,7 @@ export class AdminDashboardService {
   startCronJobStatusPolling() {
     this.stopPolling();
     this.getCronJobStatus();
-    this.pollingSubscription = interval(2000).subscribe(() => {
+    this.pollingSubscription = interval(environment.polling.adminDashMs).subscribe(() => {
       this.getCronJobStatus();
     });
   }
@@ -74,7 +73,7 @@ export class AdminDashboardService {
   startPdgaApiRequestQueueStatusPolling() {
     this.stopPolling();
     this.getPdgaApiRequestQueueStatus();
-    this.pollingSubscription = interval(2000).subscribe(() => {
+    this.pollingSubscription = interval(environment.polling.adminDashMs).subscribe(() => {
       this.getPdgaApiRequestQueueStatus();
     });
   }
@@ -89,7 +88,7 @@ export class AdminDashboardService {
   startTournamentRosterChangeStatusPolling() {
     this.stopPolling();
     this.getTournamentRosterChangeStatus();
-    this.pollingSubscription = interval(2000).subscribe(() => {
+    this.pollingSubscription = interval(environment.polling.adminDashMs).subscribe(() => {
       this.getTournamentRosterChangeStatus();
     });
   }

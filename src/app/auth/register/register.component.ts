@@ -5,6 +5,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import { AppTools } from '../../shared/app-tools';
 import {RegistrationDto} from '../auth-related-dtos/registration-dto';
 import {plainToInstance} from 'class-transformer';
 import {AuthService} from '../auth.service';
@@ -51,4 +52,6 @@ export class RegisterComponent {
         });
     }
   }
+
+  protected readonly AppTools = AppTools;
 }

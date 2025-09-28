@@ -5,7 +5,7 @@ import {plainToInstance} from 'class-transformer';
 import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
 import {AuthService} from '../auth/auth.service';
 import {interval, lastValueFrom, Subscription} from 'rxjs';
-import {AppTools} from '../../assets/app-tools';
+import {AppTools} from '../shared/app-tools';
 import {AppStateService} from '../app-state.service';
 import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
 
@@ -48,7 +48,7 @@ export class FanService {
     this.reload().then();
   }
 
-  fanHasFavorites(): boolean {
+  fanHasFavourites(): boolean {
     if (this.fan) {
       return this.fan.favourites.length > 0;
     } else {

@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { finalize } from 'rxjs';
+import { AppTools } from '../../shared/app-tools';
 import {AuthService} from '../auth.service';
 import {LoginDto} from '../auth-related-dtos/login-dto';
 import {MatCardModule} from '@angular/material/card';
@@ -31,6 +33,7 @@ export class LoginComponent {
     password: ['', [Validators.required, ]],
   });
   loginError: string | null = null;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,24 +42,35 @@ export class LoginComponent {
   ) {}
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      const loginDto: LoginDto = this.loginForm.value;
-      this.authService.login(loginDto).subscribe({
-        next: () => {
-          this.loginStatus = LoginStatus.SUCCESS;
-          this.loginError = null;
-          if (this.authService.intendedPath) {
-            this.router.navigate([this.authService.intendedPath]).then();
-          } else {
-            this.router.navigate(['/live-scores']).then();
-          }
-        },
-        error: (error) => {
-          this.loginStatus = LoginStatus.FAIL;
-          this.loginError = error.error.message;
-          // this.loginError = JSON.stringify(error, null, 2);
-        }
-      });
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
     }
+
+    this.isSubmitting = true;
+    const loginDto: LoginDto = this.loginForm.value;
+
+    this.authService.login(loginDto).pipe(
+      finalize(() => this.isSubmitting = false)
+    ).subscribe({
+      next: () => {
+        this.loginStatus = LoginStatus.SUCCESS;
+        this.loginError = null;
+
+        const target = this.authService.intendedPath && this.authService.intendedPath.startsWith('/')
+          ? this.authService.intendedPath
+          : '/live-scores';
+
+        void this.router.navigateByUrl(target);
+        this.authService.intendedPath = null as any; // or undefined, depending on your field type
+      },
+      error: (message: string) => {
+        // AuthService.login now throws a normalized string message
+        this.loginStatus = LoginStatus.FAIL;
+        this.loginError = message || 'Sign-in failed. Please try again.';
+      }
+    });
   }
+
+  protected readonly AppTools = AppTools;
 }

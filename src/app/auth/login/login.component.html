@@ -2,11 +2,12 @@
   <mat-card>
     <mat-card-header>
       <mat-toolbar>
-        <span>Disc Golf Fan Sign In</span>
+        <span>Disc Golf Fan {{ AppTools.LOGIN.displayName }}</span>
         <div class="fill-remaining-space"></div>
         <app-main-menu></app-main-menu>
       </mat-toolbar>
     </mat-card-header>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <mat-card-content>
         <div class="lo-column">
@@ -31,7 +32,7 @@
         <button mat-raised-button color="primary" [disabled]="!loginForm.valid" type="submit">Sign In</button>
       </mat-card-actions>
       <mat-card-actions align="end">
-        <a routerLink="/forgot-password">Forgot Password?</a>
+        <a [routerLink]="['/' + AppTools.FORGOT_PASSWORD.route]">Forgot Password?</a>
       </mat-card-actions>
     </form>
 

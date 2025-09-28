@@ -1,50 +1,46 @@
-import {Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
+import {Injectable, OnDestroy, signal, WritableSignal, effect} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {ScorelineDto} from '../DTOs/scoreline.dto';
-import {interval, Subscription} from 'rxjs';
+import {interval, Subscription, of} from 'rxjs';
 import {AppStateService} from '../app-state.service';
-import {AppTools} from '../../assets/app-tools';
+import {AppTools} from '../shared/app-tools';
 import {plainToInstance} from 'class-transformer';
 import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
 import {AuthService} from '../auth/auth.service';
+import {catchError} from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
-// This component is responsible for polling for:
-// 1 - the live scores of all the favourites (who are currently playing) for a fan
-// 2 - the details of a favourite's scores that have been "expanded"
-
+/**
+ * Manages live scores:
+ * - Polls favourite players' live scores while the Live Scores tool is active.
+ * - Polls detailed scores for the focused favourite while its panel is open.
+ * Uses Angular signals for state and an effect to start/stop polling based on the active tool.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class LiveScoresService implements OnDestroy {
-
-  // The live scores for all the fans favourite players.
-  // When a fan is logged in, we grab the scores for the fan's favourites.
-  // Then we poll the server for updates.
-  // The component responsible for showing the scores just shows the latest info.
-  // This is an Angular Signal that will hold scores we poll from the server.
-  favouriteLiveScoresSig: WritableSignal<BriefPlayerResultDto[]> = signal<BriefPlayerResultDto[]>([]);
-  favouritesLiveScoresSubscription: Subscription | null = null;
-
-  // The detailed results for a particular player includes
-  // - hole by hole scores for the favourite in question
-  // - hole by hole distance, pars
-  // - hole by hole scores for the leader
-  // - average scores per hole to this point in the round
   detailLiveRoundId: number | null = null;
   detailResultId: number | null = null;
-  detailedScoresSig: WritableSignal<ScorelineDto | null> = signal<ScorelineDto | null>(null);
-  detailedScoresSubscription: Subscription | null = null;
 
-  // We watch the app state.
-  // If the app is showing live scores, we should be polling the server for live score updates.
-  appStateSubscription: Subscription;
+  // Keep signals private; expose read accessors so consumers can’t mutate
+  // Public read-only views for templates/components
+  private favouriteLiveScoresSig: WritableSignal<BriefPlayerResultDto[]> = signal<BriefPlayerResultDto[]>([]);
+  favouritesLiveScoresSubscription: Subscription | null = null;
+  public favouriteLiveScores = this.favouriteLiveScoresSig.asReadonly();
+
+  private detailedScoresSig: WritableSignal<ScorelineDto | null> = signal<ScorelineDto | null>(null);
+  detailedScoresSubscription: Subscription | null = null;
+  public detailedScores = this.detailedScoresSig.asReadonly();
 
   constructor(
     private authService: AuthService,
     private loaderService: LoaderService,
     private appStateService: AppStateService
   ) {
-    this.appStateSubscription = this.appStateService.activeTool.subscribe((activeTool: string) => {
+    // React to active tool changes via signal effect
+    effect(() => {
+      const activeTool = this.appStateService.activeTool();
       if (activeTool === AppTools.LIVE_SCORES.route) {
         this.startFavouritesLiveScoresPolling();
         this.startDetailedScoresPolling();
@@ -52,20 +48,31 @@ export class LiveScoresService implements OnDestroy {
         this.stopFavouritesLiveScoresPolling();
         this.stopDetailedScoresPolling();
       }
-    })
+    });
   }
 
-  get detailedScores(): ScorelineDto | null {
+  /**
+   * Current detailed scores (null when nothing is focused or data not loaded yet).
+   */
+  detailedScoresValue(): ScorelineDto | null {
     return this.detailedScoresSig();
   }
+
+  /**
+   * Starts polling favourite players' live scores at the configured cadence.
+   * Ensures only one polling subscription is active.
+   */
   startFavouritesLiveScoresPolling() {
-    this.stopFavouritesLiveScoresPolling(); // probably unnecessary, but harmless.
+    this.stopFavouritesLiveScoresPolling();
     this.loadFavouritesLiveScores();
-    this.favouritesLiveScoresSubscription = interval(60000).subscribe(() => {
+    this.favouritesLiveScoresSubscription = interval(environment.polling.liveScoresMs).subscribe(() => {
       this.loadFavouritesLiveScores();
     });
   }
 
+  /**
+   * Stops polling favourite players' live scores.
+   */
   stopFavouritesLiveScoresPolling() {
     if (this.favouritesLiveScoresSubscription) {
       this.favouritesLiveScoresSubscription.unsubscribe();
@@ -73,30 +80,44 @@ export class LiveScoresService implements OnDestroy {
     }
   }
 
+  /**
+   * Loads favourite players' live scores once.
+   * Clears state if no authenticated user is found.
+   */
   loadFavouritesLiveScores() {
-    const fanId = this.authService.getAuthenticatedUserId()
-    // it should probably never happen that this is called when no one is logged in...
+    const fanId = this.authService.getAuthenticatedUserId();
     if (!fanId) {
       this.favouriteLiveScoresSig.set([]);
       return;
     }
-    this.loaderService.getScoresForFan(fanId).subscribe((data) => {
-      const favouritesLiveScores = [];
+    this.loaderService.getScoresForFan(fanId).pipe(
+      catchError(err => {
+        console.warn('Failed to load favourites live scores', err);
+        return of(null);
+      })
+    ).subscribe((data) => {
       if (!data) return;
-      // we have data
-      for (const datum of data) {
-        favouritesLiveScores.push(plainToInstance(BriefPlayerResultDto, datum));
-      }
+      const favouritesLiveScores = data.map(d => plainToInstance(BriefPlayerResultDto, d));
       this.favouriteLiveScoresSig.set(favouritesLiveScores);
     });
   }
 
-  // Start watching details of one particular favourite's scores
+  /**
+   * Focuses detailed polling on a specific favourite's live round.
+   * Clears previous details immediately to avoid showing stale data.
+   */
   setDetailFocus(briefPlayerResult: BriefPlayerResultDto) {
-    if (!briefPlayerResult) this.unsetDetailFocus();
-    if (this.detailLiveRoundId === briefPlayerResult.liveRoundId && this.detailResultId === briefPlayerResult.resultId) return;
+    if (!briefPlayerResult) {
+      this.unsetDetailFocus();
+      return;
+    }
+    if (this.detailLiveRoundId === briefPlayerResult.liveRoundId &&
+        this.detailResultId === briefPlayerResult.resultId) {
+      return;
+    }
     this.detailLiveRoundId = briefPlayerResult.liveRoundId;
     this.detailResultId = briefPlayerResult.resultId;
+    this.detailedScoresSig.set(null);
     this.startDetailedScoresPolling();
   }
 
@@ -108,48 +129,61 @@ export class LiveScoresService implements OnDestroy {
       detailedScores.resultId === briefPlayerResult.resultId);
   }
 
-  // Stop watching details if we were.
+  /**
+   * Clears detail focus and stops detailed polling.
+   */
   unsetDetailFocus() {
     this.stopDetailedScoresPolling();
     this.detailLiveRoundId = null;
     this.detailResultId = null;
   }
 
+  /**
+   * Starts polling detailed scores for the current focus at the configured cadence.
+   * Ensures only one detailed polling subscription is active.
+   */
   startDetailedScoresPolling() {
-    // In case we were watching detailed scores for a different favourite, stop.
     this.stopDetailedScoresPolling();
     this.getDetailedScores();
-    this.detailedScoresSubscription = interval(60000).subscribe(() => {
+    this.detailedScoresSubscription = interval(environment.polling.detailedScoresMs).subscribe(() => {
       this.getDetailedScores();
     });
   }
 
+  /**
+   * Stops detailed polling and clears current detailed scores.
+   */
   stopDetailedScoresPolling() {
     this.detailedScoresSig.set(null);
     if (this.detailedScoresSubscription) {
       this.detailedScoresSubscription.unsubscribe();
+      this.detailedScoresSubscription = null;
     }
   }
 
+  /**
+   * Loads the current focused favourite's detailed scores once.
+   * Stops polling if focus is not set.
+   */
   getDetailedScores() {
     if (!this.detailLiveRoundId || !this.detailResultId) {
       this.stopDetailedScoresPolling();
-    } else {
-      this.loaderService.getDetailedScores(this.detailLiveRoundId, this.detailResultId).subscribe((result) => {
-        if (!result) {
-          this.detailedScoresSig.set(null);
-        } else {
-          this.detailedScoresSig.set(result);
-        }
-      });
+      return;
     }
+    this.loaderService.getDetailedScores(this.detailLiveRoundId, this.detailResultId).pipe(
+      catchError(err => {
+        console.warn('Failed to load detailed scores', err);
+        return of(null);
+      })
+    ).subscribe((result) => {
+      if (result) {
+        this.detailedScoresSig.set(result);
+      }
+    });
   }
 
   ngOnDestroy() {
     this.stopFavouritesLiveScoresPolling();
     this.stopDetailedScoresPolling();
-    if (this.appStateSubscription) {
-      this.appStateSubscription.unsubscribe();
-    }
   }
 }

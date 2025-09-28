@@ -7,6 +7,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import { AppTools } from '../shared/app-tools';
 
 @Component({
   selector: 'app-welcome-page',
@@ -23,9 +24,9 @@ export class WelcomePageComponent {
   }
 
   register() {
-    this.router.navigate(['register']).then();
+    this.router.navigate([`/${AppTools.REGISTER.route}`]);
   }
   login() {
-    this.router.navigate(['login']).then();
+    this.router.navigate([`/${AppTools.LOGIN.route}`]);
   }
 }

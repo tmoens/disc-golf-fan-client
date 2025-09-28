@@ -5,17 +5,17 @@
     <app-main-menu></app-main-menu>
   </mat-toolbar>
 
-  <mat-card *ngIf="upcommingEvents.length === 0">
-    <mat-card-header>Looks like you don't have any favourites yet! Use the button below to add some.</mat-card-header>
+  <mat-card *ngIf="upcomingTournaments.length === 0">
+    <mat-card-header>Looks like you don't have any favorites yet! Use the button below to add some.</mat-card-header>
     <mat-card-actions align="end" class="lo-gap20">
-      <button mat-raised-button color="primary" (click)="onManageFavourites()">Manage Favourites</button>
+      <button mat-raised-button color="primary" (click)="onManageFavourites()">{{ AppTools.MANAGE_FAVOURITES.displayName }}</button>
     </mat-card-actions>
   </mat-card>
 
-  <mat-card *ngIf="upcommingEvents.length > 0">
+  <mat-card *ngIf="upcomingTournaments.length > 0">
     <mat-card-content>
       <div class="lo-column lo-gap10">
-        <div *ngFor="let fav of upcommingEvents">
+        <div *ngFor="let fav of upcomingTournaments">
           <div class="lo-row mat-h3">
             <a [href]="'https://pdga.com/player/' + fav.id" target="_blank">
               {{ fav.name }}
@@ -39,4 +39,3 @@
     </mat-card-content>
   </mat-card>
 </mat-card>
-

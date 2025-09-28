@@ -9,8 +9,15 @@ import { CommonModule } from '@angular/common';
   styleUrl: './golf-score.component.scss'
 })
 export class GolfScoreComponent implements OnInit{
+  /**
+   * Score relative to par for the round.
+   * - null/undefined => show "-"
+   * - 0 => show "E"
+   * - negative => mark as below par
+   */
   @Input() rawScore: number | null | undefined;
-  scoreIsBelowPar : boolean = false;
+
+  scoreIsBelowPar: boolean = false;
 
   score: string = '';
 

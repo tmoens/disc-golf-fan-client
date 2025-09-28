@@ -1,9 +1,9 @@
 <mat-card class="small-page">
   <mat-card-header>
     <mat-toolbar>
-      <span>Disc Golf Fan - Live Scores</span>
+      <span>Disc Golf Fan - {{ AppTools.LIVE_SCORES.displayName }}</span>
       <div class="fill-remaining-space"></div>
-      <button mat-icon-button matTooltip="Add new favourites" (click)="openAddFavouriteDialog()">
+      <button mat-icon-button matTooltip="Add new favorites" (click)="openAddFavouriteDialog()">
         <mat-icon>add</mat-icon>
       </button>
       <app-main-menu></app-main-menu>
@@ -11,26 +11,26 @@
   </mat-card-header>
 
   <!-- In case there are no scores to report for the fan -->
-  <mat-card *ngIf="liveScoreService.favouriteLiveScoresSig().length === 0">
-    <mat-card-header>None of your favourites appear to be playing a tournament at the moment.</mat-card-header>
-    <mat-card-header>A new feature is coming soon to tell you when each of your favourites is planning to play next.</mat-card-header>
-    <mat-card-header>In the meantime, feel free to add some new favourites!</mat-card-header>
+  <mat-card *ngIf="liveScoreService.favouriteLiveScores().length === 0">
+    <mat-card-header>None of your favorites appear to be playing a tournament at the moment.</mat-card-header>
+    <mat-card-header>A new feature is coming soon to tell you when each of your favorites is planning to play next.</mat-card-header>
+    <mat-card-header>In the meantime, feel free to add some new favorites!</mat-card-header>
     <mat-card-actions align="end" class="lo-gap20">
-      <button mat-raised-button color="primary" (click)="onManageFavourites()">Manage Favourites</button>
+      <button mat-raised-button color="primary" (click)="onManageFavourites()">{{ AppTools.MANAGE_FAVOURITES.displayName }}</button>
     </mat-card-actions>
   </mat-card>
 
   <!-- There are scores to report -->
-  <mat-accordion *ngIf="fanService.fanHasFavorites()">
+  <mat-accordion *ngIf="fanService.fanHasFavourites()">
     <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap5">
       <mat-expansion-panel cdkDrag
-        *ngFor="let s of liveScoreService.favouriteLiveScoresSig()"
+        *ngFor="let s of liveScoreService.favouriteLiveScores()"
         [expanded]="isExpanded(s)"
         (closed)="closePanel()"
         (opened)="openPanel(s)">
         <mat-expansion-panel-header>
           <div class="live-score-row" style="width: 100%">
-            <mat-icon cdkDragHandle color="primary" class="lo-24px" matTooltip="Drag to reorder your favourites">drag_indicator</mat-icon>
+            <mat-icon cdkDragHandle color="primary" class="lo-24px" matTooltip="Drag to reorder your favorites">drag_indicator</mat-icon>
             <div class="live-score-column">
               <div class="live-score-row mat-h3">
                 <a [href]="'https://pdga.com/player/' + s.pdgaNum" target="_blank">
