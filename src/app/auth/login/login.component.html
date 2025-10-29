@@ -1,13 +1,6 @@
 <div class="x-small-page">
   <mat-card>
-    <mat-card-header>
-      <mat-toolbar>
-        <span>Disc Golf Fan {{ AppTools.LOGIN.displayName }}</span>
-        <div class="fill-remaining-space"></div>
-        <app-main-menu></app-main-menu>
-      </mat-toolbar>
-    </mat-card-header>
-
+    <app-toolbar></app-toolbar>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <mat-card-content>
         <div class="lo-column">

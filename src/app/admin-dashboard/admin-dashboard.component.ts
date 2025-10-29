@@ -13,6 +13,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {SmallScreenScoreDetails} from '../live-scores/small-screen-score-details/small-screen-score-details.component';
 import {SmallScreenScorelineComponent} from '../live-scores/small-screen-scoreline/small-screen-scoreline.component';
 import { AppTools } from '../shared/app-tools';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 import {AdminDashboardService} from './admin-dashboard.service';
 import {MatListModule} from '@angular/material/list';
 import {AuthService} from '../auth/auth.service';
@@ -21,7 +22,18 @@ import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, CdkDrag, CdkDragHandle, CdkDropList, FormsModule, MainMenuComponent, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatToolbarModule, MatExpansionModule, SmallScreenScoreDetails, SmallScreenScorelineComponent, MatListModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    MatListModule,
+    ToolbarComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
@@ -40,10 +52,6 @@ export class AdminDashboardComponent {
   }
   onRosterChangeStatusOpened() {
     this.adminDashboardService.startTournamentRosterChangeStatusPolling();
-  }
-
-  adminDashboarcAllowed() {
-    this.authService.authenticatedUserCanPerformRole(ADMIN_ROLE)
   }
 
   protected readonly AppTools = AppTools;

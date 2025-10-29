@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { finalize } from 'rxjs';
 import { AppTools } from '../../shared/app-tools';
+import { ToolbarComponent } from '../../toolbar/toolbar.component';
 import {AuthService} from '../auth.service';
 import {LoginDto} from '../auth-related-dtos/login-dto';
 import {MatCardModule} from '@angular/material/card';
@@ -21,7 +22,7 @@ enum LoginStatus {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MainMenuComponent, MatToolbarModule],
+  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MainMenuComponent, MatToolbarModule, ToolbarComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

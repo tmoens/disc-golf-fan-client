@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 import {FanComponent} from './fan.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatListModule} from '@angular/material/list';
@@ -36,6 +37,7 @@ import {MainMenuComponent} from '../main-menu/main-menu.component';
     MatLineModule,
     CdkDragHandle,
     MainMenuComponent,
+    ToolbarComponent,
   ],
   exports: [
     FanComponent,

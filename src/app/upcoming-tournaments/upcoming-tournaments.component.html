@@ -1,10 +1,5 @@
 <mat-card class="small-page">
-  <mat-toolbar>
-    <span>Disc Golf Fan - {{ AppTools.UPCOMING_EVENTS.displayName }}</span>
-    <div class="fill-remaining-space"></div>
-    <app-main-menu></app-main-menu>
-  </mat-toolbar>
-
+  <app-toolbar></app-toolbar>
   <mat-card *ngIf="upcomingTournaments.length === 0">
     <mat-card-header>Looks like you don't have any favorites yet! Use the button below to add some.</mat-card-header>
     <mat-card-actions align="end" class="lo-gap20">

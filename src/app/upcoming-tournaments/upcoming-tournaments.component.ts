@@ -11,11 +11,19 @@ import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 @Component({
   selector: 'app-upcoming-tournaments',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MainMenuComponent, MatIconModule, MatToolbarModule, MatTooltipModule],
+  imports: [CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatTooltipModule,
+    ToolbarComponent,
+  ],
   templateUrl: './upcoming-tournaments.component.html',
   styleUrl: './upcoming-tournaments.component.scss'
 })

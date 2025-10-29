@@ -1,13 +1,14 @@
 <mat-card class="small-page">
+  <app-toolbar></app-toolbar>
   <mat-card-header>
-    <mat-toolbar>
-      <span>Disc Golf Fan - {{ AppTools.LIVE_SCORES.displayName }}</span>
-      <div class="fill-remaining-space"></div>
-      <button mat-icon-button matTooltip="Add new favorites" (click)="openAddFavouriteDialog()">
-        <mat-icon>add</mat-icon>
-      </button>
-      <app-main-menu></app-main-menu>
-    </mat-toolbar>
+<!--    <mat-toolbar>-->
+<!--      <span>Disc Golf Fan - {{ AppTools.LIVE_SCORES.displayName }}</span>-->
+<!--      <div class="fill-remaining-space"></div>-->
+<!--      <button mat-icon-button matTooltip="Add new favorites" (click)="openAddFavouriteDialog()">-->
+<!--        <mat-icon>add</mat-icon>-->
+<!--      </button>-->
+<!--      <app-main-menu></app-main-menu>-->
+<!--    </mat-toolbar>-->
   </mat-card-header>
 
   <!-- In case there are no scores to report for the fan -->
@@ -39,7 +40,7 @@
                 {{ s.divisionName }} Round: {{ s.roundNumber }}
               </div>
               <div class="live-score-row mat-small">
-                <a [href]="'https://pdga.com/tour/event/' + s.tournamentId" target="_blank">
+                <a [href]="'https://www.pdga.com/live/event/' + s.tournamentId + '/' + s.divisionName + '/scores?round=' + s.roundNumber" target="_blank">
                   {{ s.tournamentName }}
                 </a>
               </div>

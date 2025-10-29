@@ -1,13 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AppTools, ConcreteAppTool } from './shared/app-tools';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppStateService {
-  // Signal holding the first non-empty path segment of the current URL (the "active tool")
-  activeTool = signal<string>('');
+  // Signal holding the current tool metadata (undefined if no match)
+  activeTool = signal<ConcreteAppTool | undefined>(undefined);
 
   constructor(private router: Router) {
     this.watchRouterChanges();
@@ -15,25 +16,25 @@ export class AppStateService {
 
   initializeAppState(): Promise<any> {
     return new Promise ((resolve, _reject) => {
-      this.activeTool.set('');
+      this.activeTool.set(undefined);
       resolve(true);
     });
   }
 
+  // This is how we determine which tool is active
   private watchRouterChanges() {
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe(event => {
         const url = event.urlAfterRedirects || '';
-        // Strip query/fragment, split path, take first non-empty segment
+
+        // Strip query/fragment, split path, take the first non-empty segment
         const firstSegment =
           url.split('?')[0].split('#')[0].split('/').find(Boolean) || '';
-        this.activeTool.set(firstSegment);
-      });
-  }
 
-  // Convenience helper for consumers
-  isActive(route: string): boolean {
-    return this.activeTool() === route;
+        // look up the tool based on the route.
+        const tool = Object.values(AppTools).find(t => t.route === firstSegment);
+        this.activeTool.set(tool);
+      });
   }
 }

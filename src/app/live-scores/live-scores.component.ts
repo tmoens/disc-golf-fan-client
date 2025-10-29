@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import {FanService} from '../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
-import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AppTools } from '../shared/app-tools';
+import { ToolbarComponent } from '../toolbar/toolbar.component';
 import {SmallScreenScoreDetails} from './small-screen-score-details/small-screen-score-details.component';
 import {LiveScoresService} from './live-scores.service';
 import {MatButtonModule} from '@angular/material/button';
@@ -23,7 +23,21 @@ import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
 @Component({
   selector: 'app-live-scores',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule, MatExpansionModule, SmallScreenScoreDetails, MatButtonModule, SmallScreenScorelineComponent, MatIconModule, MatTooltipModule, CdkDropList, CdkDrag, CdkDragHandle],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    SmallScreenScoreDetails,
+    MatButtonModule,
+    SmallScreenScorelineComponent,
+    MatIconModule,
+    MatTooltipModule,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    ToolbarComponent,
+  ],
   templateUrl: './live-scores.component.html',
   styleUrl: './live-scores.component.scss'
 })
@@ -99,6 +113,5 @@ export class LiveScoresComponent implements OnInit {
       }
     }
   }
-
   protected readonly AppTools = AppTools;
 }

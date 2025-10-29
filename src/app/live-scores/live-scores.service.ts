@@ -40,15 +40,16 @@ export class LiveScoresService implements OnDestroy {
   ) {
     // React to active tool changes via signal effect
     effect(() => {
-      const activeTool = this.appStateService.activeTool();
-      if (activeTool === AppTools.LIVE_SCORES.route) {
-        this.startFavouritesLiveScoresPolling();
-        this.startDetailedScoresPolling();
-      } else {
-        this.stopFavouritesLiveScoresPolling();
-        this.stopDetailedScoresPolling();
-      }
-    });
+        const activeTool = this.appStateService.activeTool();
+        if (activeTool?.route === AppTools.LIVE_SCORES.route) {
+          this.startFavouritesLiveScoresPolling();
+          this.startDetailedScoresPolling();
+        } else {
+          this.stopFavouritesLiveScoresPolling();
+          this.stopDetailedScoresPolling();
+        }
+      },
+      { allowSignalWrites: true });
   }
 
   /**
@@ -81,7 +82,7 @@ export class LiveScoresService implements OnDestroy {
   }
 
   /**
-   * Loads favourite players' live scores once.
+   * This loads favourite players' live scores once.
    * Clears state if no authenticated user is found.
    */
   loadFavouritesLiveScores() {
@@ -112,7 +113,7 @@ export class LiveScoresService implements OnDestroy {
       return;
     }
     if (this.detailLiveRoundId === briefPlayerResult.liveRoundId &&
-        this.detailResultId === briefPlayerResult.resultId) {
+      this.detailResultId === briefPlayerResult.resultId) {
       return;
     }
     this.detailLiveRoundId = briefPlayerResult.liveRoundId;

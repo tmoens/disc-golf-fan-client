@@ -1,0 +1,30 @@
+<mat-toolbar>
+  <span>
+    {{ titlePrefix }}
+    @if (activeTool) {
+      - {{activeTool.displayName }}
+    }
+  </span>
+  <div class="fill-remaining-space"></div>
+  @if (!authService.isAuthenticated() && activeTool !== AppTools.LOGIN) {
+    <button mat-icon-button (click)="onLoginClick()"
+            matTooltip="Sign In"
+            matTooltipPosition="below"
+            aria-label="Sign In"
+    >
+      <mat-icon>login</mat-icon>
+    </button>
+  } @else if (
+    activeTool !== AppTools.LOGIN &&
+    activeTool !== AppTools.REGISTER
+    ) {
+    <button mat-icon-button (click)="onLogoutClick()"
+            matTooltip="Sign Out"
+            matTooltipPosition="below"
+            aria-label="Sign In"
+    >
+      <mat-icon>logout</mat-icon>
+    </button>
+  }
+  <app-main-menu></app-main-menu>
+</mat-toolbar>

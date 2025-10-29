@@ -5,9 +5,8 @@ import {MatMenuModule} from '@angular/material/menu';
 import {AuthService} from '../auth/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import {AppStateService} from '../app-state.service';
-import {FanService} from '../fan/fan.service';
 import {MatButtonModule} from '@angular/material/button';
-import {AppTools} from '../shared/app-tools';
+import { AppTools, ConcreteAppTool } from '../shared/app-tools';
 import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
 
 @Component({
@@ -20,34 +19,25 @@ import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
 export class MainMenuComponent {
   constructor(
     protected authService: AuthService,
-    protected fanService: FanService,
     protected router: Router,
-    protected appStateService: AppStateService,
+    protected appState: AppStateService,
   ) {
   }
 
-  manageFavouritesDisabled(): boolean {
-    return (!this.authService.isAuthenticated() ||
-      this.appStateService.isActive(AppTools.MANAGE_FAVOURITES.route));
-  }
-  upcomingEventsDisabled(): boolean {
-    return (!this.authService.isAuthenticated() ||
-      !this.fanService.fanHasFavourites() ||
-      this.appStateService.isActive(AppTools.UPCOMING_EVENTS.route));
-  }
-  liveScoresDisabled(): boolean {
-    return (!this.authService.isAuthenticated() ||
-      !this.fanService.fanHasFavourites() ||
-      this.appStateService.isActive(AppTools.LIVE_SCORES.route));
+  toolDisabled(tool: ConcreteAppTool, mustBeLoggedIn = true, mustBeAdmin = false): boolean {
+    if (mustBeLoggedIn && !this.authService.isAuthenticated()) return true;
+    if (this.appState.activeTool() === tool) return true;
+    if (mustBeAdmin && !this.authenticatedUserIsAdmin()) return true;
+    else return false;
   }
   registrationDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.isActive(AppTools.REGISTER.route));
+      this.appState.activeTool() === AppTools.REGISTER);
   }
 
   loginDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appStateService.isActive(AppTools.LOGIN.route));
+      this.appState.activeTool() === AppTools.LOGIN);
   }
 
   logoutDisabled(): boolean {
@@ -55,7 +45,7 @@ export class MainMenuComponent {
   }
 
   welcomeDisabled(): boolean {
-    return this.appStateService.isActive(AppTools.WELCOME.route);
+    return this.appState.activeTool() === AppTools.WELCOME;
   }
 
   onLogout() {

@@ -1,13 +1,7 @@
 <!-- app-disc-golf-scores.component.html -->
 <div class="x-small-page">
   <mat-card>
-    <mat-card-header>
-      <mat-toolbar>
-            <span>Disc Golf Fan</span>
-            <div class="fill-remaining-space"></div>
-            <app-main-menu></app-main-menu>
-      </mat-toolbar>
-    </mat-card-header>
+    <app-toolbar></app-toolbar>
     <mat-card-header>
       <mat-card-subtitle>Live tournament scores for all your favorite players!</mat-card-subtitle>
     </mat-card-header>
@@ -28,14 +22,22 @@
         </div>
         <div class="lo-row lo-gap10">
           <span class="material-symbols-outlined">select_check_box</span>
-          Live updates from multiple tournaments and divisions seamlessly integrated
+          Live updates from multiple tournaments and divisions all in one place
+        </div>
+        <div class="lo-row lo-gap10">
+          <span class="material-symbols-outlined">select_check_box</span>
+          Great "jumping-off" links to pdga players, tournaments and live scoring
         </div>
       </div>
     </mat-card-content>
 
     <mat-card-actions align="end" class="lo-gap20">
-      <button mat-raised-button color="primary" (click)="register()">Register</button>
-      <button mat-raised-button color="primary" (click)="login()">Sign In</button>
+      @if (authService.isAuthenticated()) {
+        <button mat-raised-button color="primary" (click)="logout()">Sign Out</button>
+      } @else {
+        <button mat-raised-button color="primary" (click)="register()">Register</button>
+        <button mat-raised-button color="primary" (click)="login()">Sign In</button>
+      }
     </mat-card-actions>
   </mat-card>
 </div>

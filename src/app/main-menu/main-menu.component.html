@@ -3,24 +3,25 @@
 </button>
 <mat-menu #mainMenu="matMenu">
   <button mat-menu-item
-          [disabled]="liveScoresDisabled()"
+          [disabled]="toolDisabled(AppTools.LIVE_SCORES)"
           [routerLink]="['/' + AppTools.LIVE_SCORES.route]">
     <mat-icon>sync_alt</mat-icon>
     {{AppTools.LIVE_SCORES.displayName}}
   </button>
   <button mat-menu-item
-          [disabled]="upcomingEventsDisabled()"
+          [disabled]="toolDisabled(AppTools.UPCOMING_EVENTS)"
           [routerLink]="['/' + AppTools.UPCOMING_EVENTS.route]">
     <mat-icon>event</mat-icon>
     {{AppTools.UPCOMING_EVENTS.displayName}}
   </button>
   <button mat-menu-item
-          [disabled]="manageFavouritesDisabled()"
+          [disabled]="toolDisabled(AppTools.MANAGE_FAVOURITES)"
           [routerLink]="['/' + AppTools.MANAGE_FAVOURITES.route]">
     <mat-icon>manage_accounts</mat-icon>
     {{ AppTools.MANAGE_FAVOURITES.displayName }}
   </button>
-  <button *ngIf="authenticatedUserIsAdmin()" mat-menu-item
+  <button mat-menu-item
+          [disabled]="toolDisabled(AppTools.ADMIN_DASHBOARD, true, true)"
           [routerLink]="['/' + AppTools.ADMIN_DASHBOARD.route]">
     <mat-icon>admin_panel_settings</mat-icon>
     {{AppTools.ADMIN_DASHBOARD.displayName}}

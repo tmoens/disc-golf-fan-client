@@ -1,12 +1,12 @@
 import { Injectable, effect } from '@angular/core';
 import {interval, Subscription} from 'rxjs';
-import { environment } from '../../environments/environment';
 import {AppStateService} from '../app-state.service';
 import {LoaderService} from '../loader.service';
 import {AppTools} from '../shared/app-tools';
 import {CronJobStatusDto} from './cron-job-status.dto';
 import {PdgaApiRequestSummaryDto} from './pdga-api-request-summary.dto';
 import {TournamentRosterChangeDto} from './tournament-roster-change.dto';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +15,10 @@ export class AdminDashboardService {
   constructor(    private appStateService: AppStateService,
                   private loaderService: LoaderService,
   ) {
-    // React to signal changes
+    // React to selected tool changes
     effect(() => {
-      const activeTool = this.appStateService.activeTool();
-      if (activeTool !== AppTools.LIVE_SCORES.route) {
+      const tool = this.appStateService.activeTool();
+      if (!tool || tool.route !== AppTools.ADMIN_DASHBOARD.route) {
         this.stopPolling();
       }
     });
@@ -62,8 +62,6 @@ export class AdminDashboardService {
     });
   }
 
-
-  // invoke the loader to ge cronJob status and store the result in an attribute
   getCronJobStatus() {
     this.loaderService.getCronJobStatus().subscribe((status: any) => {
       this.cronJobStatus = status as CronJobStatusDto[];
@@ -78,7 +76,6 @@ export class AdminDashboardService {
     });
   }
 
-  // invoke the loader to ge cronJob status and store the result in an attribute
   getPdgaApiRequestQueueStatus() {
     this.loaderService.getPdgaApiRequestQueueStatus().subscribe((status: any) => {
       this.pdgaApiRequestQueueStatus = status as PdgaApiRequestSummaryDto[];
@@ -93,7 +90,6 @@ export class AdminDashboardService {
     });
   }
 
-  // invoke the loader to ge cronJob status and store the result in an attribute
   getTournamentRosterChangeStatus() {
     this.loaderService.getTournamentRosterChanges().subscribe((status: any) => {
       this.tournamentRosterChangeStatus = status as TournamentRosterChangeDto[];

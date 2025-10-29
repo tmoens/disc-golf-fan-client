@@ -1,12 +1,6 @@
 <div class="x-small-page">
   <mat-card *ngIf="registerForm" class="registration-form">
-    <mat-card-header>
-      <mat-toolbar>
-        <span>Disc Golf Fan {{ AppTools.REGISTER.displayName }}</span>
-        <div class="fill-remaining-space"></div>
-        <app-main-menu></app-main-menu>
-      </mat-toolbar>
-    </mat-card-header>
+    <app-toolbar></app-toolbar>
     <mat-card-content>
       <form [formGroup]="registerForm" *ngIf="!registrationSuccessful" class="lo-column lo-gap10"
             (ngSubmit)="onSubmit()">
