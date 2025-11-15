@@ -7,11 +7,10 @@ import {MatListModule} from '@angular/material/list';
 import {BriefPlayerResultDto} from '../brief-player-result.dto';
 
 @Component({
-  selector: 'app-small-screen-score-details',
-  standalone: true,
-  imports: [CommonModule, SmallScreenHoleScoreComponent, GolfScoreComponent, MatListModule],
-  templateUrl: './small-screen-score-details.component.html',
-  styleUrl: './small-screen-score-details.component.scss'
+    selector: 'app-small-screen-score-details',
+    imports: [CommonModule, SmallScreenHoleScoreComponent, GolfScoreComponent, MatListModule],
+    templateUrl: './small-screen-score-details.component.html',
+    styleUrl: './small-screen-score-details.component.scss'
 })
 export class SmallScreenScoreDetails {
   @Input() briefPlayerResult!: BriefPlayerResultDto;

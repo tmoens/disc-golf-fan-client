@@ -17,25 +17,24 @@ import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/dra
 import {BriefPlayerResultDto} from './brief-player-result.dto';
 
 @Component({
-  selector: 'app-live-scores',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatToolbarModule,
-    MatExpansionModule,
-    SmallScreenScoreDetails,
-    MatButtonModule,
-    SmallScreenScorelineComponent,
-    MatIconModule,
-    MatTooltipModule,
-    CdkDropList,
-    CdkDrag,
-    CdkDragHandle,
-    ToolbarComponent,
-  ],
-  templateUrl: './live-scores.component.html',
-  styleUrl: './live-scores.component.scss'
+    selector: 'app-live-scores',
+    imports: [
+        CommonModule,
+        MatCardModule,
+        MatToolbarModule,
+        MatExpansionModule,
+        SmallScreenScoreDetails,
+        MatButtonModule,
+        SmallScreenScorelineComponent,
+        MatIconModule,
+        MatTooltipModule,
+        CdkDropList,
+        CdkDrag,
+        CdkDragHandle,
+        ToolbarComponent,
+    ],
+    templateUrl: './live-scores.component.html',
+    styleUrl: './live-scores.component.scss'
 })
 export class LiveScoresComponent {
   constructor(

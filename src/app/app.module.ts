@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule} from '@angular/core';
+import { NgModule, inject, provideAppInitializer } from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -42,12 +42,10 @@ export function initializeApp(appStateService: AppStateService) {
       useClass: UnauthorizedInterceptor,
       multi: true
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp,
-      deps: [AppStateService],
-      multi: true
-    },
+    provideAppInitializer(() => {
+        const initializerFn = (initializeApp)(inject(AppStateService));
+        return initializerFn();
+      }),
     provideHttpClient(withInterceptorsFromDi()),
   ]
 })

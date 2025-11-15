@@ -13,18 +13,17 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {ToolbarComponent} from '../toolbar/toolbar.component';
 
 @Component({
-  selector: 'app-upcoming-tournaments',
-  standalone: true,
-  imports: [CommonModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    ToolbarComponent,
-  ],
-  templateUrl: './upcoming-tournaments.component.html',
-  styleUrl: './upcoming-tournaments.component.scss'
+    selector: 'app-upcoming-tournaments',
+    imports: [CommonModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatTooltipModule,
+        ToolbarComponent,
+    ],
+    templateUrl: './upcoming-tournaments.component.html',
+    styleUrl: './upcoming-tournaments.component.scss'
 })
 export class UpcomingTournamentsComponent implements OnInit {
   upcomingTournaments: UpcomingTournamentsDto[] = [];

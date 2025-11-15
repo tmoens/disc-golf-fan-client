@@ -14,18 +14,17 @@ import {FavouriteDto} from '../fan/dtos/favourite.dto';
 import {PlayerService} from '../player/player.service';
 
 @Component({
-  selector: 'app-favourite-editor',
-  standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule
-  ],
-  templateUrl: './favourite-editor.component.html',
-  styleUrls: ['./favourite-editor.component.scss']
+    selector: 'app-favourite-editor',
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule
+    ],
+    templateUrl: './favourite-editor.component.html',
+    styleUrls: ['./favourite-editor.component.scss']
 })
 export class FavouriteEditorComponent implements OnInit {
   @Input() set favourite(value: FavouriteDto | undefined) {

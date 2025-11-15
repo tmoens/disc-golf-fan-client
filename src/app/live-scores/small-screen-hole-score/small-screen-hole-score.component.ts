@@ -2,11 +2,10 @@ import {Component, Input, OnChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-small-screen-hole-score',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './small-screen-hole-score.component.html',
-  styleUrl: './small-screen-hole-score.component.scss'
+    selector: 'app-small-screen-hole-score',
+    imports: [CommonModule],
+    templateUrl: './small-screen-hole-score.component.html',
+    styleUrl: './small-screen-hole-score.component.scss'
 })
 export class SmallScreenHoleScoreComponent implements OnChanges {
   /**

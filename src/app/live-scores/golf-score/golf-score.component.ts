@@ -2,11 +2,10 @@ import {Component, Input, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-golf-score',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './golf-score.component.html',
-  styleUrl: './golf-score.component.scss'
+    selector: 'app-golf-score',
+    imports: [CommonModule],
+    templateUrl: './golf-score.component.html',
+    styleUrl: './golf-score.component.scss'
 })
 export class GolfScoreComponent implements OnInit{
   /**

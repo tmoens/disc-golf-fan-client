@@ -15,11 +15,10 @@ enum ConfirmationStatus {
 }
 
 @Component({
-  selector: 'app-email-confirm',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule],
-  templateUrl: './email-confirm.component.html',
-  styleUrl: './email-confirm.component.scss'
+    selector: 'app-email-confirm',
+    imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule],
+    templateUrl: './email-confirm.component.html',
+    styleUrl: './email-confirm.component.scss'
 })
 export class EmailConfirmComponent {
   confirmationResultMessage: string = '';

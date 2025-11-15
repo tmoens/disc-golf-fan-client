@@ -13,11 +13,10 @@ import {AuthService} from '../auth.service';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatToolbarModule, ToolbarComponent],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+    selector: 'app-register',
+    imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatToolbarModule, ToolbarComponent],
+    templateUrl: './register.component.html',
+    styleUrl: './register.component.scss'
 })
 
 export class RegisterComponent {

@@ -11,21 +11,20 @@ import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 
 @Component({
-  selector: 'app-fan',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatCardModule,
-    MatIconModule,
-    CdkDropList,
-    CdkDrag,
-    CdkDragHandle,
-    ToolbarComponent,
-    FavouriteEditorComponent,
-  ],
-  templateUrl: './fan.component.html',
-  styleUrl: './fan.component.scss'
+    selector: 'app-fan',
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatCardModule,
+        MatIconModule,
+        CdkDropList,
+        CdkDrag,
+        CdkDragHandle,
+        ToolbarComponent,
+        FavouriteEditorComponent,
+    ],
+    templateUrl: './fan.component.html',
+    styleUrl: './fan.component.scss'
 })
 export class FanComponent {
   selectedFavourite: FavouriteDto | undefined = undefined;

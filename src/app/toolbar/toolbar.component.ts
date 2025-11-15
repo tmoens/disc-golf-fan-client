@@ -12,20 +12,19 @@ import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {AppTools} from '../shared/app-tools';
 
 @Component({
-  selector: 'app-toolbar',
-  standalone: true,
-  templateUrl: './toolbar.component.html',
-  imports: [
-    CommonModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MainMenuComponent,
-    MatMenuModule,
-    MatTooltipModule,
-    RouterLink,
-  ],
-  styleUrl: './toolbar.component.scss',
+    selector: 'app-toolbar',
+    templateUrl: './toolbar.component.html',
+    imports: [
+        CommonModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MainMenuComponent,
+        MatMenuModule,
+        MatTooltipModule,
+        RouterLink,
+    ],
+    styleUrl: './toolbar.component.scss'
 })
 export class ToolbarComponent {
   @Input() titlePrefix = 'Disc Golf Fan';

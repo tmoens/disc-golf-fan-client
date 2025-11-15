@@ -12,11 +12,10 @@ import { AppTools } from '../shared/app-tools';
 import { ToolbarComponent } from '../toolbar/toolbar.component';
 
 @Component({
-  selector: 'app-welcome-page',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MainMenuComponent, MatToolbarModule, ToolbarComponent],
-  templateUrl: './welcome-page.component.html',
-  styleUrl: './welcome-page.component.scss'
+    selector: 'app-welcome-page',
+    imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatListModule, MainMenuComponent, MatToolbarModule, ToolbarComponent],
+    templateUrl: './welcome-page.component.html',
+    styleUrl: './welcome-page.component.scss'
 })
 export class WelcomePageComponent {
 

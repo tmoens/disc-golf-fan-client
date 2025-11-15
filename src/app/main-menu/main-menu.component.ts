@@ -10,11 +10,10 @@ import {ConcreteAppTool} from '../shared/app-tools';
 import {ADMIN_ROLE} from '../auth/dtos/roles';
 
 @Component({
-  selector: 'app-main-menu',
-  standalone: true,
-  imports: [CommonModule, MatIconModule, MatMenuModule, RouterLink, MatButtonModule],
-  templateUrl: './main-menu.component.html',
-  styleUrl: './main-menu.component.scss'
+    selector: 'app-main-menu',
+    imports: [CommonModule, MatIconModule, MatMenuModule, RouterLink, MatButtonModule],
+    templateUrl: './main-menu.component.html',
+    styleUrl: './main-menu.component.scss'
 })
 export class MainMenuComponent {
   appTools;

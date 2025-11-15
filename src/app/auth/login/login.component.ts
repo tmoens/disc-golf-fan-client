@@ -19,11 +19,10 @@ enum LoginStatus {
 }
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MatToolbarModule, ToolbarComponent],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+    selector: 'app-login',
+    imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MatToolbarModule, ToolbarComponent],
+    templateUrl: './login.component.html',
+    styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
