@@ -2,7 +2,7 @@
   <span>
     {{ titlePrefix }}
     @if (activeTool) {
-      - {{activeTool.displayName }}
+      - {{ activeTool.displayName }}
     }
   </span>
   <div class="fill-remaining-space"></div>
@@ -14,16 +14,26 @@
     >
       <mat-icon>login</mat-icon>
     </button>
-  } @else if (
-    activeTool !== AppTools.LOGIN &&
-    activeTool !== AppTools.REGISTER
-    ) {
+  } @else if (activeTool !== AppTools.LOGIN &&
+  activeTool !== AppTools.REGISTER) {
     <button mat-icon-button (click)="onLogoutClick()"
             matTooltip="Sign Out"
             matTooltipPosition="below"
             aria-label="Sign In"
     >
       <mat-icon>logout</mat-icon>
+    </button>
+  }
+  @if (activeTool === AppTools.LIVE_SCORES) {
+    <button mat-icon-button matTooltip="Add new favourites"
+            [routerLink]="['/' + AppTools.MANAGE_FAVOURITES.route]">
+      <mat-icon>add</mat-icon>
+    </button>
+  }
+  @if (activeTool === AppTools.MANAGE_FAVOURITES || activeTool === AppTools.UPCOMING_EVENTS) {
+    <button mat-icon-button matTooltip="Live Scores"
+            [routerLink]="['/' + AppTools.LIVE_SCORES.route]">
+      <mat-icon>sync_alt</mat-icon>
     </button>
   }
   <app-main-menu></app-main-menu>

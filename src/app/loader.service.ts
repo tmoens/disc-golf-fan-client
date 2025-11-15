@@ -4,15 +4,15 @@ import {Observable, of} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {catchError} from 'rxjs/operators';
 import {environment} from '../environments/environment';
-import {FanDto} from './DTOs/fan.dto';
-import {PlayerDto} from './DTOs/player.dto';
-import {AddFavouriteDto} from './DTOs/add-favourite.dto';
-import {FavouriteDto} from './DTOs/favourite.dto';
-import {BriefPlayerResultDto} from './DTOs/brief-player-result.dto';
+import {FanDto} from './fan/dtos/fan.dto';
+import {PlayerDto} from './fan/dtos/player.dto';
+import {AddFavouriteDto} from './fan/dtos/add-favourite.dto';
+import {FavouriteDto} from './fan/dtos/favourite.dto';
+import {BriefPlayerResultDto} from './live-scores/brief-player-result.dto';
 import {AuthService} from './auth/auth.service';
-import {ScorelineDto} from './DTOs/scoreline.dto';
-import {UpcomingTournamentsDto} from './DTOs/upcoming-tournaments.dto';
-import {ReorderFavouriteDto} from './DTOs/reorder-favourite.dto';
+import {ScorelineDto} from './live-scores/scoreline.dto';
+import {UpcomingTournamentsDto} from './upcoming-tournaments/upcoming-tournaments.dto';
+import {ReorderFavouriteDto} from './fan/dtos/reorder-favourite.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -33,41 +33,34 @@ export class LoaderService {
     }
   }
 
-  getPlayerById( id: string): Observable<PlayerDto | null> {
-    const url = `${this.serverUrl}/player/${id}`
-    return this.http.get<PlayerDto>(url, { headers: this.authService.createAccessHeader() })
+  getPlayerById(id: number): Observable<PlayerDto | null> {
+    const url = `${this.serverUrl}/player/${id}`;
+    return this.http.get<PlayerDto>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
-  getFanById( id: string): Observable<FanDto | null> {
-    const url = `${this.serverUrl}/fan/${id}`
-    return this.http.get<FanDto>(url, { headers: this.authService.createAccessHeader() })
+  getFanById(id: string): Observable<FanDto | null> {
+    const url = `${this.serverUrl}/fan/${id}`;
+    return this.http.get<FanDto>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
-  getScoresForFan( id: string): Observable<BriefPlayerResultDto[] | null> {
-    const url = `${this.serverUrl}/fan/get-scores/${id}`
-    return this.http.get<BriefPlayerResultDto[]>(url, { headers: this.authService.createAccessHeader() })
+  getScoresForFan(id: string): Observable<BriefPlayerResultDto[] | null> {
+    const url = `${this.serverUrl}/fan/get-scores/${id}`;
+    return this.http.get<BriefPlayerResultDto[]>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, []))
       );
   }
 
-  getScoreline( id: number): Observable<ScorelineDto | null> {
-    const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${id}`
-    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
-      .pipe(
-        catchError(this.handleErrorAndShowSnackbar(url, null))
-      );
-  }
 
-  getDetailedScores( liveRoundId: number, resultId: number): Observable<ScorelineDto | null> {
-    const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${liveRoundId}/${resultId}`
-    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+  getDetailedScores(liveRoundId: number, resultId: number): Observable<ScorelineDto | null> {
+    const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${liveRoundId}/${resultId}`;
+    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -75,7 +68,7 @@ export class LoaderService {
 
   getUpcomingEvents(): Observable<UpcomingTournamentsDto[] | null> {
     const url = `${this.serverUrl}/favourite/get-upcoming-events/${this.authService.getAuthenticatedUserId()}`;
-    return this.http.get<any>(url,{ headers: this.authService.createAccessHeader() })
+    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, []))
       );
@@ -83,7 +76,7 @@ export class LoaderService {
 
   addFavourite(favourite: AddFavouriteDto): Observable<null> {
     const url = `${this.serverUrl}/add-favourite/`;
-    return this.http.post<any>(url, favourite,{ headers: this.authService.createAccessHeader() })
+    return this.http.post<any>(url, favourite, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -91,14 +84,15 @@ export class LoaderService {
 
   updateFavourite(favourite: FavouriteDto): Observable<FavouriteDto | null> {
     const url = `${this.serverUrl}/favourite/update/`;
-    return this.http.post<any>(url, favourite, { headers: this.authService.createAccessHeader() })
+    return this.http.post<any>(url, favourite, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
+
   moveFavouriteBefore(reorderFavouriteDto: ReorderFavouriteDto): Observable<FanDto | null> {
     const url = `${this.serverUrl}/fan/move-before`;
-    return this.http.post<any>(url, reorderFavouriteDto, { headers: this.authService.createAccessHeader() })
+    return this.http.post<any>(url, reorderFavouriteDto, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -106,15 +100,15 @@ export class LoaderService {
 
   moveFavouriteAfter(reorderFavouriteDto: ReorderFavouriteDto): Observable<FanDto | null> {
     const url = `${this.serverUrl}/fan/move-after`;
-    return this.http.post<any>(url, reorderFavouriteDto, { headers: this.authService.createAccessHeader() })
+    return this.http.post<any>(url, reorderFavouriteDto, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
   deleteFavourite(favourite: FavouriteDto): Observable<null> {
-    const url = `${this.serverUrl}/favourite/delete/${favourite.fanId}/${favourite.playerId}`
-    return this.http.delete<any>(url, { headers: this.authService.createAccessHeader() })
+    const url = `${this.serverUrl}/favourite/delete/${favourite.fanId}/${favourite.playerId}`;
+    return this.http.delete<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -122,16 +116,16 @@ export class LoaderService {
 
   // =============================== Admin type things =========================
   getTournamentRosterChanges(): Observable<any> {
-    const url = `${this.serverUrl}/round/tournament-roster-changes`
-    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+    const url = `${this.serverUrl}/round/tournament-roster-changes`;
+    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
   getPdgaApiRequestQueueStatus(): Observable<any> {
-    const url = `${this.serverUrl}/pdga-api/request-queue`
-    return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
+    const url = `${this.serverUrl}/pdga-api/request-queue`;
+    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, null))
       );
@@ -139,11 +133,11 @@ export class LoaderService {
 
   // get cron job status
   getCronJobStatus(): Observable<any> {
-      const url = `${this.serverUrl}/cron-status`;
-      return this.http.get<any>(url, { headers: this.authService.createAccessHeader() })
-        .pipe(
-          catchError(this.handleErrorAndShowSnackbar(url, null))
-        );
+    const url = `${this.serverUrl}/cron-status`;
+    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
+      .pipe(
+        catchError(this.handleErrorAndShowSnackbar(url, null))
+      );
   }
 
   /**
@@ -166,7 +160,7 @@ export class LoaderService {
   private handleErrorAndShowSnackbar<T>(_operation = 'operation', resultOnError?: T) {
     return (error: any): Observable<T | null> => {
       this.message.open(`${error.error.message} || ${error.status}`,
-          'Dismiss', {duration: 5000});
+        'Dismiss', {duration: 5000});
       // }
       // Let the app keep running by returning what we were told to.
       return of(resultOnError as T);

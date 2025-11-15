@@ -1,33 +1,27 @@
 <div class="x-small-page">
+  <app-toolbar></app-toolbar>
   <mat-card>
-    <app-toolbar></app-toolbar>
     <mat-card-content>
       <div class="lo-row">
-        <mat-form-field floatLabel="always" class="lo-160px">
-          <mat-label>New Favorite's PDGA#</mat-label>
-          <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="isLoadingPlayer">
-          <mat-hint>{{ getHint() }}</mat-hint>
-        </mat-form-field>
-        <button mat-button *ngIf="player  && !isPlayerAlreadyFavourite(player.id)" color="primary"
-                (click)="addFavourite()">
-          <mat-icon>add</mat-icon>
-          Add {{ player.name }}
-        </button>
-        <span *ngIf="player && isPlayerAlreadyFavourite(player.id)">{{ player.name }} is a favorite</span>
-        <span *ngIf="!player && !isLoadingPlayer"><mat-icon>arrow_back</mat-icon></span>
-        <span *ngIf="!player && !isLoadingPlayer">Choose a new Favorite</span>
+        <app-favourite-editor [favourite]="selectedFavourite"></app-favourite-editor>
       </div>
-
-  <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap10">
-    <div *ngFor="let fav of fanService.fan?.favourites" cdkDrag>
-        <div class="lo-row">
-          <mat-icon cdkDragHandle color="primary" class="lo-40px">drag_indicator</mat-icon>
-          <mat-icon (click)="deleteFavourite(fav)" color="primary" class="lo-40px">delete</mat-icon>
-          <span class="lo-100px">#{{ fav.playerId }}</span>
-          <span>{{ fav.playerName }}</span>
-        </div>
-    </div>
-  </div>
+      <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap10">
+        @for (fav of fanService.fanSignal()?.favourites; track fav.playerId) {
+          <div cdkDrag>
+            <div class="lo-row">
+              <mat-icon cdkDragHandle color="primary" class="lo-40px">drag_indicator</mat-icon>
+              <button mat-icon-button (click)="deleteFavourite(fav)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editFavourite(fav)" color="primary">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <span class="lo-100px">#{{ fav.playerId }}</span>
+              <span>{{ fav.playerName }}</span>
+            </div>
+          </div>
+        }
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

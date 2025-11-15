@@ -1,5 +1,5 @@
-import { ADMIN_ROLE, USER_ROLE } from '../auth/auth-related-dtos/roles';
-import { AppTool } from './app-tool';
+import {ADMIN_ROLE, USER_ROLE} from '../auth/dtos/roles';
+import {AppTool} from './app-tool';
 
 const SYSTEM_NAME = 'Disc Golf Fan';
 

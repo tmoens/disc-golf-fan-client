@@ -1,22 +1,25 @@
-import {Injectable} from '@angular/core';
-import {Observable, map, of, throwError} from 'rxjs';
+import {Injectable, signal} from '@angular/core';
+import {map, Observable, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
-import {RegistrationDto} from './auth-related-dtos/registration-dto';
+import {RegistrationDto} from './dtos/registration-dto';
 import {catchError} from 'rxjs/operators';
-import {LoginDto} from './auth-related-dtos/login-dto';
-import {LoginResponseDto} from './auth-related-dtos/login-response-dto';
-import {RefreshAccessTokenResponseDto} from './auth-related-dtos/refresh-access-token-response-dto';
-import {ForgotPasswordDto} from './auth-related-dtos/forgot-password-dto';
-import {ResetPasswordDto} from './auth-related-dtos/reset-password-dto';
-import {UserRoles} from './auth-related-dtos/roles';
-import {RefreshTokenPayload} from './auth-related-dtos/refresh-token-payload';
+import {LoginDto} from './dtos/login-dto';
+import {LoginResponseDto} from './dtos/login-response-dto';
+import {RefreshAccessTokenResponseDto} from './dtos/refresh-access-token-response-dto';
+import {ForgotPasswordDto} from './dtos/forgot-password-dto';
+import {ResetPasswordDto} from './dtos/reset-password-dto';
+import {UserRoles} from './dtos/roles';
+import {RefreshTokenPayload} from './dtos/refresh-token-payload';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
+  // Signal to track the authenticated user ID
+  authenticatedUserId = signal<string | null>(null);
+
   private _refreshToken: string = '';
   get refreshToken(): string {
     return this._refreshToken;
@@ -24,20 +27,23 @@ export class AuthService {
 
   set refreshToken(token: string) {
     if (!token || this.isTokenExpired(token)) {
-      token = ''
+      token = '';
     }
     localStorage.setItem('refreshToken', token);
     this._refreshToken = token;
+
+    // Update the signal whenever the refresh token changes
+    this.updateAuthenticatedUserIdSignal();
   }
 
-  private _accessToken: string = ''
+  private _accessToken: string = '';
   get accessToken(): string {
     return this._accessToken;
   }
 
   set accessToken(token: string) {
     if (!token || this.isTokenExpired(token)) {
-      token = ''
+      token = '';
     }
     localStorage.setItem('accessToken', token);
     this._accessToken = token;
@@ -50,10 +56,10 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    ) {
+  ) {
     // reload access tokens after browser refresh or re-open of application
     const storedAccessToken: string | null = (localStorage.getItem('accessToken'));
-    if (storedAccessToken) this.accessToken = storedAccessToken
+    if (storedAccessToken) this.accessToken = storedAccessToken;
 
     const storedRefreshToken: string | null = (localStorage.getItem('refreshToken'));
     if (storedRefreshToken) this.refreshToken = storedRefreshToken;
@@ -63,6 +69,9 @@ export class AuthService {
     } else {
       this.serverUrl = environment.apiBaseUrl;
     }
+
+    // Initialize the signal with the current user ID
+    this.updateAuthenticatedUserIdSignal();
   }
 
   // As long as there is a valid refresh token, we are deemed authenticated
@@ -77,6 +86,13 @@ export class AuthService {
     } else {
       return null;
     }
+  }
+
+  /**
+   * Updates the authenticatedUserId signal based on the current refresh token
+   */
+  private updateAuthenticatedUserIdSignal(): void {
+    this.authenticatedUserId.set(this.getAuthenticatedUserId());
   }
 
   // Processing a login.  A normal case is to update the local state and be done.
@@ -94,11 +110,12 @@ export class AuthService {
       })
     );
   }
+
   logout() {
     // remove user from local storage to log user out
     return this.http.get<any>(
       `${this.serverUrl}/auth/logout`,
-      { headers: this.createAccessHeader() }).pipe(
+      {headers: this.createAccessHeader()}).pipe(
       map(() => {
         this.accessToken = '';
         this.refreshToken = '';
@@ -116,7 +133,7 @@ export class AuthService {
 
     return this.http.get<any>(
       `${this.serverUrl}/auth/refresh-access-token`,
-      { headers: this.createRefreshHeader() }).pipe(
+      {headers: this.createRefreshHeader()}).pipe(
       map((response: RefreshAccessTokenResponseDto) => {
         this.accessToken = response.accessToken;
       }),
@@ -128,24 +145,24 @@ export class AuthService {
     );
   }
 
-  register( dto: RegistrationDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/register/`
+  register(dto: RegistrationDto): Observable<string | null> {
+    const url = `${this.serverUrl}/auth/register/`;
     return this.http.post<null>(url, dto)
       .pipe(
         catchError(this.handleError())
       );
   }
 
-  forgotPassword( dto: ForgotPasswordDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/forgot-password/`
+  forgotPassword(dto: ForgotPasswordDto): Observable<string | null> {
+    const url = `${this.serverUrl}/auth/forgot-password/`;
     return this.http.put<null>(url, dto)
       .pipe(
         catchError(this.handleError())
       );
   }
 
-  resetPassword( dto: ResetPasswordDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/reset-password/`
+  resetPassword(dto: ResetPasswordDto): Observable<string | null> {
+    const url = `${this.serverUrl}/auth/reset-password/`;
     return this.http.put<null>(url, dto)
       .pipe(
         catchError(this.handleError())
@@ -162,11 +179,11 @@ export class AuthService {
 
 
   createAccessHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
   }
 
   createRefreshHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`)
+    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`);
   }
 
   // find out if the token will expire within the next however many seconds.

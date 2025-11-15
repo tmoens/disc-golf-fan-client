@@ -1,13 +1,13 @@
 import {Component} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {AuthService} from '../auth/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import {AppStateService} from '../app-state.service';
 import {MatButtonModule} from '@angular/material/button';
-import { AppTools, ConcreteAppTool } from '../shared/app-tools';
-import {ADMIN_ROLE} from '../auth/auth-related-dtos/roles';
+import {AppTools, ConcreteAppTool} from '../shared/app-tools';
+import {ADMIN_ROLE} from '../auth/dtos/roles';
 
 @Component({
   selector: 'app-main-menu',
@@ -30,6 +30,7 @@ export class MainMenuComponent {
     if (mustBeAdmin && !this.authenticatedUserIsAdmin()) return true;
     else return false;
   }
+
   registrationDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
       this.appState.activeTool() === AppTools.REGISTER);

@@ -1,17 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {LoaderService} from '../loader.service';
-import {UpcomingTournamentsDto} from '../DTOs/upcoming-tournaments.dto';
+import {UpcomingTournamentsDto} from './upcoming-tournaments.dto';
 import {lastValueFrom} from 'rxjs';
 import {MatCardModule} from '@angular/material/card';
 import {AppTools} from '../shared/app-tools';
 import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
-import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
+import {ToolbarComponent} from '../toolbar/toolbar.component';
 
 @Component({
   selector: 'app-upcoming-tournaments',
@@ -29,6 +28,7 @@ import { ToolbarComponent } from '../toolbar/toolbar.component';
 })
 export class UpcomingTournamentsComponent implements OnInit {
   upcomingTournaments: UpcomingTournamentsDto[] = [];
+
   constructor(
     private loaderService: LoaderService,
     private router: Router,
@@ -43,6 +43,7 @@ export class UpcomingTournamentsComponent implements OnInit {
       this.upcomingTournaments = results;
     }
   }
+
   onManageFavourites() {
     void this.router.navigate([AppTools.MANAGE_FAVOURITES.route]);
   }

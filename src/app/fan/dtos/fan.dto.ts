@@ -12,12 +12,7 @@ export class FanDto {
   @Type(() => FavouriteDto)
   @Expose() public favourites: FavouriteDto[] = [];
 
-  isFavourite(playerId: number): boolean {
-    for (const f of this.favourites) {
-      if (f.playerId === playerId) {
-        return true;
-      }
-    }
-    return false;
+  hasFavourites(): boolean {
+    return this.favourites.length > 0;
   }
 }

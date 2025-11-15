@@ -1,22 +1,21 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
-import { AppTools } from '../../shared/app-tools';
-import { ToolbarComponent } from '../../toolbar/toolbar.component';
-import {RegistrationDto} from '../auth-related-dtos/registration-dto';
+import {AppTools} from '../../shared/app-tools';
+import {ToolbarComponent} from '../../toolbar/toolbar.component';
+import {RegistrationDto} from '../dtos/registration-dto';
 import {plainToInstance} from 'class-transformer';
 import {AuthService} from '../auth.service';
-import {MainMenuComponent} from '../../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MainMenuComponent, MatToolbarModule, ToolbarComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatToolbarModule, ToolbarComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -35,7 +34,8 @@ export class RegisterComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    ) {}
+  ) {
+  }
 
   onSubmit(): void {
     if (this.registerForm.valid) {

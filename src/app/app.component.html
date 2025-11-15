@@ -1,3 +1,5 @@
 <div class="app-content">
   <router-outlet></router-outlet>
+  <mat-divider></mat-divider>
+  <p>user name: {{ fanService.fanSignal()?.user?.name }}</p>
 </div>

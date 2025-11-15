@@ -1,24 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { firstValueFrom } from 'rxjs';
+import {Component, effect} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {FanService} from '../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { AppTools } from '../shared/app-tools';
-import { ToolbarComponent } from '../toolbar/toolbar.component';
+import {AppTools} from '../shared/app-tools';
+import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {SmallScreenScoreDetails} from './small-screen-score-details/small-screen-score-details.component';
 import {LiveScoresService} from './live-scores.service';
 import {MatButtonModule} from '@angular/material/button';
 import {SmallScreenScorelineComponent} from './small-screen-scoreline/small-screen-scoreline.component';
-import {MatDialog} from '@angular/material/dialog';
-import {AddFavouriteDialogComponent} from '../fan/add-favourite-dialog/add-favourite-dialog.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
-import {ReorderFavouriteDto} from '../DTOs/reorder-favourite.dto';
-import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
+import {BriefPlayerResultDto} from './brief-player-result.dto';
 
 @Component({
   selector: 'app-live-scores',
@@ -41,35 +37,24 @@ import {BriefPlayerResultDto} from '../DTOs/brief-player-result.dto';
   templateUrl: './live-scores.component.html',
   styleUrl: './live-scores.component.scss'
 })
-export class LiveScoresComponent implements OnInit {
+export class LiveScoresComponent {
   constructor(
     protected fanService: FanService,
     protected liveScoreService: LiveScoresService,
     private router: Router,
-    public dialog: MatDialog,
   ) {
-  }
+    effect(() => {
+      const fan = this.fanService.fanSignal();
 
-  async ngOnInit() {
-    if (!this.fanService.fan) {
-      await this.fanService.reload();
-    }
-    if (this.fanService.fan && this.fanService.fan.favourites.length < 1) {
-      void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
-    } else {
-      this.liveScoreService.loadFavouritesLiveScores();
-    }
-  }
+      // still logging in? still loading? do nothing
+      if (!fan) return;
 
-  async openAddFavouriteDialog(): Promise<void> {
-    const dialogRef = this.dialog.open(AddFavouriteDialogComponent, {
-      width: '350px',
-      position: { top: '100px' },
+      // no favourites yet? → redirect
+      if (fan.favourites.length === 0) {
+        void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
+        return;
+      }
     });
-
-    const result = await firstValueFrom(dialogRef.afterClosed());
-    if (result) {
-    }
   }
 
   isExpanded(briefPlayerResultDto: BriefPlayerResultDto): boolean {
@@ -94,24 +79,9 @@ export class LiveScoresComponent implements OnInit {
     this.liveScoreService.unsetDetailFocus();
   }
 
-  async onDrop(event: CdkDragDrop<any>) {
-    // translate the drag from index to a player
-    const playerIdToBeMoved = this.liveScoreService.favouriteLiveScores()[event.previousIndex]?.pdgaNum || 0;
-    // translate the drop target to the player before or after which the playerToBeMoved was dropped
-    const playerIdTarget = this.liveScoreService.favouriteLiveScores()[event.currentIndex]?.pdgaNum || 0;
-
-    if (this.fanService.fan && playerIdTarget && playerIdToBeMoved) {
-      const reorderFavouriteDto =
-        new ReorderFavouriteDto(this.fanService.fan.id, playerIdToBeMoved, playerIdTarget);
-      if (event.previousIndex < event.currentIndex) {
-        await this.fanService.moveFavouriteAfter(reorderFavouriteDto);
-        this.liveScoreService.loadFavouritesLiveScores();
-      }
-      if (event.previousIndex > event.currentIndex) {
-        await this.fanService.moveFavouriteBefore(reorderFavouriteDto);
-        this.liveScoreService.loadFavouritesLiveScores();
-      }
-    }
+  onDrop(event: CdkDragDrop<any>) {
+    this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
   }
+
   protected readonly AppTools = AppTools;
 }
