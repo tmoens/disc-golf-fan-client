@@ -46,6 +46,5 @@ export class ToolbarComponent {
     void this.router.navigate([`/${AppTools.WELCOME.route}`]);
   }
 
-
   protected readonly AppTools = AppTools;
 }

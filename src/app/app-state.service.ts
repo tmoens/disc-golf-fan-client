@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { AppTools, ConcreteAppTool } from './shared/app-tools';
+import {Injectable, signal} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs/operators';
+import {AppTools, ConcreteAppTool} from './shared/app-tools';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +10,15 @@ export class AppStateService {
   // Signal holding the current tool metadata (undefined if no match)
   activeTool = signal<ConcreteAppTool | undefined>(undefined);
 
+  // Expose AppTools so templates can access it via appState.tools
+  readonly tools = AppTools;
+
   constructor(private router: Router) {
     this.watchRouterChanges();
   }
 
   initializeAppState(): Promise<any> {
-    return new Promise ((resolve, _reject) => {
+    return new Promise((resolve, _reject) => {
       this.activeTool.set(undefined);
       resolve(true);
     });

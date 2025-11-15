@@ -3,46 +3,46 @@
 </button>
 <mat-menu #mainMenu="matMenu">
   <button mat-menu-item
-          [disabled]="toolDisabled(AppTools.LIVE_SCORES)"
-          [routerLink]="['/' + AppTools.LIVE_SCORES.route]">
+          [disabled]="toolDisabled(appTools.LIVE_SCORES)"
+          [routerLink]="['/' + appTools.LIVE_SCORES.route]">
     <mat-icon>sync_alt</mat-icon>
-    {{AppTools.LIVE_SCORES.displayName}}
+    {{ appTools.LIVE_SCORES.displayName }}
   </button>
   <button mat-menu-item
-          [disabled]="toolDisabled(AppTools.UPCOMING_EVENTS)"
-          [routerLink]="['/' + AppTools.UPCOMING_EVENTS.route]">
+          [disabled]="toolDisabled(appTools.UPCOMING_EVENTS)"
+          [routerLink]="['/' + appTools.UPCOMING_EVENTS.route]">
     <mat-icon>event</mat-icon>
-    {{AppTools.UPCOMING_EVENTS.displayName}}
+    {{ appTools.UPCOMING_EVENTS.displayName }}
   </button>
   <button mat-menu-item
-          [disabled]="toolDisabled(AppTools.MANAGE_FAVOURITES)"
-          [routerLink]="['/' + AppTools.MANAGE_FAVOURITES.route]">
+          [disabled]="toolDisabled(appTools.MANAGE_FAVOURITES)"
+          [routerLink]="['/' + appTools.MANAGE_FAVOURITES.route]">
     <mat-icon>manage_accounts</mat-icon>
-    {{ AppTools.MANAGE_FAVOURITES.displayName }}
+    {{ appTools.MANAGE_FAVOURITES.displayName }}
   </button>
   <button mat-menu-item
-          [disabled]="toolDisabled(AppTools.ADMIN_DASHBOARD, true, true)"
-          [routerLink]="['/' + AppTools.ADMIN_DASHBOARD.route]">
+          [disabled]="toolDisabled(appTools.ADMIN_DASHBOARD, true, true)"
+          [routerLink]="['/' + appTools.ADMIN_DASHBOARD.route]">
     <mat-icon>admin_panel_settings</mat-icon>
-    {{AppTools.ADMIN_DASHBOARD.displayName}}
+    {{ appTools.ADMIN_DASHBOARD.displayName }}
   </button>
   <button mat-menu-item [disabled]="registrationDisabled()"
-          [routerLink]="['/' + AppTools.REGISTER.route]">
+          [routerLink]="['/' + appTools.REGISTER.route]">
     <mat-icon>app_registration</mat-icon>
-    {{ AppTools.REGISTER.displayName }}
+    {{ appTools.REGISTER.displayName }}
   </button>
   <button mat-menu-item [disabled]="loginDisabled()"
-  [routerLink]="['/' + AppTools.LOGIN.route]">
+          [routerLink]="['/' + appTools.LOGIN.route]">
     <mat-icon>login</mat-icon>
-    {{ AppTools.LOGIN.displayName }}
+    {{ appTools.LOGIN.displayName }}
   </button>
   <button mat-menu-item [disabled]="logoutDisabled()" (click)="onLogout()">
     <mat-icon>logout</mat-icon>
     Sign Out
   </button>
   <button mat-menu-item [disabled]="welcomeDisabled()"
-          [routerLink]="['/' + AppTools.WELCOME.route]">
+          [routerLink]="['/' + appTools.WELCOME.route]">
     <mat-icon>home</mat-icon>
-    {{ AppTools.WELCOME.displayName}}
+    {{ appTools.WELCOME.displayName }}
   </button>
 </mat-menu>

@@ -6,7 +6,7 @@ import {AuthService} from '../auth/auth.service';
 import {Router, RouterLink} from '@angular/router';
 import {AppStateService} from '../app-state.service';
 import {MatButtonModule} from '@angular/material/button';
-import {AppTools, ConcreteAppTool} from '../shared/app-tools';
+import {ConcreteAppTool} from '../shared/app-tools';
 import {ADMIN_ROLE} from '../auth/dtos/roles';
 
 @Component({
@@ -17,11 +17,14 @@ import {ADMIN_ROLE} from '../auth/dtos/roles';
   styleUrl: './main-menu.component.scss'
 })
 export class MainMenuComponent {
+  appTools;
+
   constructor(
     protected authService: AuthService,
     protected router: Router,
     protected appState: AppStateService,
   ) {
+    this.appTools = appState.tools;
   }
 
   toolDisabled(tool: ConcreteAppTool, mustBeLoggedIn = true, mustBeAdmin = false): boolean {
@@ -33,12 +36,12 @@ export class MainMenuComponent {
 
   registrationDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appState.activeTool() === AppTools.REGISTER);
+      this.appState.activeTool() === this.appTools.REGISTER);
   }
 
   loginDisabled(): boolean {
     return (this.authService.isAuthenticated() ||
-      this.appState.activeTool() === AppTools.LOGIN);
+      this.appState.activeTool() === this.appTools.LOGIN);
   }
 
   logoutDisabled(): boolean {
@@ -46,17 +49,15 @@ export class MainMenuComponent {
   }
 
   welcomeDisabled(): boolean {
-    return this.appState.activeTool() === AppTools.WELCOME;
+    return this.appState.activeTool() === this.appTools.WELCOME;
   }
 
   onLogout() {
     this.authService.logout().subscribe(); // trigger logout
-    void this.router.navigate([`/${AppTools.WELCOME.route}`]);
+    void this.router.navigate([`/${this.appTools.WELCOME.route}`]);
   }
 
   authenticatedUserIsAdmin(): boolean {
     return this.authService.authenticatedUserCanPerformRole(ADMIN_ROLE);
   }
-
-  protected readonly AppTools = AppTools;
 }

@@ -6,7 +6,7 @@
     }
   </span>
   <div class="fill-remaining-space"></div>
-  @if (!authService.isAuthenticated() && activeTool !== AppTools.LOGIN) {
+  @if (!authService.isAuthenticated() && activeTool !== appState.tools.LOGIN) {
     <button mat-icon-button (click)="onLoginClick()"
             matTooltip="Sign In"
             matTooltipPosition="below"
@@ -14,8 +14,8 @@
     >
       <mat-icon>login</mat-icon>
     </button>
-  } @else if (activeTool !== AppTools.LOGIN &&
-  activeTool !== AppTools.REGISTER) {
+  } @else if (activeTool !== appState.tools.LOGIN &&
+  activeTool !== appState.tools.REGISTER) {
     <button mat-icon-button (click)="onLogoutClick()"
             matTooltip="Sign Out"
             matTooltipPosition="below"
@@ -24,15 +24,15 @@
       <mat-icon>logout</mat-icon>
     </button>
   }
-  @if (activeTool === AppTools.LIVE_SCORES) {
+  @if (activeTool === appState.tools.LIVE_SCORES) {
     <button mat-icon-button matTooltip="Add new favourites"
-            [routerLink]="['/' + AppTools.MANAGE_FAVOURITES.route]">
+            [routerLink]="['/' + appState.tools.MANAGE_FAVOURITES.route]">
       <mat-icon>add</mat-icon>
     </button>
   }
-  @if (activeTool === AppTools.MANAGE_FAVOURITES || activeTool === AppTools.UPCOMING_EVENTS) {
+  @if (activeTool === appState.tools.MANAGE_FAVOURITES || activeTool === appState.tools.UPCOMING_EVENTS) {
     <button mat-icon-button matTooltip="Live Scores"
-            [routerLink]="['/' + AppTools.LIVE_SCORES.route]">
+            [routerLink]="['/' + appState.tools.LIVE_SCORES.route]">
       <mat-icon>sync_alt</mat-icon>
     </button>
   }

@@ -1,7 +1,46 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+$primary-color: mat.$azure-palette;
+
+$zf-app-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    bold-weight: 900
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+// This is used to tighten up the form field widgets.
+$zf-compact-theme: mat.define-theme((
+  density: (
+    scale: -2,
+  )
+));
+
+
+:root {
+  @include mat.all-component-themes($zf-app-theme);
+  @include mat.all-component-typographies($zf-compact-theme);
+  @include mat.typography-hierarchy($zf-app-theme);
+  @include mat.form-field-density($zf-compact-theme);
+}
+
+
+// With outline appearance the Label pokes out slightly above the outline
+// but the outline is at the dead top of the form-field, so we need to give
+// a little space at the top.
+.mat-mdc-form-field {
+  margin-top: 8px;
+}
 
 html, body {
   height: 100%;
@@ -13,8 +52,8 @@ body {
 }
 
 .app-content {
-  height: 100vh; /* height of the viewport */
-  background: #673ab7
+  //height: 100vh; /* height of the viewport */
+  background: #673ab7;
   //background: url('assets/images/small-background.jpg') no-repeat center center fixed;
   //-webkit-background-size: cover;
   //-moz-background-size: cover;
@@ -25,7 +64,7 @@ body {
 /* Large devices (desktops) */
 @media (min-width: 960px) {
   .app-content {
-    background: #373ab7
+    background: #373ab7;
     //background-image: url('assets/images/large-background.jpg');
   }
 }

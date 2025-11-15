@@ -8,12 +8,14 @@ import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {FavouriteEditorComponent} from '../favourite/favourite-editor.component';
 import {MatIconModule} from '@angular/material/icon';
 import {CommonModule} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-fan',
   standalone: true,
   imports: [
     CommonModule,
+    MatButtonModule,
     MatCardModule,
     MatIconModule,
     CdkDropList,
@@ -21,11 +23,6 @@ import {CommonModule} from '@angular/common';
     CdkDragHandle,
     ToolbarComponent,
     FavouriteEditorComponent,
-    MatCardModule,
-    ToolbarComponent,
-    FavouriteEditorComponent,
-    CdkDropList,
-    MatIconModule,
   ],
   templateUrl: './fan.component.html',
   styleUrl: './fan.component.scss'
