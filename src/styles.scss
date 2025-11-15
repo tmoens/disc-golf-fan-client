@@ -3,22 +3,30 @@
 
 @import '@angular/material/prebuilt-themes/deeppurple-amber.css';
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 .app-content {
-  height: 100vh;  /* height of the viewport */
-  background: url('assets/images/small-background.jpg') no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  height: 100vh; /* height of the viewport */
+  background: #673ab7
+  //background: url('assets/images/small-background.jpg') no-repeat center center fixed;
+  //-webkit-background-size: cover;
+  //-moz-background-size: cover;
+  //-o-background-size: cover;
+  //background-size: cover;
 }
 
 /* Large devices (desktops) */
 @media (min-width: 960px) {
   .app-content {
-    background-image: url('assets/images/large-background.jpg');
+    background: #373ab7
+    //background-image: url('assets/images/large-background.jpg');
   }
 }
 
