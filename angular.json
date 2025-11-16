@@ -38,7 +38,8 @@
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [
-              "validator"
+              "validator",
+              "reflect-metadata"
             ],
             "browser": "src/main.ts"
           },
