@@ -1,11 +1,9 @@
-import {Component, effect} from '@angular/core';
+import {Component, effect, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FanService} from '../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {AppTools} from '../shared/app-tools';
 import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {SmallScreenScoreDetails} from './small-screen-score-details/small-screen-score-details.component';
 import {LiveScoresService} from './live-scores.service';
@@ -15,32 +13,40 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
 import {BriefPlayerResultDto} from './brief-player-result.dto';
+import {DgfToolsService} from '../tools/dgf-tools.service';
+import {DgfTool} from '../tools/dgf-tool';
+import {AppStateService} from '../app-state.service';
+import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 
 @Component({
-    selector: 'app-live-scores',
-    imports: [
-        CommonModule,
-        MatCardModule,
-        MatToolbarModule,
-        MatExpansionModule,
-        SmallScreenScoreDetails,
-        MatButtonModule,
-        SmallScreenScorelineComponent,
-        MatIconModule,
-        MatTooltipModule,
-        CdkDropList,
-        CdkDrag,
-        CdkDragHandle,
-        ToolbarComponent,
-    ],
-    templateUrl: './live-scores.component.html',
-    styleUrl: './live-scores.component.scss'
+  selector: 'app-live-scores',
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    SmallScreenScoreDetails,
+    MatButtonModule,
+    SmallScreenScorelineComponent,
+    MatIconModule,
+    MatTooltipModule,
+    CdkDropList,
+    CdkDrag,
+    CdkDragHandle,
+    ToolbarComponent,
+  ],
+  templateUrl: './live-scores.component.html',
+  styleUrl: './live-scores.component.scss'
 })
-export class LiveScoresComponent {
+
+export class LiveScoresComponent implements OnInit {
+  manageFavouritesTool?: DgfTool;
+
   constructor(
     protected fanService: FanService,
     protected liveScoreService: LiveScoresService,
-    private router: Router,
+    private toolsService: DgfToolsService,
+    private appState: AppStateService,
   ) {
     effect(() => {
       const fan = this.fanService.fanSignal();
@@ -50,10 +56,14 @@ export class LiveScoresComponent {
 
       // no favourites yet? → redirect
       if (fan.favourites.length === 0) {
-        void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
+        appState.activateTool(DGF_TOOL_KEY.MANAGE_FAVOURITES);
         return;
       }
     });
+  }
+
+  ngOnInit() {
+    this.manageFavouritesTool = this.toolsService.getByKey(DGF_TOOL_KEY.MANAGE_FAVOURITES);
   }
 
   isExpanded(briefPlayerResultDto: BriefPlayerResultDto): boolean {
@@ -61,7 +71,7 @@ export class LiveScoresComponent {
   }
 
   onManageFavourites() {
-    void this.router.navigate([`/${AppTools.MANAGE_FAVOURITES.route}`]);
+    this.appState.activateTool(DGF_TOOL_KEY.MANAGE_FAVOURITES);
   }
 
   async openPanel(briefPlayerResult: BriefPlayerResultDto) {
@@ -81,6 +91,4 @@ export class LiveScoresComponent {
   onDrop(event: CdkDragDrop<any>) {
     this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
   }
-
-  protected readonly AppTools = AppTools;
 }

@@ -1,62 +1,71 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
-import {AuthService} from '../auth/auth.service';
-import {Router, RouterLink} from '@angular/router';
-import {AppStateService} from '../app-state.service';
 import {MatButtonModule} from '@angular/material/button';
-import {ConcreteAppTool} from '../shared/app-tools';
-import {ADMIN_ROLE} from '../auth/dtos/roles';
+import {DgfToolsService} from '../tools/dgf-tools.service';
+import {DgfTool} from '../tools/dgf-tool';
+import {AppStateService} from '../app-state.service';
+import {AuthService} from '../auth/auth.service';
+import {User} from '../auth/user';
 
 @Component({
-    selector: 'app-main-menu',
-    imports: [CommonModule, MatIconModule, MatMenuModule, RouterLink, MatButtonModule],
-    templateUrl: './main-menu.component.html',
-    styleUrl: './main-menu.component.scss'
+  selector: 'app-main-menu',
+  imports: [CommonModule, MatIconModule, MatMenuModule, MatButtonModule],
+  templateUrl: './main-menu.component.html',
+  styleUrl: './main-menu.component.scss'
 })
-export class MainMenuComponent {
-  appTools;
+export class MainMenuComponent implements OnInit {
+  sortedMainMenuTools: readonly DgfTool[] = [];
 
   constructor(
-    protected authService: AuthService,
-    protected router: Router,
-    protected appState: AppStateService,
+    private toolService: DgfToolsService,
+    private readonly appState: AppStateService,
+    private readonly auth: AuthService,
   ) {
-    this.appTools = appState.tools;
   }
 
-  toolDisabled(tool: ConcreteAppTool, mustBeLoggedIn = true, mustBeAdmin = false): boolean {
-    if (mustBeLoggedIn && !this.authService.isAuthenticated()) return true;
-    if (this.appState.activeTool() === tool) return true;
-    if (mustBeAdmin && !this.authenticatedUserIsAdmin()) return true;
-    else return false;
+  ngOnInit() {
+    this.sortedMainMenuTools = this.toolService.getToolsForMainMenu();
   }
 
-  registrationDisabled(): boolean {
-    return (this.authService.isAuthenticated() ||
-      this.appState.activeTool() === this.appTools.REGISTER);
+  isActive(tool: DgfTool): boolean {
+    return (!this.appState.activeTool()?.is(tool.key));
   }
 
-  loginDisabled(): boolean {
-    return (this.authService.isAuthenticated() ||
-      this.appState.activeTool() === this.appTools.LOGIN);
+  isVisible(tool: DgfTool): boolean {
+    if (!tool.show) return false;
+
+    const user: User | null = this.auth.authenticatedUser();
+
+    // 2. Check login state
+    switch (tool.loginState) {
+      case 'loggedIn':
+        if (!user) return false;
+        break;
+      case 'loggedOut':
+        if (user) return false;
+        break;
+      case 'either':
+      default:
+        break;
+    }
+
+    // 3. Check role (if any)
+    if (tool.requiredRole) {
+      if (!user) return false;
+      if (!user.canPerformRole(tool.role)) return false;
+    }
+    return true;
   }
 
-  logoutDisabled(): boolean {
-    return (!this.authService.isAuthenticated());
+  isDisabled(tool: DgfTool): boolean {
+    // Simple rule: disable if it's already active.
+    return !this.isActive(tool);
   }
 
-  welcomeDisabled(): boolean {
-    return this.appState.activeTool() === this.appTools.WELCOME;
-  }
-
-  onLogout() {
-    this.authService.logout().subscribe(); // trigger logout
-    void this.router.navigate([`/${this.appTools.WELCOME.route}`]);
-  }
-
-  authenticatedUserIsAdmin(): boolean {
-    return this.authService.authenticatedUserCanPerformRole(ADMIN_ROLE);
+  onClick(tool: DgfTool): void {
+    if (this.isDisabled(tool) || !this.isVisible(tool)) return;
+    this.appState.activateTool(tool.key);
   }
 }

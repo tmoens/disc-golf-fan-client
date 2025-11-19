@@ -1,22 +1,22 @@
-import {Injectable, Injector} from '@angular/core';
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { AppTools } from '../shared/app-tools';
+import {Injectable} from '@angular/core';
+import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {AuthService} from './auth.service';
-import {Router} from '@angular/router';
 import {Observable, switchMap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
+import {AppStateService} from '../app-state.service';
+import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 
 // The purpose of this is to refresh the user's access token using their
 // refresh token.  For the life of me, I do not understand what security this
-// truly adds, but ok it's the way I've seen recommended a million times.
+// truly adds, but ok, it's the way I've seen it recommended millions of times.
 
 @Injectable()
 export class UnauthorizedInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
-    private injector: Injector,
-    private router: Router  // Inject the Router for redirection
-  ) {}
+    private appStateService: AppStateService,
+  ) {
+  }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
@@ -43,7 +43,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
       }),
       catchError((err) => {
         // If refreshing fails (e.g., refresh token is also expired), redirect to login
-        void this.router.navigate([`/${AppTools.LOGIN.route}`]);
+        this.appStateService.activateTool(DGF_TOOL_KEY.LOGIN);
         return throwError(() => err);
       })
     );

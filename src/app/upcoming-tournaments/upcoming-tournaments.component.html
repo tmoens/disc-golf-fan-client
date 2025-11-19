@@ -3,7 +3,8 @@
   <mat-card *ngIf="upcomingTournaments.length === 0">
     <mat-card-header>Looks like you don't have any favorites yet! Use the button below to add some.</mat-card-header>
     <mat-card-actions align="end" class="lo-gap20">
-      <button mat-raised-button color="primary" (click)="onManageFavourites()">{{ AppTools.MANAGE_FAVOURITES.displayName }}</button>
+      <button mat-raised-button color="primary" (click)="onManageFavourites()">{{ manageFavouritesTool?.displayName }}
+      </button>
     </mat-card-actions>
   </mat-card>
 

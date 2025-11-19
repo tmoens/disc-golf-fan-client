@@ -2,47 +2,14 @@
   <mat-icon color="primary">menu</mat-icon>
 </button>
 <mat-menu #mainMenu="matMenu">
-  <button mat-menu-item
-          [disabled]="toolDisabled(appTools.LIVE_SCORES)"
-          [routerLink]="['/' + appTools.LIVE_SCORES.route]">
-    <mat-icon>sync_alt</mat-icon>
-    {{ appTools.LIVE_SCORES.displayName }}
-  </button>
-  <button mat-menu-item
-          [disabled]="toolDisabled(appTools.UPCOMING_EVENTS)"
-          [routerLink]="['/' + appTools.UPCOMING_EVENTS.route]">
-    <mat-icon>event</mat-icon>
-    {{ appTools.UPCOMING_EVENTS.displayName }}
-  </button>
-  <button mat-menu-item
-          [disabled]="toolDisabled(appTools.MANAGE_FAVOURITES)"
-          [routerLink]="['/' + appTools.MANAGE_FAVOURITES.route]">
-    <mat-icon>manage_accounts</mat-icon>
-    {{ appTools.MANAGE_FAVOURITES.displayName }}
-  </button>
-  <button mat-menu-item
-          [disabled]="toolDisabled(appTools.ADMIN_DASHBOARD, true, true)"
-          [routerLink]="['/' + appTools.ADMIN_DASHBOARD.route]">
-    <mat-icon>admin_panel_settings</mat-icon>
-    {{ appTools.ADMIN_DASHBOARD.displayName }}
-  </button>
-  <button mat-menu-item [disabled]="registrationDisabled()"
-          [routerLink]="['/' + appTools.REGISTER.route]">
-    <mat-icon>app_registration</mat-icon>
-    {{ appTools.REGISTER.displayName }}
-  </button>
-  <button mat-menu-item [disabled]="loginDisabled()"
-          [routerLink]="['/' + appTools.LOGIN.route]">
-    <mat-icon>login</mat-icon>
-    {{ appTools.LOGIN.displayName }}
-  </button>
-  <button mat-menu-item [disabled]="logoutDisabled()" (click)="onLogout()">
-    <mat-icon>logout</mat-icon>
-    Sign Out
-  </button>
-  <button mat-menu-item [disabled]="welcomeDisabled()"
-          [routerLink]="['/' + appTools.WELCOME.route]">
-    <mat-icon>home</mat-icon>
-    {{ appTools.WELCOME.displayName }}
-  </button>
+  @for (tool of sortedMainMenuTools; track tool.key) {
+    @if (isVisible(tool)) {
+      <button mat-menu-item [disabled]="isDisabled(tool)" (click)="onClick(tool)">
+        @if (tool.icon) {
+          <mat-icon>{{ tool.icon }}</mat-icon>
+        }
+        {{ tool.displayName }}
+      </button>
+    }
+  }
 </mat-menu>

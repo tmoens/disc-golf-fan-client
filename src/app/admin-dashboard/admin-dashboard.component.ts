@@ -8,48 +8,31 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {AppTools} from '../shared/app-tools';
 import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {AdminDashboardService} from './admin-dashboard.service';
 import {MatListModule} from '@angular/material/list';
-import {AuthService} from '../auth/auth.service';
 
 @Component({
-    selector: 'app-admin-dashboard',
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatInputModule,
-        MatToolbarModule,
-        MatExpansionModule,
-        MatListModule,
-        ToolbarComponent
-    ],
-    templateUrl: './admin-dashboard.component.html',
-    styleUrl: './admin-dashboard.component.scss'
+  selector: 'app-admin-dashboard',
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatToolbarModule,
+    MatExpansionModule,
+    MatListModule,
+    ToolbarComponent
+  ],
+  templateUrl: './admin-dashboard.component.html',
+  styleUrl: './admin-dashboard.component.scss'
 })
 export class AdminDashboardComponent {
   constructor(
     protected adminDashboardService: AdminDashboardService,
-    private authService: AuthService,
   ) {
   }
-
-  onCronStatusOpened() {
-    this.adminDashboardService.startCronJobStatusPolling();
-  }
-
-  onPdgaApiRequestQueueStatusOpened() {
-    this.adminDashboardService.startPdgaApiRequestQueueStatusPolling();
-  }
-
-  onRosterChangeStatusOpened() {
-    this.adminDashboardService.startTournamentRosterChangeStatusPolling();
-  }
-
-  protected readonly AppTools = AppTools;
 }

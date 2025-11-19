@@ -5,10 +5,10 @@ import {plainToInstance} from 'class-transformer';
 import {LoaderService} from '../loader.service';
 import {ScorelineDto} from './scoreline.dto';
 import {AppStateService} from '../app-state.service';
-import {AppTools} from '../shared/app-tools';
 import {BriefPlayerResultDto} from './brief-player-result.dto';
 import {environment} from '../../environments/environment';
 import {FanService} from '../fan/fan.service';
+import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 
 /**
  * Manages live scores:
@@ -43,34 +43,34 @@ export class LiveScoresService implements OnDestroy {
       const fan = this.fanService.fanSignal();
       const activeTool = this.appStateService.activeTool();
 
-      // User not logged in or no fan loaded
+      // User is not logged in or no fan loaded
       if (!fan) {
-        this.stopFavouritesLiveScoresPolling();
+        this.stopLiveScoresPolling();
         this.favouriteLiveScoresSig.set([]);
         return;
       }
 
-      // No favourites → stop polling, clear UI
+      // No favourites → no polling, clear UI
       if (fan.favourites.length === 0) {
-        this.stopFavouritesLiveScoresPolling();
+        this.stopLiveScoresPolling();
         this.favouriteLiveScoresSig.set([]);
         return;
       }
 
       // Active tool is NOT live scores → stop polling
-      if (!activeTool || activeTool.route !== AppTools.LIVE_SCORES.route) {
-        this.stopFavouritesLiveScoresPolling();
+      if (!activeTool || !activeTool.is(DGF_TOOL_KEY.LIVE_SCORES)) {
+        this.stopLiveScoresPolling();
         return;
       }
 
       // Active tool is live scores, and fan has favourites
       // → load now AND start polling
-      this.startFavouritesLiveScoresPolling();
+      this.startLiveScoresPolling();
     });
   }
 
   private stopAllPolling() {
-    this.stopFavouritesLiveScoresPolling();
+    this.stopLiveScoresPolling();
     this.stopDetailedScoresPolling();
   }
 
@@ -78,8 +78,8 @@ export class LiveScoresService implements OnDestroy {
    * Starts polling a fan's favourite players live scores at the configured cadence.
    * Ensures only one polling subscription is active.
    */
-  startFavouritesLiveScoresPolling() {
-    this.stopFavouritesLiveScoresPolling();
+  startLiveScoresPolling() {
+    this.stopLiveScoresPolling();
     this.favouritesLiveScoresSubscription =
       timer(0, environment.polling.liveScoresMs).subscribe(() => {
         this.loadFavouritesLiveScores();
@@ -89,7 +89,7 @@ export class LiveScoresService implements OnDestroy {
   /**
    * Stops polling live scores.
    */
-  stopFavouritesLiveScoresPolling() {
+  stopLiveScoresPolling() {
     if (this.favouritesLiveScoresSubscription) {
       this.favouritesLiveScoresSubscription.unsubscribe();
       this.favouritesLiveScoresSubscription = null;

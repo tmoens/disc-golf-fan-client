@@ -21,9 +21,9 @@ export class FanService {
     private loaderService: LoaderService,
   ) {
     effect(() => {
-      const userId = this.authService.authenticatedUserId();
-      if (userId) {
-        this.loadFanAfterLogin(userId);
+      const user = this.authService.authenticatedUser();
+      if (user) {
+        this.loadFanAfterLogin(user.id);
       } else {
         this.fanSignal.set(null);
       }
@@ -38,10 +38,10 @@ export class FanService {
   }
 
   private reload$() {
-    const fanId = this.authService.getAuthenticatedUserId();
-    if (!fanId) return of(null);
+    const user = this.authService.authenticatedUser();
+    if (!user) return of(null);
 
-    return this.loaderService.getFanById(fanId).pipe(
+    return this.loaderService.getFanById(user.id).pipe(
       tap(data => {
         const fanDto = data ? plainToInstance(FanDto, data) : null;
         this.fanSignal.set(fanDto);

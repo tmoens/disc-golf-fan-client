@@ -1,4 +1,4 @@
-import { NgModule, inject, provideAppInitializer } from '@angular/core';
+import {inject, NgModule, provideAppInitializer} from '@angular/core';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
@@ -15,6 +15,7 @@ import {MatDividerModule} from '@angular/material/divider';
 import {MatCardModule} from '@angular/material/card';
 import {ToolbarComponent} from './toolbar/toolbar.component';
 import {MainMenuComponent} from './main-menu/main-menu.component';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
 // Function to initialize AppState
 export function initializeApp(appStateService: AppStateService) {
@@ -43,10 +44,14 @@ export function initializeApp(appStateService: AppStateService) {
       multi: true
     },
     provideAppInitializer(() => {
-        const initializerFn = (initializeApp)(inject(AppStateService));
-        return initializerFn();
-      }),
+      const initializerFn = (initializeApp)(inject(AppStateService));
+      return initializerFn();
+    }),
     provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {floatLabel: 'always', appearance: 'fill'}
+    },
   ]
 })
 export class AppModule {

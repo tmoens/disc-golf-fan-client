@@ -1,6 +1,6 @@
 import {Injectable, signal} from '@angular/core';
 import {map, Observable, of, throwError} from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {RegistrationDto} from './dtos/registration-dto';
 import {catchError} from 'rxjs/operators';
@@ -9,8 +9,9 @@ import {LoginResponseDto} from './dtos/login-response-dto';
 import {RefreshAccessTokenResponseDto} from './dtos/refresh-access-token-response-dto';
 import {ForgotPasswordDto} from './dtos/forgot-password-dto';
 import {ResetPasswordDto} from './dtos/reset-password-dto';
-import {UserRoles} from './dtos/roles';
 import {RefreshTokenPayload} from './dtos/refresh-token-payload';
+import {User} from './user';
+import {UserRoleService} from './dgf-roles';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ import {RefreshTokenPayload} from './dtos/refresh-token-payload';
 
 export class AuthService {
   // Signal to track the authenticated user ID
-  authenticatedUserId = signal<string | null>(null);
+  authenticatedUser = signal<User | null>(null);
 
   private _refreshToken: string = '';
   get refreshToken(): string {
@@ -31,9 +32,6 @@ export class AuthService {
     }
     localStorage.setItem('refreshToken', token);
     this._refreshToken = token;
-
-    // Update the signal whenever the refresh token changes
-    this.updateAuthenticatedUserIdSignal();
   }
 
   private _accessToken: string = '';
@@ -43,10 +41,16 @@ export class AuthService {
 
   set accessToken(token: string) {
     if (!token || this.isTokenExpired(token)) {
-      token = '';
+      console.log(`setting expired or empty accessToken to: ${JSON.stringify(token)}`);
+      this._accessToken = '';
+      localStorage.setItem('accessToken', '');
+      this.authenticatedUser.set(null);
+    } else {
+      console.log(`setting refreshed accessToken to: ${JSON.stringify(token)}`);
+      this._accessToken = token;
+      const tokenPayload: RefreshTokenPayload = this.decryptToken(this.refreshToken);
+      this.authenticatedUser.set(new User(tokenPayload.id, tokenPayload.role));
     }
-    localStorage.setItem('accessToken', token);
-    this._accessToken = token;
   }
 
   // this is where the user was trying to navigate to when they were forced to log in.
@@ -65,34 +69,14 @@ export class AuthService {
     if (storedRefreshToken) this.refreshToken = storedRefreshToken;
 
     if (environment.production) {
-      this.serverUrl = location.origin + '/dg-fan-server';
+      this.serverUrl = `${location.origin}/dg-fan-server`;
     } else {
       this.serverUrl = environment.apiBaseUrl;
     }
-
-    // Initialize the signal with the current user ID
-    this.updateAuthenticatedUserIdSignal();
   }
 
-  // As long as there is a valid refresh token, we are deemed authenticated
   public isAuthenticated(): boolean {
-    return !!this.refreshToken;
-  }
-
-  getAuthenticatedUserId(): string | null {
-    const tokenPayload: RefreshTokenPayload | null = this.decryptToken(this.refreshToken);
-    if (tokenPayload && tokenPayload.id) {
-      return tokenPayload.id;
-    } else {
-      return null;
-    }
-  }
-
-  /**
-   * Updates the authenticatedUserId signal based on the current refresh token
-   */
-  private updateAuthenticatedUserIdSignal(): void {
-    this.authenticatedUserId.set(this.getAuthenticatedUserId());
+    return !!this.authenticatedUser();
   }
 
   // Processing a login.  A normal case is to update the local state and be done.
@@ -177,7 +161,6 @@ export class AuthService {
       );
   }
 
-
   createAccessHeader() {
     return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
   }
@@ -213,7 +196,7 @@ export class AuthService {
     if (!(this.isAuthenticated())) {
       return false;
     }
-    return UserRoles.isAuthorized(this.decryptToken(this.refreshToken).role, roleInQuestion);
+    return UserRoleService.isAuthorized(this.decryptToken(this.refreshToken).role, roleInQuestion);
   }
 
   private handleError() {

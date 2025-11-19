@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
-import {AppTools} from '../../shared/app-tools';
 import {ToolbarComponent} from '../../toolbar/toolbar.component';
 import {AuthService} from '../auth.service';
 import {LoginDto} from '../dtos/login-dto';
@@ -11,6 +10,7 @@ import {MatInputModule} from '@angular/material/input';
 import {Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {DGF_TOOL_ROUTES} from '../../tools/dgf-tool-routes';
 
 enum LoginStatus {
   TBD,
@@ -19,10 +19,10 @@ enum LoginStatus {
 }
 
 @Component({
-    selector: 'app-login',
-    imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MatToolbarModule, ToolbarComponent],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.scss'
+  selector: 'app-login',
+  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MatToolbarModule, ToolbarComponent],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
@@ -59,7 +59,7 @@ export class LoginComponent {
 
         const target = this.authService.intendedPath && this.authService.intendedPath.startsWith('/')
           ? this.authService.intendedPath
-          : '/live-scores';
+          : DGF_TOOL_ROUTES.LIVE_SCORES;
 
         void this.router.navigateByUrl(target);
         this.authService.intendedPath = null as any; // or undefined, depending on your field type
@@ -72,5 +72,5 @@ export class LoginComponent {
     });
   }
 
-  protected readonly AppTools = AppTools;
+  protected readonly DGF_TOOL_ROUTES = DGF_TOOL_ROUTES;
 }

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
-import { AppTools } from '../../shared/app-tools';
 import {AuthService} from '../auth.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
@@ -10,6 +9,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MainMenuComponent} from '../../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {AppStateService} from '../../app-state.service';
+import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
 
 enum ConfirmationStatus {
   TBD,
@@ -18,10 +19,10 @@ enum ConfirmationStatus {
 }
 
 @Component({
-    selector: 'app-reset-password',
-    imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MainMenuComponent, MatToolbarModule],
-    templateUrl: './reset-password.component.html',
-    styleUrl: './reset-password.component.scss'
+  selector: 'app-reset-password',
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MainMenuComponent, MatToolbarModule],
+  templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent implements OnInit {
   protected readonly ConfirmationStatus = ConfirmationStatus;
@@ -29,16 +30,18 @@ export class ResetPasswordComponent implements OnInit {
   confirmationStatus = ConfirmationStatus.TBD;
   passwordResetToken: string | null = null;
 
-  form: FormGroup = this.fb.group ( {
+  form: FormGroup = this.fb.group({
     password: ['', [Validators.required, Validators.minLength(1)]],
-  })
+  });
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
+    private appState: AppStateService,
     private router: Router,
     private fb: FormBuilder,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.passwordResetToken = this.route.snapshot.queryParamMap.get('token');
@@ -67,12 +70,10 @@ export class ResetPasswordComponent implements OnInit {
 
   // It would be exceedingly weird for this to ever happen in production
   navigateToForgotPassword() {
-    void this.router.navigate([`/${AppTools.FORGOT_PASSWORD.route}`]);
+    this.appState.activateTool(DGF_TOOL_KEY.FORGOT_PASSWORD);
   }
 
   navigateToLogin() {
-    void this.router.navigate([`/${AppTools.LOGIN.route}`]);
+    this.appState.activateTool(DGF_TOOL_KEY.LOGIN);
   }
-
-  protected readonly AppTools = AppTools;
 }

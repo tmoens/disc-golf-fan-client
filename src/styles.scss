@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
 
+@include mat.core();
 
 $primary-color: mat.$azure-palette;
 
@@ -16,7 +17,7 @@ $zf-app-theme: mat.define-theme((
   ),
   density: (
     scale: 0,
-  ),
+  )
 ));
 
 // This is used to tighten up the form field widgets.
@@ -31,9 +32,30 @@ $zf-compact-theme: mat.define-theme((
   @include mat.all-component-themes($zf-app-theme);
   @include mat.all-component-typographies($zf-compact-theme);
   @include mat.typography-hierarchy($zf-app-theme);
-  @include mat.form-field-density($zf-compact-theme);
+
+  // Override button corners. This took some time to figure out and
+  // in the end it is the protected-container-shape that does the trick.
+  // The documentation just lists the overridable properties and doesn't
+  // explain how to use them.
+  @include mat.button-overrides((
+    filled-container-shape: 50px,
+    outlined-container-shape: 50px,
+    protected-container-shape: 5px,
+    text-container-shape: 50px,
+  ));
+  // override card corners. At for these, the names are clear.
+  @include mat.card-overrides((
+    elevated-container-shape: 5px,
+    outlined-container-shape: 5px,
+  ));
 }
 
+//.mat-mdc-button,
+//.mat-mdc-raised-button,
+//.mat-mdc-unelevated-button,
+//.mat-mdc-outlined-button {
+//  border-radius: 0 !important;
+//}
 
 // With outline appearance the Label pokes out slightly above the outline
 // but the outline is at the dead top of the form-field, so we need to give
@@ -41,6 +63,7 @@ $zf-compact-theme: mat.define-theme((
 .mat-mdc-form-field {
   margin-top: 8px;
 }
+
 
 html, body {
   height: 100%;
@@ -52,8 +75,8 @@ body {
 }
 
 .app-content {
-  //height: 100vh; /* height of the viewport */
-  background: #673ab7;
+  height: 100vh; /* height of the viewport */
+  background: #dcd2f3;
   //background: url('assets/images/small-background.jpg') no-repeat center center fixed;
   //-webkit-background-size: cover;
   //-moz-background-size: cover;
@@ -69,9 +92,13 @@ body {
   }
 }
 
-
 .fill-remaining-space {
   flex: 1 1 auto;
+}
+
+mat-form-field {
+  max-width: 300px;
+  width: 100%;
 }
 
 .x-small-page {
@@ -170,8 +197,4 @@ body {
 
 .lo-160px {
   flex-basis: 160px;
-}
-
-.text-red {
-  color: red;
 }

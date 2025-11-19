@@ -1,14 +1,14 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatCardModule} from '@angular/material/card';
-import {Router} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
 import {AuthService} from '../auth/auth.service';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {AppTools} from '../shared/app-tools';
 import {ToolbarComponent} from '../toolbar/toolbar.component';
+import {AppStateService} from '../app-state.service';
+import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 
 @Component({
   selector: 'app-welcome-page',
@@ -20,20 +20,19 @@ export class WelcomePageComponent {
 
   constructor(
     protected authService: AuthService,
-    private router: Router,
+    private appStateService: AppStateService,
   ) {
   }
 
   register() {
-    this.router.navigate([`/${AppTools.REGISTER.route}`]);
+    this.appStateService.activateTool(DGF_TOOL_KEY.REGISTER);
   }
 
   login() {
-    this.router.navigate([`/${AppTools.LOGIN.route}`]);
+    this.appStateService.activateTool(DGF_TOOL_KEY.LOGIN);
   }
 
   logout() {
     this.authService.logout().subscribe(); // trigger logout
   }
-
 }

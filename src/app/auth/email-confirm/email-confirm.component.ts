@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {ActivatedRoute} from '@angular/router';
 import {MatCardModule} from '@angular/material/card';
-import { firstValueFrom } from 'rxjs';
-import { AppTools } from '../../shared/app-tools';
+import {firstValueFrom} from 'rxjs';
 import {AuthService} from '../auth.service';
-import {MainMenuComponent} from '../../main-menu/main-menu.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
+import {ToolbarComponent} from '../../toolbar/toolbar.component';
+import {AppStateService} from '../../app-state.service';
+import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
 
 enum ConfirmationStatus {
   TBD,
@@ -15,20 +16,21 @@ enum ConfirmationStatus {
 }
 
 @Component({
-    selector: 'app-email-confirm',
-    imports: [CommonModule, MatCardModule, MainMenuComponent, MatToolbarModule],
-    templateUrl: './email-confirm.component.html',
-    styleUrl: './email-confirm.component.scss'
+  selector: 'app-email-confirm',
+  imports: [CommonModule, MatCardModule, MatToolbarModule, ToolbarComponent],
+  templateUrl: './email-confirm.component.html',
+  styleUrl: './email-confirm.component.scss'
 })
-export class EmailConfirmComponent {
+export class EmailConfirmComponent implements OnInit {
   confirmationResultMessage: string = '';
   confirmationStatus = ConfirmationStatus.TBD;
 
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private router: Router,
-  ) {}
+    private appStateService: AppStateService,
+  ) {
+  }
 
   async ngOnInit(): Promise<void> {
     const token = this.route.snapshot.queryParamMap.get('token');
@@ -43,17 +45,10 @@ export class EmailConfirmComponent {
       this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
       this.confirmationResultMessage = 'Your email was confirmed';
       await new Promise(resolve => setTimeout(resolve, 2000));
-      this.navigateToLogin();
+      this.appStateService.activateTool(DGF_TOOL_KEY.LOGIN);
     } else {
       this.confirmationStatus = ConfirmationStatus.FAILED;
       this.confirmationResultMessage = message;
     }
   }
-
-  navigateToLogin()
-  {
-     void this.router.navigate([`/${AppTools.LOGIN.route}`]);
-  }
-
-  protected readonly AppTools = AppTools;
 }

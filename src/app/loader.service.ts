@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {catchError} from 'rxjs/operators';
@@ -13,6 +13,7 @@ import {AuthService} from './auth/auth.service';
 import {ScorelineDto} from './live-scores/scoreline.dto';
 import {UpcomingTournamentsDto} from './upcoming-tournaments/upcoming-tournaments.dto';
 import {ReorderFavouriteDto} from './fan/dtos/reorder-favourite.dto';
+import {User} from './auth/user';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,9 @@ export class LoaderService {
   }
 
   getUpcomingEvents(): Observable<UpcomingTournamentsDto[] | null> {
-    const url = `${this.serverUrl}/favourite/get-upcoming-events/${this.authService.getAuthenticatedUserId()}`;
+    const user: User | null = this.authService.authenticatedUser();
+    if (!user) return of(null);
+    const url = `${this.serverUrl}/favourite/get-upcoming-events/${user.id}`;
     return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
         catchError(this.handleErrorAndShowSnackbar(url, []))
@@ -114,32 +117,6 @@ export class LoaderService {
       );
   }
 
-  // =============================== Admin type things =========================
-  getTournamentRosterChanges(): Observable<any> {
-    const url = `${this.serverUrl}/round/tournament-roster-changes`;
-    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
-      .pipe(
-        catchError(this.handleErrorAndShowSnackbar(url, null))
-      );
-  }
-
-  getPdgaApiRequestQueueStatus(): Observable<any> {
-    const url = `${this.serverUrl}/pdga-api/request-queue`;
-    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
-      .pipe(
-        catchError(this.handleErrorAndShowSnackbar(url, null))
-      );
-  }
-
-  // get cron job status
-  getCronJobStatus(): Observable<any> {
-    const url = `${this.serverUrl}/cron-status`;
-    return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
-      .pipe(
-        catchError(this.handleErrorAndShowSnackbar(url, null))
-      );
-  }
-
   /**
    * Handle Http operation that failed.
    * Let the app continue.
@@ -154,9 +131,8 @@ export class LoaderService {
    * our HTTP Calls return different types!  And the error handler
    * has to return the right type.  So, the error handler is
    * parameterized such that you can tell it what to return when
-   * it is finished doing it's business.
+   * it is finished doing its business.
    */
-
   private handleErrorAndShowSnackbar<T>(_operation = 'operation', resultOnError?: T) {
     return (error: any): Observable<T | null> => {
       this.message.open(`${error.error.message} || ${error.status}`,

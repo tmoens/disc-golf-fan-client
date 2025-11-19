@@ -1,7 +1,7 @@
 import {ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot} from '@angular/router';
 import {AuthService} from '../auth.service';
 import {inject} from '@angular/core';
-import {AppTools} from '../../shared/app-tools';
+import {DGF_TOOL_ROUTES} from '../../tools/dgf-tool-routes';
 
 export const authenticatedGuard: CanActivateFn =
   (_route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
@@ -14,7 +14,7 @@ export const authenticatedGuard: CanActivateFn =
       authService.intendedPath = state.url;
 
       // Tell the Router to redirect to the login page (no imperative navigation here)
-      return router.createUrlTree([`/${AppTools.LOGIN.route}`]);
+      return router.createUrlTree([`/${DGF_TOOL_ROUTES.LOGIN}`]);
     }
     return true;
   };
@@ -22,5 +22,5 @@ export const authenticatedGuard: CanActivateFn =
 export const roleGuard: CanActivateFn =
   (route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) => {
     const authService = inject(AuthService);
-  return (authService.authenticatedUserCanPerformRole(route.data['permittedRole']))
-}
+    return (authService.authenticatedUserCanPerformRole(route.data['permittedRole']));
+  };

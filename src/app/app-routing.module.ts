@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 import {FanComponent} from './fan/fan.component';
 import {LiveScoresComponent} from './live-scores/live-scores.component';
 import {RegisterComponent} from './auth/register/register.component';
@@ -9,77 +9,77 @@ import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.co
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
 import {WelcomePageComponent} from './welcome-page/welcome-page.component';
 import {authenticatedGuard, roleGuard} from './auth/guards/canActivateGuards';
-import {AppTools} from './shared/app-tools';
 import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
 import {UpcomingTournamentsComponent} from './upcoming-tournaments/upcoming-tournaments.component';
+import {DGF_TOOL_ROUTES} from './tools/dgf-tool-routes';
+import {DGF_TOOL_ROLES} from './tools/dgf-tool-roles';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: AppTools.WELCOME.route,
+    redirectTo: DGF_TOOL_ROUTES.WELCOME,
     pathMatch: 'full'
   },
 
   // User needs to be logged in to navigate to these
   {
-    path: AppTools.MANAGE_FAVOURITES.route,
+    path: DGF_TOOL_ROUTES.MANAGE_FAVOURITES,
     component: FanComponent,
     canActivate: [authenticatedGuard, roleGuard],
     data: {
-      permittedRole: AppTools.MANAGE_FAVOURITES.requiredRole,
+      permittedRole: DGF_TOOL_ROLES.MANAGE_FAVOURITES,
     }
   },
   {
-    path: AppTools.UPCOMING_EVENTS.route,
+    path: DGF_TOOL_ROUTES.UPCOMING_EVENTS,
     component: UpcomingTournamentsComponent,
     canActivate: [authenticatedGuard, roleGuard],
     data: {
-      permittedRole: AppTools.UPCOMING_EVENTS.requiredRole,
+      permittedRole: DGF_TOOL_ROLES.UPCOMING_EVENTS,
     }
   },
   {
-    path: AppTools.LIVE_SCORES.route,
+    path: DGF_TOOL_ROUTES.LIVE_SCORES,
     component: LiveScoresComponent,
     canActivate: [authenticatedGuard],
     data: {
-      permittedRole: AppTools.LIVE_SCORES.requiredRole,
+      permittedRole: DGF_TOOL_ROLES.LIVE_SCORES,
     }
   },
 
-  // User needs to be logged in and be an admin user to navigate to this
   {
-    path: AppTools.ADMIN_DASHBOARD.route,
+    path: DGF_TOOL_ROUTES.ADMIN_DASHBOARD,
     component: AdminDashboardComponent,
     canActivate: [authenticatedGuard, roleGuard],
     data: {
-      permittedRole: AppTools.ADMIN_DASHBOARD.requiredRole,
+      permittedRole: DGF_TOOL_ROLES.ADMIN_DASHBOARD,
     }
   },
 
   // Any user can navigate to these any time
   // Can you log in when logged in? I guess so.
   {
-    path: AppTools.REGISTER.route,
+    path: DGF_TOOL_ROUTES.REGISTER,
     component: RegisterComponent,
   },
   {
-    path: AppTools.WELCOME.route,
+    path: DGF_TOOL_ROUTES.WELCOME,
     component: WelcomePageComponent,
   },
   {
-    path: AppTools.LOGIN.route,
+    path: DGF_TOOL_ROUTES.LOGIN,
     component: LoginComponent,
   },
   {
-    path: AppTools.CONFIRM_EMAIL.route,
+    path: DGF_TOOL_ROUTES.CONFIRM_EMAIL,
     component: EmailConfirmComponent,
   },
   {
-    path: AppTools.FORGOT_PASSWORD.route,
+    path: DGF_TOOL_ROUTES.FORGOT_PASSWORD,
     component: ForgotPasswordComponent,
   },
   {
-    path: AppTools.RESET_PASSWORD.route,
+    path: DGF_TOOL_ROUTES.RESET_PASSWORD,
     component: ResetPasswordComponent,
   },
   {
