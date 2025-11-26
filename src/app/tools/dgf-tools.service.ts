@@ -7,7 +7,7 @@ import {DGF_TOOL_ROLES} from './dgf-tool-roles';
 @Injectable({providedIn: 'root'})
 export class DgfToolsService {
   readonly tools: Record<DgfToolKey, DgfTool>;
-  readonly routeToKeyMap: Record<DgfToolRouteLiteral, DgfToolKey>;
+  routeToKeyMap: Record<DgfToolRouteLiteral, DgfToolKey>;
 
   constructor() {
     const SYSTEM_NAME = 'Disc Golf Fan';
@@ -93,6 +93,18 @@ export class DgfToolsService {
           description: `Sign in to ${SYSTEM_NAME}.`,
           requiredLoginState: 'loggedOut',
           icon: 'login',
+          mainMenuOrder: 700,
+        },
+      ),
+
+      LOGOUT: new DgfTool(
+        DGF_TOOL_KEY.LOGOUT,
+        {
+          displayName: 'Sign Out',
+          route: DGF_TOOL_ROUTES.LOGOUT,
+          description: `Sign out from ${SYSTEM_NAME}.`,
+          requiredLoginState: 'loggedIn',
+          icon: 'logout',
           mainMenuOrder: 700,
         },
       ),

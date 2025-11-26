@@ -1,0 +1,20 @@
+.summary-area {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.player {
+  font-weight: 500;
+}
+.tournament {
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+.round-toggle {
+  margin-top: 2px;
+}
+.summary {
+  font-size: .9rem;
+  opacity: 1.0;
+}

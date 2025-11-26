@@ -1,0 +1,63 @@
+<div class="summary-area" (click)="toggleDetail.emit()" tabindex="0">
+  <div class="lo-row lo-gap10">
+    <a class="player" [href]="'https://pdga.com/player/' + player.playerId" target="_blank">
+      {{ player.playerName }}
+    </a>
+    <div class="fill-remaining-space"></div>
+    <div (click)="dontPropagate($event)">
+
+      <mat-button-toggle-group
+        [value]="round?.roundNumber"
+        (change)="onRoundChange($event.value)"
+        class="round-toggle-group">
+
+        @for (r of division.rounds; track r.roundNumber) {
+          <mat-button-toggle [value]="r.roundNumber">
+            R{{ r.roundNumber }}
+          </mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+
+    <mat-icon class="chevron">
+      {{ expanded ? 'expand_less' : 'expand_more' }}
+    </mat-icon>
+  </div>
+
+  <div class="tournament lo-row lo-gap10 lo-align-center">
+    {{ division.divisionName }} {{ tournament.tournamentName }}
+    <a [href]="'https://pdga.com/live/event/' + tournament.tournamentId + '/' + division.divisionName + '/scores/round' + round?.roundNumber"
+       target="_blank"
+       class="icon-link"
+       aria-label="Open tournament on PDGA"
+       matTooltip="Visit PDGA live scores">
+      <mat-icon>open_in_new</mat-icon>
+    </a>
+  </div>
+
+  <!-- ROUND SELECTOR -->
+
+
+  <!-- SUMMARY -->
+  @if (round && scoreline) {
+    <div class="summary">
+      R{{ round.roundNumber }}
+      @if (scoreline.runningPlace) {
+        • @if (scoreline.tied) {T}{{ scoreline.runningPlace | ordinal }} Place
+      }
+      @if (scoreline.played) {
+        • <dgf-score-vs-par [score]="scoreline.roundToPar"></dgf-score-vs-par>
+        Through
+        {{ scoreline.played }}
+      } @else {
+        Not started
+      }
+      @if (scoreline.parThroughRound) {
+      • <dgf-score-vs-par [score]="scoreline.parThroughRound"></dgf-score-vs-par> Overall
+      }
+      @if (scoreline.roundRating) {
+        • Rating {{ scoreline.roundRating }}
+      }
+    </div>
+  }
+</div>

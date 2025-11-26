@@ -1,156 +1,75 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormControl, ReactiveFormsModule, Validators} from '@angular/forms';
-import {debounceTime} from 'rxjs';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {instanceToInstance, plainToInstance} from 'class-transformer';
-import {AddFavouriteDto} from '../fan/dtos/add-favourite.dto';
-import {PlayerDto} from '../fan/dtos/player.dto';
-import {FanService} from '../fan/fan.service';
-import {FavouriteDto} from '../fan/dtos/favourite.dto';
-import {PlayerService} from '../player/player.service';
+import {Component, Inject} from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {MatInput} from '@angular/material/input';
+import {MatButton} from '@angular/material/button';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import { DgfComponentContainerComponent } from '../dgf-component-container/dgf-component-container.component';
+import { FavouriteDto } from '../fan/dtos/favourite.dto';
+import { FanService } from '../fan/fan.service'; // Added imports
+import {plainToInstance} from 'class-transformer';
+
+export interface FavouriteEditorData {
+  favourite: FavouriteDto;
+  mode: 'add' | 'edit';
+}
+
 
 @Component({
-    selector: 'app-favourite-editor',
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatButtonModule,
-        MatIconModule
-    ],
-    templateUrl: './favourite-editor.component.html',
-    styleUrls: ['./favourite-editor.component.scss']
+  selector: 'app-favourite-editor',
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatFormField,
+    MatCardModule,
+    MatInput,
+    MatButton,
+    MatLabel,
+    ReactiveFormsModule,
+    MatIcon,
+    DgfComponentContainerComponent,
+  ],
+  templateUrl: './favourite-editor.component.html',
+  styleUrl: './favourite-editor.component.scss'
 })
-export class FavouriteEditorComponent implements OnInit {
-  @Input() set favourite(value: FavouriteDto | undefined) {
-    this.setFavourite(value);
-  }
-
-  // Form fields
-  pdgaNumberFC = new FormControl<number | null>({value: null, disabled: true}, Validators.required);
+export class FavouriteEditorComponent {
   nicknameFC = new FormControl<string | null>(null);
-
-  // We handle both adding a favourite and editing a favourite
-  isEditMode = false;
-
-  // when adding a favourite player for a fan, we need to look up players by pdga number
-  isLoading = false;
-  lookupFailed = false;
-  putativeFavouritePlayer: PlayerDto | undefined = undefined;
-
-  // when editing a favouritePlayer
-  workingFavourite: FavouriteDto | undefined = undefined;
+  favourite: FavouriteDto; // Changed from @Input to property
+  mode: 'add' | 'edit';
+  title: string;
+  buttonLabel: string
 
   constructor(
-    private playerService: PlayerService,
     private fanService: FanService,
+    public dialogRef: MatDialogRef<FavouriteEditorComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: FavouriteEditorData
   ) {
-  }
+    this.favourite = plainToInstance(FavouriteDto, data.favourite);
+    this.mode = data.mode;
 
-  ngOnInit() {
-    // When the PDGA number changes, look up the player
-    this.pdgaNumberFC.valueChanges
-      .pipe(debounceTime(400))
-      .subscribe((id) => {
-        if (!id) {
-          this.isEditMode = false;
-          this.putativeFavouritePlayer = undefined;
-          this.nicknameFC.setValue(null);
-          return;
-        }
-        this.lookupPlayer(id);
-      });
-  }
-
-  // Deal with a change in the input value
-  private setFavourite(favourite?: FavouriteDto) {
-    if (!favourite) {
-      // Switch to add mode
-      this.isEditMode = false;
-      this.workingFavourite = undefined;
+    if (this.mode === 'edit') {
+      this.nicknameFC.setValue(this.favourite.nickname);
+      this.buttonLabel = 'Save Changes';
+      this.title = `Editing ${this.favourite.playerName}:`;
+    } else {
       this.nicknameFC.setValue(null);
-      this.pdgaNumberFC.setValue(null, {emitEvent: false});
-      return;
+      this.buttonLabel = 'Add Favourite';
+      this.title = `Adding ${this.favourite.playerName}:`;
     }
-
-    // Switch to edit mode
-    this.isEditMode = true;
-    this.putativeFavouritePlayer = undefined;
-    this.workingFavourite = instanceToInstance(favourite);
-    this.pdgaNumberFC.setValue(this.workingFavourite.playerId, {emitEvent: false});
-    this.nicknameFC.setValue(this.workingFavourite.nickname ?? null);
   }
 
-
-  /** Lookup PDGA player */
-  private lookupPlayer(id: number) {
-    // it's possible that the player was already one of the fan's favourites, so check that now
-    const fav: FavouriteDto | undefined = this.fanService.isPlayerAFavourite(id);
-    if (fav) {
-      this.setFavourite(fav);
-      return;
+  save() {
+    this.favourite.nickname = this.nicknameFC.value;
+    if (this.mode === 'edit') {
+      this.fanService.updateFavourite(this.favourite).subscribe(() => this.dialogRef.close());
+    } else {
+      this.fanService.addFavourite(this.favourite as any).subscribe(() => this.dialogRef.close());
     }
-
-    this.isLoading = true;
-    this.isEditMode = false;
-    this.lookupFailed = false;
-    this.putativeFavouritePlayer = undefined;
-
-    this.playerService.getPlayerById(id)
-      .subscribe((res) => {
-        this.isLoading = false;
-        if (!res) {
-          this.lookupFailed = true;
-          return;
-        }
-        this.putativeFavouritePlayer = plainToInstance(PlayerDto, res);
-      });
   }
 
-
-  /** Add new favourite */
-  addFavourite() {
-    if (!this.putativeFavouritePlayer || !this.fanService.fanSignal()) return;
-
-    const newFavourite: AddFavouriteDto = plainToInstance(AddFavouriteDto, {
-      playerId: this.putativeFavouritePlayer.id,
-      fanId: this.fanService.fanSignal()?.id,
-      nickname: this.nicknameFC.value || null,
-      order: -1
-    });
-
-    this.fanService.addFavourite(newFavourite).subscribe(() => {
-      this.resetForm();
-    });
-  }
-
-  /** Save nickname for existing favourite */
-  updateFavourite() {
-    if (!this.workingFavourite) return;
-
-    this.workingFavourite.nickname = this.nicknameFC.value || null,
-
-      this.fanService.updateFavourite(this.workingFavourite).subscribe(() => {
-        this.resetForm();
-      });
-  }
-
-  resetForm() {
-    this.isEditMode = false;
-    this.workingFavourite = undefined;
-    this.pdgaNumberFC.setValue(null, {emitEvent: false});
-    this.nicknameFC.setValue(null);
-    this.putativeFavouritePlayer = undefined;
-  }
-
-  getHint(): string | null {
-    if (this.isLoading) return 'Looking up player…';
-    if (this.lookupFailed) return `Player ${this.pdgaNumberFC.value} not found.`;
-    return null;
+  cancel() {
+    this.dialogRef.close();
   }
 }

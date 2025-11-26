@@ -1,0 +1,31 @@
+.hole-score-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.lo-40-centered {
+  width: 40px;
+  text-align: center;
+}
+
+.lo-60-centered {
+  width: 60px;
+  text-align: center;
+}
+
+.lo-155-left {
+  width: 155px;
+  text-align: left;
+}
+
+.small-text {
+  opacity: 1;
+  font-size: 0.85rem;
+}
+.score-text {
+  opacity: .85;
+  font-size: 0.9rem;
+}

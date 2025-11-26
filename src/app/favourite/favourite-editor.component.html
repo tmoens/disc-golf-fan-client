@@ -1,31 +1,20 @@
-<div class="fav-editor">
+<dgf-component-container>
+  <h4>{{ title }}</h4>
+    <div class="lo-column lo-gap10">
+      <!-- PDGA Number -->
+      <p>Pdga Number: {{favourite.playerId}}</p>
 
-  <!-- PDGA Number -->
-  <mat-form-field appearance="outline">
-    <mat-label>PDGA Number</mat-label>
-    <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="isLoading">
-    <mat-hint>{{ getHint() }}</mat-hint>
-  </mat-form-field>
+      <!-- Nickname -->
+      <mat-form-field>
+        <mat-label>Nickname</mat-label>
+        <input matInput type="text" [formControl]="nicknameFC">
+      </mat-form-field>
+    </div>
 
-  <!-- Nickname -->
-  <mat-form-field appearance="outline" *ngIf="putativeFavouritePlayer">
-    <mat-label>Nickname</mat-label>
-    <input matInput type="text" [formControl]="nicknameFC">
-  </mat-form-field>
-
-  <!-- Add button -->
-  <button mat-flat-button color="primary"
-          *ngIf="!isEditMode && putativeFavouritePlayer"
-          (click)="addFavourite()">
-    <mat-icon>add</mat-icon>
-    Add {{ putativeFavouritePlayer.name }}
-  </button>
-
-  <button mat-flat-button color="accent"
-          *ngIf="isEditMode && workingFavourite"
-          (click)="updateFavourite()">
-    <mat-icon>save</mat-icon>
-    Save Changes
-  </button>
-
-</div>
+  <div class="lo-row lo-gap10 lo-align-center">
+      <button mat-raised-button (click)="save()">
+        <mat-icon>save</mat-icon>
+        {{ buttonLabel }}
+      </button>
+  </div>
+</dgf-component-container>

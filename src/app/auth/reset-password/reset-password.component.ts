@@ -1,16 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ActivatedRoute, Router} from '@angular/router';
+import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
+import { DGF_TOOL_ROUTES } from '../../tools/dgf-tool-routes';
 import {AuthService} from '../auth.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {MainMenuComponent} from '../../main-menu/main-menu.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {AppStateService} from '../../app-state.service';
-import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
 
 enum ConfirmationStatus {
   TBD,
@@ -20,7 +17,14 @@ enum ConfirmationStatus {
 
 @Component({
   selector: 'app-reset-password',
-  imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MainMenuComponent, MatToolbarModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    DgfComponentContainerComponent,
+  ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })
@@ -37,7 +41,6 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private appState: AppStateService,
     private router: Router,
     private fb: FormBuilder,
   ) {
@@ -68,12 +71,12 @@ export class ResetPasswordComponent implements OnInit {
     }
   }
 
-  // It would be exceedingly weird for this to ever happen in production
+  // It would be exceedingly unusual for this to ever happen in production
   navigateToForgotPassword() {
-    this.appState.activateTool(DGF_TOOL_KEY.FORGOT_PASSWORD);
+    this.router.navigate([DGF_TOOL_ROUTES.FORGOT_PASSWORD]);
   }
 
   navigateToLogin() {
-    this.appState.activateTool(DGF_TOOL_KEY.LOGIN);
+    this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
   }
 }

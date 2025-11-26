@@ -1,0 +1,22 @@
+<mat-toolbar>
+  <span>
+    {{ titlePrefix }}
+    @if (activeTool) {
+      - {{ activeTool.displayName }}
+    }
+  </span>
+  <div class="fill-remaining-space"></div>
+  @if (authService.isAuthenticated()) {
+    <button mat-icon-button (click)="onLogoutClick()" [matTooltip]="logoutTool.displayName">
+      <mat-icon>{{ logoutTool.icon }}</mat-icon>
+    </button>
+
+  } @else if (!activeTool?.is(loginTool.key)){
+    <button mat-icon-button (click)="onLoginClick()" [matTooltip]="loginTool.displayName">
+      <mat-icon>{{ loginTool.icon }}</mat-icon>
+    </button>
+
+  }
+  <ng-content select="[toolbar-actions]"></ng-content>
+  <app-main-menu></app-main-menu>
+</mat-toolbar>

@@ -83,10 +83,10 @@ export class FanService {
       const reorderFavouriteDto =
         new ReorderFavouriteDto(fan.id, playerIdToBeMoved.playerId, playerIdTarget.playerId);
       if (previousIndex < currentIndex) {
-        this.moveFavouriteAfter(reorderFavouriteDto);
+        this.moveFavouriteAfter(reorderFavouriteDto).subscribe();
       }
       if (previousIndex > currentIndex) {
-        this.moveFavouriteBefore(reorderFavouriteDto);
+        this.moveFavouriteBefore(reorderFavouriteDto).subscribe();
       }
     }
   }

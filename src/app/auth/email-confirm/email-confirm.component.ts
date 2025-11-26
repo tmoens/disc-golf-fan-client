@@ -1,13 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivatedRoute} from '@angular/router';
-import {MatCardModule} from '@angular/material/card';
+import { ActivatedRoute, Router } from '@angular/router';
 import {firstValueFrom} from 'rxjs';
+import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
+import { DGF_TOOL_ROUTES } from '../../tools/dgf-tool-routes';
 import {AuthService} from '../auth.service';
-import {MatToolbarModule} from '@angular/material/toolbar';
-import {ToolbarComponent} from '../../toolbar/toolbar.component';
-import {AppStateService} from '../../app-state.service';
-import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
 
 enum ConfirmationStatus {
   TBD,
@@ -17,7 +14,10 @@ enum ConfirmationStatus {
 
 @Component({
   selector: 'app-email-confirm',
-  imports: [CommonModule, MatCardModule, MatToolbarModule, ToolbarComponent],
+  imports: [
+    CommonModule,
+    DgfComponentContainerComponent,
+  ],
   templateUrl: './email-confirm.component.html',
   styleUrl: './email-confirm.component.scss'
 })
@@ -28,9 +28,8 @@ export class EmailConfirmComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
-    private appStateService: AppStateService,
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   async ngOnInit(): Promise<void> {
     const token = this.route.snapshot.queryParamMap.get('token');
@@ -45,7 +44,7 @@ export class EmailConfirmComponent implements OnInit {
       this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
       this.confirmationResultMessage = 'Your email was confirmed';
       await new Promise(resolve => setTimeout(resolve, 2000));
-      this.appStateService.activateTool(DGF_TOOL_KEY.LOGIN);
+      this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
     } else {
       this.confirmationStatus = ConfirmationStatus.FAILED;
       this.confirmationResultMessage = message;

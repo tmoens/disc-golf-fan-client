@@ -1,0 +1,67 @@
+@if (detailedScores) {
+  <div class="lo-column">
+    <div class="hole-score-row">
+      <p class="lo-40-centered small-text">Hole</p>
+      <p class="lo-60-centered small-text">Distance</p>
+      <p class="lo-40-centered small-text">Par</p>
+      <p class="lo-40-centered small-text">Score</p>
+      <p class="lo-40-centered small-text">Lead</p>
+      <p class="lo-60-centered small-text">Average</p>
+    </div>
+    <div class="lo-column lo-gap5">
+      @for (h of detailedScores.round.holeNames; track h; let i = $index){
+        <div class="hole-score-row">
+          <div class="lo-40-centered score-text">{{ detailedScores.round.holeNames[i] }}</div>
+          <div class="lo-60-centered score-text">{{ detailedScores.round.holeLengths[i] }}</div>
+          <div class="lo-40-centered score-text">{{ detailedScores.round.holePars[i] }}</div>
+          <dgf-hole-score
+            class="lo-40-centered score-text"
+            [holeScore]="detailedScores.holeScores[i]"
+            [holePar]="detailedScores.round.holePars[i]">
+          </dgf-hole-score>
+          <dgf-hole-score
+            class="lo-40-centered score-text"
+            [holeScore]="detailedScores.round.leaderScores[i]"
+            [holePar]="detailedScores.round.holePars[i]">
+          </dgf-hole-score>
+          @if (detailedScores.round.averageScores[i] >0) {
+            <div class="lo-60-centered score-text">
+              <span>{{ detailedScores.round.averageScores[i] | number:"1.2-2" }}</span>
+              @if (!detailedScores.round.completed){
+                <span>({{detailedScores.round.playCount[i]}})</span>
+              }
+            </div>
+          } @else if(detailedScores.round.averageScores[i] === 0) {
+            <div class="lo-60-centered score-text">-</div>
+          }
+        </div>
+      }
+      <mat-divider></mat-divider>
+      @if (detailedScores.round.roundNumber > 1) {
+        <div class="hole-score-row">
+          <div class="lo-155-left small-text">Round vs par</div>
+          <div class="lo-40-centered score-text">
+            <dgf-score-vs-par [score]="detailedScores.roundToPar"></dgf-score-vs-par>
+          </div>
+          <div class="lo-40-centered score-text">
+            <dgf-score-vs-par [score]="detailedScores.round.leaderRoundToPar"></dgf-score-vs-par>
+          </div>
+          <div class="lo-40-centered score-text">-</div>
+        </div>
+      }
+      <div class="hole-score-row">
+        <div class="lo-155-left small-text">Tournament vs par</div>
+        <div class="lo-40-centered score-text">
+          <dgf-score-vs-par [score]="detailedScores.parThroughRound"></dgf-score-vs-par>
+        </div>
+        <div class="lo-40-centered score-text">
+          <dgf-score-vs-par [score]="detailedScores.round.leaderParThroughRound"></dgf-score-vs-par>
+        </div>
+        <div class="lo-40-centered score-text">-</div>
+      </div>
+
+    </div>
+  </div>
+} @else {
+  Yikes - no detailed scores!
+}

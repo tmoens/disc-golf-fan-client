@@ -4,7 +4,7 @@ export class User {
   constructor(
     public id: string,
     public role: string,
-    public email?: string,
+    public email: string | null = 'unknown',
   ) {
   }
 

@@ -19,6 +19,18 @@ export const authenticatedGuard: CanActivateFn =
     return true;
   };
 
+export const loggedOutGuard: CanActivateFn =
+  (_route, _state) => {
+    const auth = inject(AuthService);
+    const router = inject(Router);
+
+    if (auth.isAuthenticated()) {
+      // user is already logged in → go to their home screen
+      return router.createUrlTree([DGF_TOOL_ROUTES.LIVE_SCORES]);
+    }
+    return true;
+  };
+
 export const roleGuard: CanActivateFn =
   (route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) => {
     const authService = inject(AuthService);

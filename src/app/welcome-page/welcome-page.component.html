@@ -1,43 +1,42 @@
 <!-- app-disc-golf-scores.component.html -->
-<div class="x-small-page">
-  <mat-card>
-    <app-toolbar></app-toolbar>
-    <mat-card-header>
-      <mat-card-subtitle>Live tournament scores for all your favorite players!</mat-card-subtitle>
-    </mat-card-header>
-
-    <mat-card-content>
-      <div class="lo-column lo-gap20">
-        <div class="lo-row lo-gap10">
-          <span class="material-symbols-outlined">select_check_box</span>
-          Tell us who your want to follow, we'll do the work!
-        </div>
-        <div class="lo-row lo-gap10">
-          <span class="material-symbols-outlined">select_check_box</span>
-          Don't know when they are playing?  It's OK, we do.
-        </div>
-        <div class="lo-row lo-gap10">
-          <span class="material-symbols-outlined" >select_check_box</span>
-          No need to navigate from tournament to tournament, division to division!
-        </div>
-        <div class="lo-row lo-gap10">
-          <span class="material-symbols-outlined">select_check_box</span>
-          Live updates from multiple tournaments and divisions all in one place
-        </div>
-        <div class="lo-row lo-gap10">
-          <span class="material-symbols-outlined">select_check_box</span>
-          Great "jumping-off" links to pdga players, tournaments and live scoring
-        </div>
-      </div>
-    </mat-card-content>
-
-    <mat-card-actions align="end" class="lo-gap20">
-      @if (authService.isAuthenticated()) {
-        <button mat-raised-button color="primary" (click)="logout()">Sign Out</button>
+<dgf-component-container>
+  <h6>Live tournament scores for all your favorite players!</h6>
+  <div class="lo-column lo-gap20">
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      Tell us who your want to follow, we'll do the work!
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      If they are playing, we'll show you their scores!
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      Want to know their upcoming schedules?  We'll show them all at a glance.
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      Don't know when they are playing?  It's OK, we will track it for you.
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined" >select_check_box</span>
+      No need to navigate from tournament to tournament, division to division!
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      Live updates from multiple tournaments and divisions all in one place.
+    </div>
+    <div class="lo-row lo-gap10">
+      <span class="material-symbols-outlined">select_check_box</span>
+      Great "jumping-off" links to pdga players, tournaments and live scoring.
+    </div>
+    <div class="lo-row lo-gap64 lo-justify-center">
+      @if( authService.isAuthenticated()) {
+        <button mat-raised-button class="dgf-big-primary" (click)="logout()">Sign Out</button>
       } @else {
-        <button mat-raised-button color="primary" (click)="register()">Register</button>
-        <button mat-raised-button color="primary" (click)="login()">Sign In</button>
+        <button mat-raised-button class="dgf-big-primary" (click)="register()">Register</button>
+        <button mat-raised-button class="dgf-big-primary" (click)="login()">Sign In</button>
       }
-    </mat-card-actions>
-  </mat-card>
-</div>
+    </div>
+  </div>
+</dgf-component-container>

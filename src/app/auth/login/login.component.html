@@ -1,33 +1,34 @@
-<div class="x-small-page">
-  <mat-card>
-    <app-toolbar></app-toolbar>
+<div>
+  <dgf-component-container>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-card-content>
-        <div class="lo-column">
-          <mat-form-field appearance="fill" floatLabel="always">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email">
-            <mat-error *ngIf="loginForm.controls['email'].hasError('required')">Email is required</mat-error>
-            <mat-error *ngIf="loginForm.controls['email'].hasError('email')">Not a valid email</mat-error>
-          </mat-form-field>
+      <div class="lo-column lo-align-center">
+        <mat-form-field >
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+          @if(loginForm.controls['email'].hasError('required')) {
+            <mat-error >Email is required</mat-error>
+          }
+          @if(loginForm.controls['email'].hasError('email')) {
+            <mat-error>Not a valid email</mat-error>
+          }
+        </mat-form-field>
 
-          <mat-form-field appearance="fill" floatLabel="always">
-            <mat-label>Password</mat-label>
-            <input matInput formControlName="password" type="password">
-            <mat-error *ngIf="loginForm.controls['password'].hasError('required')">Password is required</mat-error>
-          </mat-form-field>
-        </div>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" type="password">
+          @if(loginForm.controls['password'].hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+        @if (loginError) {
+          <mat-error>{{ loginError }}</mat-error>
+        }
+        <a [routerLink]="[`/${DGF_TOOL_ROUTES.FORGOT_PASSWORD}`]">Forgot Password?</a>
+      </div>
 
-        <div *ngIf="loginError" class="login-error">{{ loginError }}</div>
-      </mat-card-content>
-
-      <mat-card-actions align="end">
-        <button mat-raised-button color="primary" [disabled]="!loginForm.valid" type="submit">Sign In</button>
-      </mat-card-actions>
-      <mat-card-actions align="end">
-        <a [routerLink]="['/' + DGF_TOOL_ROUTES.FORGOT_PASSWORD]">Forgot Password?</a>
-      </mat-card-actions>
+      <dgf-action-row>
+        <button mat-raised-button [disabled]="!loginForm.valid" type="submit">Sign In</button>
+      </dgf-action-row>
     </form>
-
-  </mat-card>
+  </dgf-component-container>
 </div>

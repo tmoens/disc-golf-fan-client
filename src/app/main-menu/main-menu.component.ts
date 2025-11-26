@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
+import { Router } from '@angular/router';
 import {DgfToolsService} from '../tools/dgf-tools.service';
 import {DgfTool} from '../tools/dgf-tool';
 import {AppStateService} from '../app-state.service';
@@ -20,8 +21,9 @@ export class MainMenuComponent implements OnInit {
 
   constructor(
     private toolService: DgfToolsService,
-    private readonly appState: AppStateService,
+    private readonly router: Router,
     private readonly auth: AuthService,
+    private readonly appState: AppStateService,
   ) {
   }
 
@@ -66,6 +68,6 @@ export class MainMenuComponent implements OnInit {
 
   onClick(tool: DgfTool): void {
     if (this.isDisabled(tool) || !this.isVisible(tool)) return;
-    this.appState.activateTool(tool.key);
+    this.router.navigate([tool.route]);
   }
 }

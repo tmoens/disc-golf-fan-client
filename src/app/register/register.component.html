@@ -1,0 +1,93 @@
+  <dgf-component-container>
+    @if (!registrationSuccessful) {
+      <form [formGroup]="registerForm" class="lo-column lo-gap10"
+            (ngSubmit)="onSubmit()">
+        <div class="lo-column lo-gap20 lo-align-center">
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+            @if(registerForm.get('email')?.hasError('required')) {
+              <mat-error>Email is required</mat-error>
+            }
+            @if(registerForm.get('email')?.hasError('email')) {
+              <mat-error>Please enter a valid email</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name">
+            @if(registerForm.get('name')?.hasError('required')) {
+              <mat-error>Name is required</mat-error>
+            }
+            @if(registerForm.get('name')?.hasError('minlength')) {
+              <mat-error>Minimum three characters</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password">
+            @if(registerForm.get('password')?.invalid) {
+              <mat-error>Password is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Registration Code</mat-label>
+            <input matInput formControlName="registrationCode">
+            @if(registerForm.get('registrationCode')?.invalid) {
+              <mat-error>Registration code is required</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="lo-row">
+            <button mat-raised-button type="submit" [disabled]="!registerForm.valid">Register (having read the User Agreement below)</button>
+          </div>
+        </div>
+      </form>
+      @if(errorMessage) {
+        <div class="lo-column lo-align-center">
+          <mat-error><h4>Registration Failed</h4>{{errorMessage}}</mat-error>
+        </div>
+      }
+    } @else {
+      <div class="lo-column lo-align-center">
+        <h4>Registration Successful</h4>
+        <p>Your registration was successful, you should receive an email
+          shortly. You can the link provided there to confirm that we can
+          reach you using the email address you supplied.</p>
+      </div>
+    }
+  </dgf-component-container>
+  <dgf-component-container>
+    <h5>User Agreement 2025-11-25</h5>
+    <h6>The provider of the site makes absolutely no commitment or implied commitment to anyone that the site</h6>
+    <ul>
+      <li>be available ever</li>
+      <li>provide accurate or timely data</li>
+      <li>provide anything that you might expect it to provide</li>
+      <li>function on any device brand, type or instance</li>
+      <li>be secure</li>
+      <li>be useful, entertaining, enjoyable, or functional</li>
+      <li>be ad-free</li>
+      <li>be free to use</li>
+      <li>be supported</li>
+    </ul>
+    <h6>By registering you agree that:</h6>
+    <ul>
+      <li>the provider can delete your account for any reason at any time without notice and without cause</li>
+      <li>the provider of the site can look at, for any purpose whatsoever, the data you add to the site</li>
+      <li>if you communicate - in any way - ideas regarding the site to the provider
+        of the site, that those ideas become the property of the provider of the site to
+        act upon or ignore as they wish to</li>
+      <li>this agreement can change without notice</li>
+      <li>that the provider of the side can contact you via your e-mail address</li>
+      <li>you won't deconstruct, disassemble, reverse engineer or copy the site</li>
+      <li>you will respect that the provider owns the intellectual property as manifested in the site</li>
+    </ul>
+    <h6>The provider *does* promise</h6>
+    <ul>
+      <li>that they will not intentionally share your email-address with anyone</li>
+      <li>that they will not intentionally contact you by email once your account is closed</li>
+    </ul>
+  </dgf-component-container>

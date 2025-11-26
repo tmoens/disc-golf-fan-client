@@ -1,0 +1,67 @@
+@switch (true) {
+  @case (scoreVsPar < -2) {
+    <div class="hole-score-container">
+      <div class="eagle-or-better-circle">
+        <div class="eagle-or-better-circle">
+          <div class="birdie-circle">
+            {{ holeScore }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @case (scoreVsPar === -2) {
+    <div class="hole-score-container">
+      <div class="eagle-or-better-circle">
+        <div class="birdie-circle">
+          {{ holeScore }}
+        </div>
+      </div>
+    </div>
+  }
+  @case (scoreVsPar === -1) {
+    <div class="hole-score-container">
+      <div class="birdie-circle">
+        {{ holeScore }}
+      </div>
+    </div>
+  }
+  @case (scoreVsPar === 0) {
+    <div class="hole-score-container">
+      <div class="par">
+        @if (holeScore) {
+          <div>{{ holeScore }}</div>
+        } @else {
+          <div>-</div>
+        }
+      </div>
+    </div>
+  }
+  @case (scoreVsPar === 1) {
+    <div class="hole-score-container">
+      <div class="bogey-square">
+        {{ holeScore }}
+      </div>
+    </div>
+  }
+  @case (scoreVsPar === 2) {
+    <div class="hole-score-container">
+      <div class="double-bogey-or-worse-square">
+        <div class="bogey-square">
+          {{ holeScore }}
+        </div>
+      </div>
+    </div>
+  }
+  @case (scoreVsPar > 2) {
+    <div class="hole-score-container">
+      <div class="double-bogey-or-worse-square">
+        <div class="double-bogey-or-worse-square">
+          <div class="bogey-square">
+            {{ holeScore }}
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}

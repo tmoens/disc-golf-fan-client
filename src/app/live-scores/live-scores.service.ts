@@ -1,14 +1,13 @@
 import {effect, Injectable, OnDestroy, signal, WritableSignal} from '@angular/core';
-import {of, Subscription, timer} from 'rxjs';
+import { firstValueFrom, of, Subscription, timer } from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {plainToInstance} from 'class-transformer';
 import {LoaderService} from '../loader.service';
-import {ScorelineDto} from './scoreline.dto';
+import {DetailedScorelineDto} from './detailed-scoreline-dto';
 import {AppStateService} from '../app-state.service';
-import {BriefPlayerResultDto} from './brief-player-result.dto';
 import {environment} from '../../environments/environment';
 import {FanService} from '../fan/fan.service';
 import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
+import { ScoresForFavouritePlayerDto } from './scores-for-fan.dto';
 
 /**
  * Manages live scores:
@@ -20,19 +19,12 @@ import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
   providedIn: 'root'
 })
 export class LiveScoresService implements OnDestroy {
-  detailLiveRoundId: number | null = null;
-  detailResultId: number | null = null;
-
   // Keep signals private; expose read accessors so consumers can’t mutate
   // Public read-only views for templates/components
-  private favouriteLiveScoresSig: WritableSignal<BriefPlayerResultDto[]> = signal<BriefPlayerResultDto[]>([]);
+  private favouriteLiveScoresSig: WritableSignal<ScoresForFavouritePlayerDto[]> = signal<ScoresForFavouritePlayerDto[]>([]);
   public favouriteLiveScores = this.favouriteLiveScoresSig.asReadonly();
 
-  private detailedScoresSig: WritableSignal<ScorelineDto | null> = signal<ScorelineDto | null>(null);
-  public detailedScores = this.detailedScoresSig.asReadonly();
-
   favouritesLiveScoresSubscription: Subscription | null = null;
-  detailedScoresSubscription: Subscription | null = null;
 
   constructor(
     private loaderService: LoaderService,
@@ -71,7 +63,6 @@ export class LiveScoresService implements OnDestroy {
 
   private stopAllPolling() {
     this.stopLiveScoresPolling();
-    this.stopDetailedScoresPolling();
   }
 
   /**
@@ -115,86 +106,34 @@ export class LiveScoresService implements OnDestroy {
       })
     ).subscribe((data) => {
       if (!data) return;
-      const favouritesLiveScores = data.map(d => plainToInstance(BriefPlayerResultDto, d));
-      this.favouriteLiveScoresSig.set(favouritesLiveScores);
+      this.favouriteLiveScoresSig.set(data);
     });
   }
 
-  /**
-   * Focuses detailed polling on a specific favourite's live round.
-   * Clears previous details immediately to avoid showing stale data.
-   */
-  setDetailFocus(briefPlayerResult?: BriefPlayerResultDto) {
-    if (!briefPlayerResult) {
-      this.unsetDetailFocus();
-      return;
+  async getDetailedScores(
+    liveRoundId?: number,
+    resultId?: number
+  ): Promise<DetailedScorelineDto | undefined> {
+
+    if (!liveRoundId || !resultId) {
+      return undefined;
     }
-    if (this.isInFocus(briefPlayerResult)) {
-      return;
+    try {
+      // Convert Observable → Promise and await it
+      const result = await firstValueFrom(
+        this.loaderService.getDetailedScores(liveRoundId, resultId).pipe(
+          catchError(err => {
+            console.warn('Failed to load detailed scores', err);
+            return of(undefined);  // Promise resolves to undefined
+          })
+        )
+      );
+      return result ?? undefined;
+    } catch (err) {
+      // Normally won't get here because catchError handles it
+      console.warn('Unexpected error in getDetailedScores', err);
+      return undefined;
     }
-    this.detailLiveRoundId = briefPlayerResult.liveRoundId;
-    this.detailResultId = briefPlayerResult.resultId;
-    this.detailedScoresSig.set(null);
-    this.startDetailedScoresPolling();
-  }
-
-  /**
-   * Clears detail focus and stops detailed polling.
-   */
-  unsetDetailFocus() {
-    this.stopDetailedScoresPolling();
-    this.detailLiveRoundId = null;
-    this.detailResultId = null;
-  }
-
-  /**
-   * Starts polling detailed scores for the current focus at the configured cadence.
-   * Ensures only one detailed polling subscription is active.
-   */
-  startDetailedScoresPolling() {
-    this.stopDetailedScoresPolling();
-    this.detailedScoresSubscription =
-      timer(0, environment.polling.detailedScoresMs).subscribe(() => {
-        this.getDetailedScores();
-      });
-  }
-
-  /**
-   * Stops detailed polling and clears current detailed scores.
-   */
-  stopDetailedScoresPolling() {
-    this.detailedScoresSig.set(null);
-    if (this.detailedScoresSubscription) {
-      this.detailedScoresSubscription.unsubscribe();
-      this.detailedScoresSubscription = null;
-    }
-  }
-
-  /**
-   * Loads the current focused favourite's detailed scores once.
-   * Stops polling if focus is not set.
-   */
-  getDetailedScores() {
-    if (!this.detailLiveRoundId || !this.detailResultId) {
-      this.stopDetailedScoresPolling();
-      return;
-    }
-    this.loaderService.getDetailedScores(this.detailLiveRoundId, this.detailResultId).pipe(
-      catchError(err => {
-        console.warn('Failed to load detailed scores', err);
-        return of(null);
-      })
-    ).subscribe((result) => {
-      if (result) {
-        this.detailedScoresSig.set(result);
-      }
-    });
-  }
-
-  isInFocus(briefPlayerResult: BriefPlayerResultDto): boolean {
-    return (
-      this.detailLiveRoundId === briefPlayerResult.liveRoundId &&
-      this.detailResultId === briefPlayerResult.resultId);
   }
 
   ngOnDestroy() {

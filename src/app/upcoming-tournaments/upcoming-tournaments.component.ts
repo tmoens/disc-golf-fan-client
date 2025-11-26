@@ -1,18 +1,20 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import { Router } from '@angular/router';
+import { DgfActionRowComponent } from '../app-helpers/action-row.component';
+import { DgfComponentContainerComponent } from '../dgf-component-container/dgf-component-container.component';
 import {LoaderService} from '../loader.service';
+import { DGF_TOOL_ROUTES } from '../tools/dgf-tool-routes';
+import { PlayerTournamentsComponent } from './player-tournaments/player-tournaments/player-tournaments.component';
 import {UpcomingTournamentsDto} from './upcoming-tournaments.dto';
 import {lastValueFrom} from 'rxjs';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {ToolbarComponent} from '../toolbar/toolbar.component';
 import {DgfTool} from '../tools/dgf-tool';
 import {DgfToolsService} from '../tools/dgf-tools.service';
 import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
-import {AppStateService} from '../app-state.service';
 
 @Component({
   selector: 'app-upcoming-tournaments',
@@ -20,9 +22,7 @@ import {AppStateService} from '../app-state.service';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    ToolbarComponent,
+    MatTooltipModule, PlayerTournamentsComponent, DgfComponentContainerComponent, DgfActionRowComponent,
   ],
   templateUrl: './upcoming-tournaments.component.html',
   styleUrl: './upcoming-tournaments.component.scss'
@@ -34,9 +34,8 @@ export class UpcomingTournamentsComponent implements OnInit {
   constructor(
     private loaderService: LoaderService,
     private toolService: DgfToolsService,
-    private appStateService: AppStateService,
-  ) {
-  }
+    private router: Router,
+  ) {}
 
   async ngOnInit() {
     this.manageFavouritesTool = this.toolService.getByKey(DGF_TOOL_KEY.MANAGE_FAVOURITES);
@@ -49,6 +48,6 @@ export class UpcomingTournamentsComponent implements OnInit {
   }
 
   onManageFavourites() {
-    this.appStateService.activateTool(DGF_TOOL_KEY.MANAGE_FAVOURITES);
+    this.router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
   }
 }

@@ -13,6 +13,7 @@ export const DGF_TOOL_ROLES: Record<DgfToolKey, DgfRole | undefined> = {
   WELCOME: undefined,
   REGISTER: undefined,
   LOGIN: undefined,
+  LOGOUT: undefined,
   CONFIRM_EMAIL: undefined,
   FORGOT_PASSWORD: undefined,
   RESET_PASSWORD: undefined,

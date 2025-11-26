@@ -13,7 +13,7 @@ import {UnauthorizedInterceptor} from './auth/unauthorized-interceptor';
 import {AppStateService} from './app-state.service';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatCardModule} from '@angular/material/card';
-import {ToolbarComponent} from './toolbar/toolbar.component';
+import {DgfToolbarComponent} from './toolbar/dgf-toolbar.component';
 import {MainMenuComponent} from './main-menu/main-menu.component';
 import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 
@@ -36,7 +36,7 @@ export function initializeApp(appStateService: AppStateService) {
     MatMenuModule,
     MatButtonModule,
     MatIconModule,
-    MatDividerModule, ToolbarComponent, MainMenuComponent],
+    MatDividerModule, DgfToolbarComponent, MainMenuComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
@@ -50,7 +50,7 @@ export function initializeApp(appStateService: AppStateService) {
     provideHttpClient(withInterceptorsFromDi()),
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
-      useValue: {floatLabel: 'always', appearance: 'fill'}
+      useValue: {appearance: 'outline', floatLabel: 'always'}
     },
   ]
 })

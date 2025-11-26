@@ -1,6 +1,7 @@
 import {Injectable, signal} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
-import {filter} from 'rxjs/operators';
+import { filter, subscribeOn } from 'rxjs/operators';
+import { DGF_TOOL_ROUTES } from './tools/dgf-tool-routes';
 import {DgfToolsService} from './tools/dgf-tools.service';
 import {DgfTool} from './tools/dgf-tool';
 import {DGF_TOOL_KEY, DgfToolKey} from './tools/dgf-took-keys';
@@ -28,23 +29,6 @@ export class AppStateService {
     });
   }
 
-  activateTool(key: DgfToolKey, opts?: { navigate?: boolean }): void {
-    const tool = this.toolsService.getByKey(key);
-
-    if (!tool) {
-      console.warn(`Unknown tool key: ${key}`);
-      return;
-    }
-
-    // Set state
-    this.activeTool.set(tool);
-
-    // Navigate to the tool's route unless opts.navigate is false
-    const shouldNavigate = opts?.navigate ?? true;
-    if (shouldNavigate) {
-      void this.router.navigate([tool.route]);
-    }
-  }
 
   watchRouterChanges(): void {
     this.router.events
@@ -62,20 +46,22 @@ export class AppStateService {
           this.redirectToFallback();
           return;
         }
-
         const tool = this.toolsService.getByKey(key);
-
-        // Sync active tool without navigation (because we are already at the tool's route)
-        this.activateTool(key, {navigate: false});
+        if (tool?.is(DGF_TOOL_KEY.LOGOUT)) {
+          this.authService.logout().subscribe();
+          this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
+          return
+        }
+        this.activeTool.set(tool);
       });
   }
 
   private redirectToFallback(): void {
     const user = this.authService.authenticatedUser();
     if (user) {
-      this.activateTool(DGF_TOOL_KEY.LIVE_SCORES);
+      this.router.navigate([DGF_TOOL_ROUTES.LIVE_SCORES]);
     } else {
-      this.activateTool(DGF_TOOL_KEY.LOGIN);
+      this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
     }
   }
 }

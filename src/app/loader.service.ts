@@ -8,9 +8,9 @@ import {FanDto} from './fan/dtos/fan.dto';
 import {PlayerDto} from './fan/dtos/player.dto';
 import {AddFavouriteDto} from './fan/dtos/add-favourite.dto';
 import {FavouriteDto} from './fan/dtos/favourite.dto';
-import {BriefPlayerResultDto} from './live-scores/brief-player-result.dto';
 import {AuthService} from './auth/auth.service';
-import {ScorelineDto} from './live-scores/scoreline.dto';
+import {DetailedScorelineDto} from './live-scores/detailed-scoreline-dto';
+import { ScoresForFanDto } from './live-scores/scores-for-fan.dto';
 import {UpcomingTournamentsDto} from './upcoming-tournaments/upcoming-tournaments.dto';
 import {ReorderFavouriteDto} from './fan/dtos/reorder-favourite.dto';
 import {User} from './auth/user';
@@ -50,16 +50,16 @@ export class LoaderService {
       );
   }
 
-  getScoresForFan(id: string): Observable<BriefPlayerResultDto[] | null> {
-    const url = `${this.serverUrl}/fan/get-scores/${id}`;
-    return this.http.get<BriefPlayerResultDto[]>(url, {headers: this.authService.createAccessHeader()})
+  getScoresForFan(id: string): Observable<ScoresForFanDto | null> {
+    const url = `${this.serverUrl}/fan/scores-for-fan/${id}`;
+    return this.http.get<ScoresForFanDto>(url, {headers: this.authService.createAccessHeader()})
       .pipe(
-        catchError(this.handleErrorAndShowSnackbar(url, []))
+        catchError(this.handleErrorAndShowSnackbar(url, null))
       );
   }
 
 
-  getDetailedScores(liveRoundId: number, resultId: number): Observable<ScorelineDto | null> {
+  getDetailedScores(liveRoundId: number, resultId: number): Observable<DetailedScorelineDto | null> {
     const url = `${this.serverUrl}/scoreline/get-scoreline-detail/${liveRoundId}/${resultId}`;
     return this.http.get<any>(url, {headers: this.authService.createAccessHeader()})
       .pipe(

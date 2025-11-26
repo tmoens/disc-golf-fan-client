@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {FanComponent} from './fan/fan.component';
-import {LiveScoresComponent} from './live-scores/live-scores.component';
-import {RegisterComponent} from './auth/register/register.component';
+import {LiveScoresComponent} from './live-scores/live-scores/live-scores.component';
+import {RegisterComponent} from './register/register.component';
 import {EmailConfirmComponent} from './auth/email-confirm/email-confirm.component';
 import {LoginComponent} from './auth/login/login.component';
 import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
@@ -68,6 +68,10 @@ const routes: Routes = [
   },
   {
     path: DGF_TOOL_ROUTES.LOGIN,
+    component: LoginComponent,
+  },
+  {
+    path: DGF_TOOL_ROUTES.LOGOUT,
     component: LoginComponent,
   },
   {

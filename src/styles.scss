@@ -27,11 +27,18 @@ $zf-compact-theme: mat.define-theme((
   )
 ));
 
-
+// Generate component themes
 :root {
+  // a colour that is good for backgrounds
+  --dgf-primary-2pct: color-mix(in srgb, var(--mat-sys-primary) 2%, transparent);
+
+  @include mat.system-level-colors($zf-app-theme);
+  @include mat.system-level-typography($zf-app-theme);
+
   @include mat.all-component-themes($zf-app-theme);
   @include mat.all-component-typographies($zf-compact-theme);
   @include mat.typography-hierarchy($zf-app-theme);
+
 
   // Override button corners. This took some time to figure out and
   // in the end it is the protected-container-shape that does the trick.
@@ -40,22 +47,15 @@ $zf-compact-theme: mat.define-theme((
   @include mat.button-overrides((
     filled-container-shape: 50px,
     outlined-container-shape: 50px,
-    protected-container-shape: 5px,
+    protected-container-shape: 2px,
     text-container-shape: 50px,
   ));
-  // override card corners. At for these, the names are clear.
-  @include mat.card-overrides((
-    elevated-container-shape: 5px,
-    outlined-container-shape: 5px,
+  // override button-toggle corners. At for these, the names are clear.
+  @include mat.button-toggle-overrides((
+    shape: 2px,
   ));
-}
 
-//.mat-mdc-button,
-//.mat-mdc-raised-button,
-//.mat-mdc-unelevated-button,
-//.mat-mdc-outlined-button {
-//  border-radius: 0 !important;
-//}
+}
 
 // With outline appearance the Label pokes out slightly above the outline
 // but the outline is at the dead top of the form-field, so we need to give
@@ -64,9 +64,9 @@ $zf-compact-theme: mat.define-theme((
   margin-top: 8px;
 }
 
-
 html, body {
-  height: 100%;
+  height: 100%;background: var(--md-sys-color-surface);
+
 }
 
 body {
@@ -74,20 +74,20 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.app-shell {
+  max-width: 1000px;
+  margin: 0 auto;          // horizontally center
+  width: 100%;             // allow shrink to phone width
+}
+
 .app-content {
   height: 100vh; /* height of the viewport */
-  background: #dcd2f3;
-  //background: url('assets/images/small-background.jpg') no-repeat center center fixed;
-  //-webkit-background-size: cover;
-  //-moz-background-size: cover;
-  //-o-background-size: cover;
-  //background-size: cover;
 }
 
 /* Large devices (desktops) */
 @media (min-width: 960px) {
   .app-content {
-    background: #373ab7;
+    //background: #373ab7;
     //background-image: url('assets/images/large-background.jpg');
   }
 }
@@ -102,15 +102,15 @@ mat-form-field {
 }
 
 .x-small-page {
-  margin: 0 auto;
-  padding-top: 10px;
-  max-width: 500px;
+  //margin: 0 auto;
+  //padding-top: 10px;
+  //max-width: 800px;
 }
 
 .small-page {
-  margin: 0 auto;
-  padding-top: 10px;
-  max-width: 959px;
+  //margin: 0 auto;
+  //padding-top: 10px;
+  //max-width: 959px;
 }
 
 

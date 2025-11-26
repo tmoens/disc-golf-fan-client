@@ -1,0 +1,34 @@
+@if (liveScoreService.favouriteLiveScores().length === 0) {
+  <dgf-component-container>
+
+    <!-- No scores to report   -->
+    <p>None of your favorites appear to be playing a tournament at the moment.</p>
+    <p>In the meantime, feel free to add some new favorites!</p>
+    <dgf-action-row>
+      <button mat-raised-button (click)="onManageFavourites()">{{ manageFavouritesTool?.displayName }}</button>
+    </dgf-action-row>
+  </dgf-component-container>
+} @else {
+
+  <!-- Scores to report   -->
+    <div class="lo-column">
+      <!--  loop through the favourites the *should* be ordered by the user's ordering.  -->
+      @for (player of liveScoreService.favouriteLiveScores(); track player.playerId) {
+
+        <!--  loop through the favourite's current tournaments  -->
+          <!--  There are strange situations when a player is in two tournaments at once, (e.g. bonus glow night) -->
+        @for (tournament of player.tournaments; track tournament.tournamentId) {
+
+          <!-- even more bizarre: a player can be in two divisions in the same tournament. -->
+          @for (division of tournament.divisions; track division.divisionName) {
+            <dgf-score
+              [player]="player"
+              [tournament]="tournament"
+              [division]="division">
+              >
+            </dgf-score>
+          }
+        }
+      }
+    </div>
+}

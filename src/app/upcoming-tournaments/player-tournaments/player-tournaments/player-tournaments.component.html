@@ -1,0 +1,29 @@
+@if (player.upcomingTournaments.length === 0) {
+  <div class="lo-row lo-gap20 lo-align-center">
+    <a class="player" [href]="'https://pdga.com/player/' + player.id" target="_blank">
+      {{ player.name }}
+    </a>
+    <span class="tournament">No upcoming events scheduled.</span>
+  </div>
+} @else {
+
+  <!-------------- Upcoming Tournaments for a favourite -------------->
+  <div class="lo-column lo-gap5">
+    <a class="player" [href]="'https://pdga.com/player/' + player.id" target="_blank">
+      {{ player.name }}
+    </a>
+    @for (tournament of player.upcomingTournaments; track tournament.id) {
+      <div class="lo-row lo-gap10 tournament">
+        <span>{{ tournament.startDate }}</span>
+        <span>{{ tournament.name }}</span>
+        <a [href]="'https://pdga.com/tour/event/' + tournament.id"
+           target="_blank"
+           class="icon-link"
+           aria-label="Open tournament on PDGA"
+           matTooltip="Visit PDGA page">
+          <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+    }
+  </div>
+}

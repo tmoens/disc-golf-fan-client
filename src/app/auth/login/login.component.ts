@@ -2,14 +2,16 @@ import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {finalize} from 'rxjs';
-import {ToolbarComponent} from '../../toolbar/toolbar.component';
+import { DgfActionRowComponent } from '../../app-helpers/action-row.component';
+import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
+import { DGF_TOOL_KEY } from '../../tools/dgf-took-keys';
+import { DgfTool } from '../../tools/dgf-tool';
+import { DgfToolsService } from '../../tools/dgf-tools.service';
 import {AuthService} from '../auth.service';
 import {LoginDto} from '../dtos/login-dto';
-import {MatCardModule} from '@angular/material/card';
 import {MatInputModule} from '@angular/material/input';
 import {Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
-import {MatToolbarModule} from '@angular/material/toolbar';
 import {DGF_TOOL_ROUTES} from '../../tools/dgf-tool-routes';
 
 enum LoginStatus {
@@ -20,12 +22,21 @@ enum LoginStatus {
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, MatCardModule, ReactiveFormsModule, MatInputModule, RouterLink, MatButtonModule, MatToolbarModule, ToolbarComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    RouterLink,
+    MatButtonModule,
+    DgfComponentContainerComponent,
+    DgfActionRowComponent,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
+  fogotPasswordTool: DgfTool;
   loginStatus = LoginStatus.TBD;
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -37,8 +48,10 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private toolService: DgfToolsService,
     private router: Router,
   ) {
+    this.fogotPasswordTool =  this.toolService.getByKey(DGF_TOOL_KEY.FORGOT_PASSWORD);
   }
 
   onSubmit() {
@@ -70,6 +83,10 @@ export class LoginComponent {
         this.loginError = message || 'Sign-in failed. Please try again.';
       }
     });
+  }
+
+  onForgotPasswordClick() {
+    void this.router.navigate([this.fogotPasswordTool.route]);
   }
 
   protected readonly DGF_TOOL_ROUTES = DGF_TOOL_ROUTES;

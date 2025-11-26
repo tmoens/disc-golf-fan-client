@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import { Router } from '@angular/router';
+import { DGF_TOOL_ROUTES } from '../tools/dgf-tool-routes';
 import {AuthService} from './auth.service';
 import {Observable, switchMap, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -14,7 +16,7 @@ import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 export class UnauthorizedInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
-    private appStateService: AppStateService,
+    private router: Router,
   ) {
   }
 
@@ -43,7 +45,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
       }),
       catchError((err) => {
         // If refreshing fails (e.g., refresh token is also expired), redirect to login
-        this.appStateService.activateTool(DGF_TOOL_KEY.LOGIN);
+        this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
         return throwError(() => err);
       })
     );

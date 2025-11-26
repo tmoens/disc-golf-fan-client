@@ -2,6 +2,7 @@ import {Injectable, signal} from '@angular/core';
 import {map, Observable, of, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
+import { AccessTokenPayload } from './dtos/access-token-payload';
 import {RegistrationDto} from './dtos/registration-dto';
 import {catchError} from 'rxjs/operators';
 import {LoginDto} from './dtos/login-dto';
@@ -48,8 +49,13 @@ export class AuthService {
     } else {
       console.log(`setting refreshed accessToken to: ${JSON.stringify(token)}`);
       this._accessToken = token;
-      const tokenPayload: RefreshTokenPayload = this.decryptToken(this.refreshToken);
-      this.authenticatedUser.set(new User(tokenPayload.id, tokenPayload.role));
+      const tokenPayload: AccessTokenPayload = this.decryptToken(token);
+      if (!tokenPayload || !tokenPayload.sub || !tokenPayload.role) {
+        console.error('Failed to decode access token payload.');
+        return;
+      }
+      localStorage.setItem('accessToken', token);
+      this.authenticatedUser.set(new User(tokenPayload.sub, tokenPayload.role, tokenPayload.email));
     }
   }
 
@@ -103,6 +109,7 @@ export class AuthService {
       map(() => {
         this.accessToken = '';
         this.refreshToken = '';
+        this.authenticatedUser.set(null);
       }),
     );
   }
@@ -215,6 +222,11 @@ export class AuthService {
       error?.error?.message ??
       error?.message ??
       (typeof error === 'string' ? error : null);
+
+    // If message is an array, join with newlines
+    if (Array.isArray(msg)) {
+      return msg.join('\n');
+    }
 
     // Optionally surface specific status codes
     if (!msg && error?.status) {

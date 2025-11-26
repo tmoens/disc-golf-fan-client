@@ -1,8 +1,9 @@
 import {Component, OnDestroy} from '@angular/core';
-import {Router} from '@angular/router';
+import { AppStateService } from './app-state.service';
 import {BreakpointService} from './breakpoint.service';
 import {Subscription} from 'rxjs';
 import {FanService} from './fan/fan.service';
+
 
 @Component({
     selector: 'app-root',
@@ -17,7 +18,7 @@ export class AppComponent implements OnDestroy {
 
   constructor(
     protected fanService: FanService,
-    private router: Router,
+    protected appStateService: AppStateService,
     private breakpointService: BreakpointService,
   ) {
     this.toBeDestroyedLater = this.breakpointService.isLargeScreen().subscribe(isLarge => {
@@ -30,4 +31,6 @@ export class AppComponent implements OnDestroy {
       this.toBeDestroyedLater.unsubscribe();
     }
   }
+
+  protected readonly JSON = JSON;
 }

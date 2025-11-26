@@ -1,23 +1,31 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { DgfActionRowComponent } from '../../app-helpers/action-row.component';
+import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
 import {AuthService} from '../auth.service';
 import {ForgotPasswordDto} from '../dtos/forgot-password-dto';
 import {MatButtonModule} from '@angular/material/button';
-import {MatCardModule} from '@angular/material/card';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {MainMenuComponent} from '../../main-menu/main-menu.component';
-import {MatToolbarModule} from '@angular/material/toolbar';
 
 @Component({
     selector: 'app-forgot-password',
-    imports: [CommonModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MainMenuComponent, MatToolbarModule],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    DgfComponentContainerComponent,
+    DgfActionRowComponent,
+  ],
     templateUrl: './forgot-password.component.html',
     styleUrl: './forgot-password.component.scss'
 })
 export class ForgotPasswordComponent {
   message = '';
+  errorMessage = '';
   form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
@@ -35,8 +43,10 @@ export class ForgotPasswordComponent {
         .subscribe((data) => {
           if (data === null || !data) {
             this.message = 'You should receive an e-mail shortly with a link to reset your password.';
+            this.errorMessage = '';
           } else {
-            this.message = `No user with that email address. ${data}`;
+            this.errorMessage = `${data}`;
+            this.message = '';
           }
         });
     }
