@@ -1,4 +1,4 @@
-import { Component, effect, OnInit, signal } from '@angular/core';
+import { Component, effect, OnInit } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import { Router } from '@angular/router';
 import { DgfActionRowComponent } from '../../app-helpers/action-row.component';
@@ -7,18 +7,16 @@ import {FanService} from '../../fan/fan.service';
 import {MatCardModule} from '@angular/material/card';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { DGF_TOOL_ROUTES } from '../../tools/dgf-tool-routes';
+import { FlattenedScoreRow, flattenFavouriteScores } from '../score/dtos/flattened-scores-for-fan.dto';
 import { ScoreComponent } from '../score/score.component';
 import {
-  DivisionForFanDto,
-  RoundForFanDto,
   ScoresForFavouritePlayerDto,
-  TournamentForFanDto,
-} from '../scores-for-fan.dto';
+} from '../score/dtos/scores-for-fan.dto';
 import {LiveScoresService} from '../live-scores.service';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
+import {CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {DgfToolsService} from '../../tools/dgf-tools.service';
 import {DgfTool} from '../../tools/dgf-tool';
 import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
@@ -35,14 +33,15 @@ import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
     ScoreComponent,
     DgfComponentContainerComponent,
     DgfActionRowComponent,
+    CdkDropList,
   ],
   templateUrl: './live-scores.component.html',
   styleUrl: './live-scores.component.scss'
 })
 
 export class LiveScoresComponent implements OnInit {
+  flattenedRows: FlattenedScoreRow[] = [];
   manageFavouritesTool?: DgfTool;
-  roundNote: number | null = null;
   private roundsInFocus = new Map<string, RoundFocusState>();
 
   constructor(
@@ -59,14 +58,18 @@ export class LiveScoresComponent implements OnInit {
 
       // no favourites yet? → redirect
       if (fan.favourites.length === 0) {
-        router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
+        void router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
         return;
       }
     });
 
     effect(() => {
       const scores: ScoresForFavouritePlayerDto[] = this.liveScoreService.favouriteLiveScores();
-      if (!scores) return;
+      if (!scores)  {
+        this.flattenedRows = [];
+        return;
+      }
+      this.flattenedRows = flattenFavouriteScores(scores);
       this.updateRoundsInFocus(scores);
     });
 
@@ -112,50 +115,30 @@ export class LiveScoresComponent implements OnInit {
   }
 
   onManageFavourites() {
-    this.router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
-  }
-
-  async openPanel() {
-    // Opening one panel automatically closes any other open panel.
-    // So both (opened) and (closed) are fired.
-    // BUT when a new panel is opened, and if (opened) fires first, then closed fires,
-    // the effect is that the newly opened panel will close.  So...
-    // Wait a tick for Close to fire first.
-    // await new Promise((resolve) => setTimeout(resolve, 1));
-    // this.liveScoreService.setDetailFocus(briefPlayerResult);
+    void this.router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
   }
 
 
-  onDrop(event: CdkDragDrop<any>) {
-    this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
-  }
+  onDrop(event: CdkDragDrop<FlattenedScoreRow[]>) {
+    const from = this.flattenedRows[event.previousIndex];
+    const to   = this.flattenedRows[event.currentIndex];
 
-  onShowScoreDetails(
-    f: ScoresForFavouritePlayerDto,
-    t: TournamentForFanDto,
-    d: DivisionForFanDto,
-    r: RoundForFanDto
-  ) {
-    this.roundNote = r.liveRoundId;
-    const key = `${f.playerId}_${t.tournamentId}_${d.divisionName}`;
-    this.roundsInFocus.set(key, {
-      roundNumber: r.roundNumber,
-      isTrackingLatest: (r === d.rounds[d.rounds.length -1])
-    });
-  }
+    if (!from || !to || event.previousIndex === event.currentIndex) return;
 
-  getRoundInFocus(f: ScoresForFavouritePlayerDto, t: TournamentForFanDto, d: DivisionForFanDto): number {
-    const key = `${f.playerId}_${t.tournamentId}_${d.divisionName}`;
-    const currentState = this.roundsInFocus.get(key);
-    return currentState?.roundNumber ?? 0;
-  }
+    const movedPlayerId  = from.favourite.playerId;
+    const targetPlayerId = to.favourite.playerId;
+    if (movedPlayerId === targetPlayerId) return;
 
-  protected readonly JSON = JSON;
+    const direction = event.previousIndex < event.currentIndex ? 'after' : 'before';
+
+    this.fanService.moveFavourite(movedPlayerId, targetPlayerId, direction)
+      .subscribe();
+  }
 }
 
 
 
 export interface RoundFocusState {
-  roundNumber: number;    // The sequential number of the focused round (e.g. 1, 2, 3)
+  roundNumber: number;    // The sequential number of the focused round (e.g., 1, 2, 3)
   isTrackingLatest: boolean; // Explicit flag: was the user on the "latest" round last time we checked?
 }

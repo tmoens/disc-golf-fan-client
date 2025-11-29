@@ -17,6 +17,7 @@ export const DGF_TOOL_ROUTES: Record<DgfToolKey, string> = {
   CONFIRM_EMAIL: 'confirm-email',
   FORGOT_PASSWORD: 'forgot-password',
   RESET_PASSWORD: 'reset-password',
+  USER_ACCOUNT_MANAGEMENT: 'user-account-management',
 };
 
 export type DgfToolRouteLiteral = (typeof DGF_TOOL_ROUTES)[DgfToolKey];

@@ -1,0 +1,102 @@
+<dgf-component-container>
+  <div class="lo-row lo-gap20 lo-align-center">
+    <h6>{{user?.name ?? "NoName"}}</h6>
+    <h6>{{user?.email ?? "No Email"}}</h6>
+  </div>
+</dgf-component-container>
+
+<dgf-component-container>
+  <div class="lo-row lo-gap20 lo-align-center">
+    <mat-form-field>
+      <mat-label>New email</mat-label>
+      <input matInput [formControl]="emailFC">
+      @if (emailFC.hasError('required')) {
+        <mat-error>Email is required</mat-error>
+      }
+      @if (emailFC.hasError('email')) {
+        <mat-error>Not a valid email</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button
+            [disabled]="!canSaveEmail"
+            (click)="saveEmail()">
+      Save Email
+    </button>
+  </div>
+  @if (emailChangeConfirmationMessage) {
+    <tsw-fade-message
+      [message]="emailChangeConfirmationMessage"
+    />
+  }
+</dgf-component-container>
+
+<dgf-component-container>
+  <div class="lo-row lo-gap20 lo-align-center">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>New username</mat-label>
+      <input matInput [formControl]="nameFC">
+      @if (nameFC.hasError('maxlength')) {
+        <mat-error>Name is too long</mat-error>
+      }
+      @if (nameFC.hasError('minlength')) {
+        <mat-error>Name must be at least 3 characters long</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-raised-button color="primary"
+            [disabled]="!canSaveName"
+            (click)="saveName()">
+      Save Name
+    </button>
+  </div>
+  @if (nameChangeConfirmationMessage) {
+    <tsw-fade-message
+      [message]="nameChangeConfirmationMessage"
+    />
+  }
+</dgf-component-container>
+
+@if (!user?.emailConfirmed) {
+  <dgf-component-container>
+    <div class="lo-row lo-gap20 lo-align-center">
+      <button mat-raised-button color="primary"
+              (click)="requestEmailConfirmationEmail()">
+        Resend Email-Confirmation Email
+      </button>
+      <div class="lo-full">We don't have a record of you confirming this email: {{user?.email}}.
+        Click the button and we will send you an new email-confirmation email</div>
+    </div>
+    @if (requestEmailConfirmationMessage) {
+      <tsw-fade-message
+        [message]="requestEmailConfirmationMessage"
+      />
+    }
+  </dgf-component-container>
+}
+
+<dgf-component-container>
+
+@if ( userThreatenedToDeleteAccount) {
+  <dgf-action-row>
+    <button mat-raised-button color="warn" (click)="unThreatenToDeleteAccount()">
+      No, just kidding, don't do it
+    </button>
+
+    <button mat-raised-button color="warn" (click)="deleteMyAccount()">
+      I'm outta here. For Sure. Goodbye.
+    </button>
+
+  </dgf-action-row>
+} @else {
+  <dgf-action-row>
+
+    <button mat-raised-button color="warn" (click)="threatenToDeleteAccount()">
+      Delete My Account
+    </button>
+    <div class="lo-full">
+      This will delete your account and all your favourites. But I'll you will have to confirm.
+    </div>
+  </dgf-action-row>
+}
+</dgf-component-container>

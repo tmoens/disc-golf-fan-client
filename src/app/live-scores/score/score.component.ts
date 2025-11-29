@@ -1,14 +1,14 @@
 // tournament-score-summary.component.ts
+import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
 import {
   DivisionForFanDto,
   RoundForFanDto,
   ScoresForFavouritePlayerDto,
   TournamentForFanDto,
-} from '../scores-for-fan.dto';
+} from './dtos/scores-for-fan.dto';
 import { ScoreDetailComponent } from './score-detail/score-detail.component';
 import { ScoreSummaryComponent } from './score-summary/score-summary.component';
 
@@ -21,15 +21,19 @@ import { ScoreSummaryComponent } from './score-summary/score-summary.component';
     MatIconModule,
     ScoreDetailComponent,
     ScoreSummaryComponent,
-    DgfComponentContainerComponent,
+    CdkDragHandle,
+    CdkDrag,
   ],
   templateUrl: './score.component.html',
   styles: [`
+    dgf-score-summary {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
     :host {
       display: block;
       background: var(--mat-sys-surface-container-lowest);
       border-radius: 2px;
-      padding: 6px;
       border: 1px solid var(--mat-sys-primary);
     }
     .score-card {

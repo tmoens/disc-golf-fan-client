@@ -18,7 +18,7 @@ import { Component, Input } from '@angular/core';
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 20px;
       padding-top: 8px;
       padding-bottom: 8px;
     }

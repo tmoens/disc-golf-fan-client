@@ -1,14 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField, MatHint, MatInput, MatLabel } from '@angular/material/input';
-import { plainToInstance } from 'class-transformer';
-import { debounceTime } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DgfActionRowComponent } from '../app-helpers/action-row.component';
 import { DgfComponentContainerComponent } from '../dgf-component-container/dgf-component-container.component';
-import { FavouriteEditorComponent } from '../favourite/favourite-editor.component';
-import { PlayerService } from '../player/player.service';
+import { AddFavouriteComponent } from './add-favourite/add-favourite/add-favourite.component';
+import { FavouriteEditorComponent } from './edit-favourite/favourite-editor.component';
 import {FavouriteDto} from './dtos/favourite.dto';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList} from '@angular/cdk/drag-drop';
-import { PlayerDto } from './dtos/player.dto';
 import {FanService} from './fan.service';
 import {MatIconModule} from '@angular/material/icon';
 import {CommonModule} from '@angular/common';
@@ -25,103 +22,64 @@ import {MatDialog, MatDialogModule} from '@angular/material/dialog';
     CdkDrag,
     CdkDragHandle,
     FormsModule,
-    MatInput,
-    MatLabel,
     ReactiveFormsModule,
-    MatFormField,
-    MatHint,
     MatDialogModule,
     DgfComponentContainerComponent,
+    DgfActionRowComponent,
   ],
   templateUrl: './fan.component.html',
   styleUrl: './fan.component.scss'
 })
-export class FanComponent implements OnInit {
-  pdgaNumberFC = new FormControl<number | null>({value: null, disabled: false});
-  playerIdentifiedByPdgaNumber: PlayerDto | undefined = undefined;
-  existingFavourite: FavouriteDto | undefined;
-  isLoading = false;
-  lookupFailed = false;
-  // favouriteToEdit: FavouriteDto | undefined; // No longer needed
-
+export class FanComponent {
   constructor(
     protected fanService: FanService,
-    protected playerService: PlayerService,
     private dialog: MatDialog,
-  ) {
-  }
+  ) {}
 
-  ngOnInit() {
-    // When the PDGA number changes, look up the player
-    this.pdgaNumberFC.valueChanges
-      .pipe(debounceTime(400))
-      .subscribe((id) => {
-        if (!id) {
-          return;
-        }
-        this.lookupPlayer(id);
-      });
-  }
 
-  addPlayerAsFavourite(player: PlayerDto) {
-    const favouriteToEdit = new FavouriteDto();
-    favouriteToEdit.playerId = player.id;
-    favouriteToEdit.playerName = player.name;
-    favouriteToEdit.fanId = this.fanService.fanSignal()?.id || ''; // Ensure we have fanId
-    favouriteToEdit.nickname = null;
-    favouriteToEdit.order = -1;
-
-    this.openEditor(favouriteToEdit, 'add');
+  addFavourite() {
+    this.dialog.open(AddFavouriteComponent, {
+      width: '500px'
+    });
   }
 
   editFavourite(favourite: FavouriteDto) {
-    this.openEditor(favourite, 'edit');
-  }
-
-  private openEditor(favourite: FavouriteDto, mode: 'add' | 'edit') {
     this.dialog.open(FavouriteEditorComponent, {
-      data: { favourite, mode },
-      width: '400px' // Adjust size as needed
+      data: {favourite},
+      width: '400px'
     });
   }
+
 
   deleteFavourite(favourite: FavouriteDto) {
     this.fanService.deleteFavourite(favourite).subscribe();
   }
 
   onDrop(event: CdkDragDrop<FavouriteDto[]>) {
-    this.fanService.moveFavourite(event.previousIndex, event.currentIndex);
-  }
+    const fan = this.fanService.fanSignal();
+    if (!fan) return;
 
-  /** Lookup PDGA player */
-  private lookupPlayer(id: number) {
-    this.isLoading = true;
-    this.lookupFailed = false;
-    this.playerIdentifiedByPdgaNumber = undefined;
-    this.existingFavourite = undefined;
+    const fromIndex = event.previousIndex;
+    const toIndex   = event.currentIndex;
 
-    // it's possible that the player was already one of the fan's favourites, so check that now
-    const fav: FavouriteDto | undefined = this.fanService.isPlayerAFavourite(id);
-    if (fav) {
-      this.existingFavourite = fav;
-      this.isLoading = false;
-      return;
-    }
+    // No movement? Bail.
+    if (fromIndex === toIndex) return;
 
-    this.playerService.getPlayerById(id)
-      .subscribe((res) => {
-        this.isLoading = false;
-        if (!res) {
-          this.lookupFailed = true;
-          return;
-        }
-        this.playerIdentifiedByPdgaNumber = plainToInstance(PlayerDto, res);
-      });
-  }
+    const favourites = fan.favourites;
 
-  getHint(): string | null {
-    if (this.isLoading) return 'Looking up player…';
-    if (this.lookupFailed) return `Player ${this.pdgaNumberFC.value} not found.`;
-    return null;
+    const moved = favourites[fromIndex];
+    const target = favourites[toIndex];
+
+    if (!moved || !target) return;
+
+    const direction = fromIndex < toIndex ? 'after' : 'before';
+
+    this.fanService
+      .moveFavourite(
+        moved.playerId,
+        target.playerId,
+        direction
+      )
+      .subscribe();
   }
 }

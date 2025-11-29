@@ -1,0 +1,13 @@
+.fade-message {
+  padding: 10px 12px;
+  background: #e8f4ff;
+  border-left: 4px solid #2196f3;
+  border-radius: 4px;
+  font-size: 14px;
+  opacity: 1;
+  transition: opacity 0.6s ease-out;
+}
+
+.fade-message.fade-out {
+  opacity: 0;
+}

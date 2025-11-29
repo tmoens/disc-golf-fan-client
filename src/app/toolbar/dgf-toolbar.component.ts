@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -8,6 +9,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { AppStateService } from '../app-state.service';
 import {AuthService} from '../auth/auth.service';
+import { AddFavouriteComponent } from '../fan/add-favourite/add-favourite/add-favourite.component';
 import {MainMenuComponent} from '../main-menu/main-menu.component';
 import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 import { DgfTool } from '../tools/dgf-tool';
@@ -25,6 +27,7 @@ import { DgfToolsService } from '../tools/dgf-tools.service';
     MainMenuComponent,
     MatMenuModule,
     MatTooltipModule,
+    MatDialogModule,
   ],
   styleUrl: './dgf-toolbar.component.scss'
 })
@@ -33,11 +36,13 @@ export class DgfToolbarComponent implements OnInit{
   protected loginTool: DgfTool;
   protected logoutTool: DgfTool;
 
+
   constructor(
     protected readonly router: Router,
     protected readonly appState: AppStateService,
     protected readonly authService: AuthService,
     protected readonly toolService: DgfToolsService,
+    private dialog: MatDialog,
   ) {
     this.loginTool = this.toolService.getByKey(DGF_TOOL_KEY.LOGIN);
     this.logoutTool = this.toolService.getByKey(DGF_TOOL_KEY.LOGOUT);
@@ -57,4 +62,12 @@ export class DgfToolbarComponent implements OnInit{
   onLogoutClick() {
     this.router.navigate([DGF_TOOL_ROUTES.LOGOUT]);
   }
+
+  onAddUserClick() {
+    this.dialog.open(AddFavouriteComponent, {
+      width: '500px'
+    });
+  }
+
+  protected readonly DGF_TOOL_KEY = DGF_TOOL_KEY;
 }

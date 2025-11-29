@@ -1,0 +1,68 @@
+<dgf-component-container>
+  @if(!existingFavourite && playerIdentifiedByPdgaNumber) {
+    <div class="mat-title-medium">Add {{playerIdentifiedByPdgaNumber.name}}</div>
+  } @else {
+    <div class="mat-title-medium">Add a Favourite</div>
+  }
+  <div class="lo-column lo-gap20 lo-align-center">
+<!--    <mat-form-field subscriptSizing="dynamic">-->
+    <mat-form-field>
+      <mat-label>New Favourite's PDGA Number</mat-label>
+      <input matInput type="number" [formControl]="pdgaNumberFC">
+      @if(getHint()) { <mat-hint>{{ getHint() }}</mat-hint> }
+    </mat-form-field>
+
+
+    <!-- Nickname -->
+    <mat-form-field>
+      <mat-label>Nickname</mat-label>
+      <input
+        matInput
+        type="text"
+        [formControl]="nicknameFC"
+      >
+      <button
+        mat-icon-button
+        matSuffix
+        tabIndex="-1"
+        matTooltip="The name you want us to use for this player e.g. 'Vinny' instead of Calvin Heimburg."
+        style="pointer-events: auto;"
+      >
+        <mat-icon>info</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <!-- Sort Order -->
+    <mat-form-field>
+      <mat-label>Sort Order</mat-label>
+      <input
+        matInput
+        type="number"
+        [formControl]="orderFC"
+      >
+      <button
+        mat-icon-button
+        matSuffix
+        tabIndex="-1"
+        matTooltip="0 means first in your list, higher numbers appear lower on your list."
+        style="pointer-events: auto;"
+      >
+        <mat-icon>info</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <dgf-action-row >
+    <button mat-raised-button (click)="cancel()">
+      <mat-icon>cancel</mat-icon>
+      Cancel
+    </button>
+    <button mat-raised-button
+            (click)="save()"
+            [disabled]="!playerIdentifiedByPdgaNumber || existingFavourite"
+    >
+      <mat-icon>add</mat-icon>
+      Add {{playerIdentifiedByPdgaNumber?.name}}
+    </button>
+  </dgf-action-row>
+</dgf-component-container>

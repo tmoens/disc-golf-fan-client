@@ -2,7 +2,9 @@ import {Expose} from 'class-transformer';
 import 'reflect-metadata';
 
 export class UserDto {
-  @Expose() public id!: string;
-  @Expose() public name!: string;
-  @Expose() public email!: string;
+  public id!: string;
+  public name!: string;
+  public email!: string;
+  public role!: string;
+  public emailConfirmed!: boolean;
 }

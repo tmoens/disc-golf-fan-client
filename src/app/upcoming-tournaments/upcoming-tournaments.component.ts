@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import { Router } from '@angular/router';
 import { DgfActionRowComponent } from '../app-helpers/action-row.component';
 import { DgfComponentContainerComponent } from '../dgf-component-container/dgf-component-container.component';
+import { FanService } from '../fan/fan.service';
 import {LoaderService} from '../loader.service';
 import { DGF_TOOL_ROUTES } from '../tools/dgf-tool-routes';
 import { PlayerTournamentsComponent } from './player-tournaments/player-tournaments/player-tournaments.component';
@@ -32,6 +33,7 @@ export class UpcomingTournamentsComponent implements OnInit {
   manageFavouritesTool: DgfTool | undefined;
 
   constructor(
+    private fanService: FanService,
     private loaderService: LoaderService,
     private toolService: DgfToolsService,
     private router: Router,
@@ -39,7 +41,9 @@ export class UpcomingTournamentsComponent implements OnInit {
 
   async ngOnInit() {
     this.manageFavouritesTool = this.toolService.getByKey(DGF_TOOL_KEY.MANAGE_FAVOURITES);
-    const results = await lastValueFrom(this.loaderService.getUpcomingEvents());
+    const fan = this.fanService.fanSignal();
+    if (!fan) return;
+    const results = await lastValueFrom(this.loaderService.getUpcomingEvents(fan.id));
     if (!results) {
       this.upcomingTournaments = [];
     } else {

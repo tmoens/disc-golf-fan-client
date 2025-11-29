@@ -11,24 +11,17 @@
 } @else {
 
   <!-- Scores to report   -->
-    <div class="lo-column">
-      <!--  loop through the favourites the *should* be ordered by the user's ordering.  -->
-      @for (player of liveScoreService.favouriteLiveScores(); track player.playerId) {
+  <div class="lo-column">
+    <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column">
 
-        <!--  loop through the favourite's current tournaments  -->
-          <!--  There are strange situations when a player is in two tournaments at once, (e.g. bonus glow night) -->
-        @for (tournament of player.tournaments; track tournament.tournamentId) {
-
-          <!-- even more bizarre: a player can be in two divisions in the same tournament. -->
-          @for (division of tournament.divisions; track division.divisionName) {
+      @for (row of flattenedRows; track row.favourite.playerId) {
             <dgf-score
-              [player]="player"
-              [tournament]="tournament"
-              [division]="division">
+              [player]="row.favourite"
+              [tournament]="row.tournament"
+              [division]="row.division">
               >
             </dgf-score>
-          }
-        }
       }
     </div>
+  </div>
 }

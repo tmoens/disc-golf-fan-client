@@ -1,12 +1,15 @@
 import {effect, Injectable, signal} from '@angular/core';
 import {plainToInstance} from 'class-transformer';
-import {of, switchMap, tap} from 'rxjs';
+import { EMPTY, Observable, of, map, switchMap, tap } from 'rxjs';
 import {AuthService} from '../auth/auth.service';
+import { ChangeEmailDto } from '../user-account-management/change-email.dto';
+import { ChangeNameDto } from '../user-account-management/change-name.dto';
 import {FanDto} from './dtos/fan.dto';
 import {LoaderService} from '../loader.service';
 import {ReorderFavouriteDto} from './dtos/reorder-favourite.dto';
 import {FavouriteDto} from './dtos/favourite.dto';
 import {AddFavouriteDto} from './dtos/add-favourite.dto';
+import { UserDto } from './dtos/user.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +21,7 @@ export class FanService {
 
   constructor(
     private authService: AuthService,
-    private loaderService: LoaderService,
+    private loader: LoaderService,
   ) {
     effect(() => {
       const user = this.authService.authenticatedUser();
@@ -31,7 +34,7 @@ export class FanService {
   }
 
   private loadFanAfterLogin(fanId: string) {
-    this.loaderService.getFanById(fanId).subscribe(data => {
+    this.loader.getFanById(fanId).subscribe(data => {
       const fanDto = data ? plainToInstance(FanDto, data) : null;
       this.fanSignal.set(fanDto);
     });
@@ -41,65 +44,77 @@ export class FanService {
     const user = this.authService.authenticatedUser();
     if (!user) return of(null);
 
-    return this.loaderService.getFanById(user.id).pipe(
+    return this.loader.getFanById(user.id).pipe(
       tap(data => {
         const fanDto = data ? plainToInstance(FanDto, data) : null;
+        console.log('FanService: Reloaded fan', fanDto);
         this.fanSignal.set(fanDto);
       })
     );
   }
 
-  isPlayerAFavourite(playerId: number): FavouriteDto | undefined {
-    return this.fanSignal()?.favourites.find(f => f.playerId === playerId);
-  }
-
-  fanHasFavourites(): boolean {
-    return !!this.fanSignal()?.favourites.length;
-  }
-
   addFavourite(dto: AddFavouriteDto) {
-    return this.loaderService.addFavourite(dto)
+    return this.loader.addFavourite(dto)
       .pipe(switchMap(() => this.reload$()));
   }
 
   deleteFavourite(dto: FavouriteDto) {
-    return this.loaderService.deleteFavourite(dto)
+    return this.loader.deleteFavourite(dto)
       .pipe(switchMap(() => this.reload$()));
   }
 
   updateFavourite(dto: FavouriteDto) {
-    return this.loaderService.updateFavourite(dto)
+    return this.loader.updateFavourite(dto)
       .pipe(switchMap(() => this.reload$()));
   }
 
-  moveFavourite(previousIndex: number, currentIndex: number) {   // translate the drag from index to a player
+  moveFavourite(
+    favouriteId: number,
+    targetFavouriteId: number,
+    direction: 'before' | 'after'
+  ) {
     const fan = this.fanSignal();
-    if (!fan) return;
+    if (!fan) return EMPTY;
 
-    const playerIdToBeMoved = fan.favourites[previousIndex];
-    const playerIdTarget = fan.favourites[currentIndex];
+    const dto = new ReorderFavouriteDto(fan.id, favouriteId, targetFavouriteId);
 
-    if (playerIdTarget && playerIdToBeMoved) {
-      const reorderFavouriteDto =
-        new ReorderFavouriteDto(fan.id, playerIdToBeMoved.playerId, playerIdTarget.playerId);
-      if (previousIndex < currentIndex) {
-        this.moveFavouriteAfter(reorderFavouriteDto).subscribe();
-      }
-      if (previousIndex > currentIndex) {
-        this.moveFavouriteBefore(reorderFavouriteDto).subscribe();
-      }
-    }
-  }
+    const request$ =
+      direction === 'before'
+        ? this.loader.moveFavouriteBefore(dto)
+        : this.loader.moveFavouriteAfter(dto);
 
-  moveFavouriteBefore(dto: ReorderFavouriteDto) {
-    return this.loaderService.moveFavouriteBefore(dto).pipe(
+    return request$.pipe(
       switchMap(() => this.reload$())
     );
   }
 
-  moveFavouriteAfter(dto: ReorderFavouriteDto) {
-    return this.loaderService.moveFavouriteAfter(dto).pipe(
-      switchMap(() => this.reload$())
+  deleteMyAccount(): Observable<UserDto | null> {
+    return this.loader.deleteMyAccount();
+  }
+
+  changeMyEmail(dto: ChangeEmailDto): Observable<UserDto | null> {
+    return this.loader.changeMyEmail(dto).pipe(
+      switchMap((result: UserDto | null) =>
+        this.reload$().pipe(
+          // after reload completes, return the ORIGINAL result to the caller
+          map(() => result)
+        )
+      )
     );
+  }
+
+  changeMyName(dto: ChangeNameDto): Observable<UserDto | null> {
+    return this.loader.changeMyName(dto).pipe(
+      switchMap((result: UserDto | null) =>
+        this.reload$().pipe(
+          // after reload completes, return the ORIGINAL result to the caller
+          map(() => result)
+        )
+      )
+    );
+  }
+
+  requestEmailConfirmationEmail(): Observable<string | null> {
+    return this.loader.requestEmailConfirmationEmail();
   }
 }

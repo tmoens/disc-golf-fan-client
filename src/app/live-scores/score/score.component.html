@@ -1,16 +1,21 @@
-  <!-- HEADER -->
-  <dgf-score-summary
-    [player]="player"
-    [division]="division"
-    [tournament]="tournament"
-    [round]="focusedRound"
-    (toggleDetail)="toggleExpanded()"
-    (roundChanged)="setFocusedRound($event)">
-  </dgf-score-summary>
+<div cdkDrag>
+  <div class="lo-row lo-gap10 lo-align-center">
+    <mat-icon cdkDragHandle class="lo-24px">drag_indicator</mat-icon>
+    <!-- Summary -->
+    <dgf-score-summary
+      [player]="player"
+      [division]="division"
+      [tournament]="tournament"
+      [round]="focusedRound"
+      (toggleDetail)="toggleExpanded()"
+      (roundChanged)="setFocusedRound($event)">
+    </dgf-score-summary>
+  </div>
+</div>
 
-  <!-- DETAIL -->
-  @if (expanded) {
-    <dgf-score-detail
-      [round]="focusedRound" [poll]="isMostRecentRound">
-    </dgf-score-detail>
-  }
+<!-- DETAIL -->
+@if (expanded) {
+  <dgf-score-detail
+    [round]="focusedRound" [poll]="isMostRecentRound">
+  </dgf-score-detail>
+}

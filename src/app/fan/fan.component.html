@@ -1,39 +1,36 @@
-  <dgf-component-container>
-    <div class="lo-column lo-gap20">
-    <div class="lo-row lo-justify-center lo-gap10">
-      <mat-form-field subscriptSizing="dynamic">
-        <mat-label>New Favourite's PDGA Number</mat-label>
-        <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="!isLoading">
-        @if(getHint()) { <mat-hint>{{ getHint() }}</mat-hint> }
-      </mat-form-field>
+<dgf-component-container>
 
-      @if(playerIdentifiedByPdgaNumber) {
-        <button mat-raised-button (click)="addPlayerAsFavourite(playerIdentifiedByPdgaNumber)">
-          <mat-icon>add</mat-icon>
-          Add {{ playerIdentifiedByPdgaNumber.name }}
-        </button>
-      }
-      @if(existingFavourite) {
-        <span>{{existingFavourite.name}} is already a favourite</span>
-      }
-    </div>
-    <!-- this is a list of the fan's favourites with oftions to reorder, edit and delete  -->
-    <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap5">
-      @for (fav of fanService.fanSignal()?.favourites; track fav.playerId) {
-        <div cdkDrag>
-          <div class="lo-row">
-            <mat-icon cdkDragHandle class="lo-40px">drag_indicator</mat-icon>
-            <button mat-icon-button (click)="deleteFavourite(fav)">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button mat-icon-button (click)="editFavourite(fav)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <span class="lo-100px">#{{ fav.playerId }}</span>
-            <span>{{ fav.name }}</span>
+  @if (fanService.fanSignal()?.favourites?.length === 0) {
+    <p>To get started you just need to add a few favourites. Fair warning,
+      you'll need to know their PDGA numbers to add them.</p>
+  } @else {
+
+    <div class="lo-column lo-gap20">
+      <div cdkDropList (cdkDropListDropped)="onDrop($event)" class="drop-list lo-column lo-gap5">
+        @for (fav of fanService.fanSignal()?.favourites; track fav.playerId) {
+          <div cdkDrag>
+            <div class="lo-row">
+              <mat-icon cdkDragHandle class="lo-40px">drag_indicator</mat-icon>
+              <button mat-icon-button (click)="deleteFavourite(fav)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button (click)="editFavourite(fav)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <span class="lo-30px">{{ fav.order }}</span>
+              <span class="lo-100px">#{{ fav.playerId }}</span>
+              <span>{{ fav.name }}</span>
+            </div>
           </div>
-        </div>
-      }
+        }
+      </div>
     </div>
-    </div>
-  </dgf-component-container>
+  }
+
+  <dgf-action-row>
+    <button mat-raised-button (click)="addFavourite()">
+      <mat-icon>add</mat-icon>
+      Add a new favourite
+    </button>
+  </dgf-action-row>
+</dgf-component-container>

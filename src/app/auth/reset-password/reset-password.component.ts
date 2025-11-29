@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 import {ActivatedRoute, Router} from '@angular/router';
+import { DgfActionRowComponent } from '../../app-helpers/action-row.component';
 import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
+import { LoaderService } from '../../loader.service';
 import { DGF_TOOL_ROUTES } from '../../tools/dgf-tool-routes';
-import {AuthService} from '../auth.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -24,13 +26,16 @@ enum ConfirmationStatus {
     MatInputModule,
     ReactiveFormsModule,
     DgfComponentContainerComponent,
+    DgfActionRowComponent,
+    MatIcon,
   ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent implements OnInit {
+  passwordVisible = false;
   protected readonly ConfirmationStatus = ConfirmationStatus;
-  confirmationResultMessage: string = '';
+  confirmationResultMessage: string | null = null;
   confirmationStatus = ConfirmationStatus.TBD;
   passwordResetToken: string | null = null;
 
@@ -40,7 +45,7 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
+    private loader: LoaderService,
     private router: Router,
     private fb: FormBuilder,
   ) {
@@ -56,18 +61,28 @@ export class ResetPasswordComponent implements OnInit {
 
   onSubmit() {
     if (this.form.valid && this.passwordResetToken) {
-      this.authService.resetPassword({
+      this.loader.resetPassword({
         resetPasswordToken: this.passwordResetToken,
         newPassword: this.form.controls['password'].value,
-      }).subscribe(async (message) => {
-        if (message === null) {
-          this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
-          this.confirmationResultMessage = 'Your password has been changed';
-        } else {
+      }).subscribe({
+        next: (userDtoOrNull) => {
+          if (userDtoOrNull) {
+            // Success — got a real UserDto
+            this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
+            this.confirmationResultMessage = `Password reset successful. You may now log in with your new password.`;
+          } else {
+            // Other errors (500/network/etc.) — handled by snackbar
+            this.confirmationStatus = ConfirmationStatus.FAILED;
+            this.confirmationResultMessage = `Unknown error occurred. Please try again.`;
+          }
+        },
+
+        error: (errMessage) => {
+          // This happens ONLY on 400, where we re-throw a string
           this.confirmationStatus = ConfirmationStatus.FAILED;
-          this.confirmationResultMessage = message;
+          this.confirmationResultMessage = errMessage;   // string from server
         }
-      });
+      })
     }
   }
 

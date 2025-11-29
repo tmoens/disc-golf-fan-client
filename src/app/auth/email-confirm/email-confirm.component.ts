@@ -3,8 +3,8 @@ import {CommonModule} from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import {firstValueFrom} from 'rxjs';
 import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
+import { LoaderService } from '../../loader.service';
 import { DGF_TOOL_ROUTES } from '../../tools/dgf-tool-routes';
-import {AuthService} from '../auth.service';
 
 enum ConfirmationStatus {
   TBD,
@@ -22,12 +22,12 @@ enum ConfirmationStatus {
   styleUrl: './email-confirm.component.scss'
 })
 export class EmailConfirmComponent implements OnInit {
-  confirmationResultMessage: string = '';
+  confirmationResultMessage: string | null = null;
   confirmationStatus = ConfirmationStatus.TBD;
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
+    private loader: LoaderService,
     private router: Router,
   ) {}
 
@@ -39,15 +39,19 @@ export class EmailConfirmComponent implements OnInit {
       return;
     }
 
-    const message = await firstValueFrom(this.authService.confirmEmail(token));
+    const message = await firstValueFrom(this.loader.confirmEmail(token));
+
     if (message === null) {
+      // Loader swallowed the error and showed the snackbar.
+      // Treat as failure.
+      this.confirmationStatus = ConfirmationStatus.FAILED;
+      this.confirmationResultMessage = message;
+
+    } else {
       this.confirmationStatus = ConfirmationStatus.SUCCESSFUL;
       this.confirmationResultMessage = 'Your email was confirmed';
       await new Promise(resolve => setTimeout(resolve, 2000));
       this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
-    } else {
-      this.confirmationStatus = ConfirmationStatus.FAILED;
-      this.confirmationResultMessage = message;
     }
   }
 }

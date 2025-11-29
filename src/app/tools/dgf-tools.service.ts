@@ -140,8 +140,19 @@ export class DgfToolsService {
           icon: 'lock_reset',
         },
       ),
-    };
 
+    USER_ACCOUNT_MANAGEMENT: new DgfTool(
+      DGF_TOOL_KEY.USER_ACCOUNT_MANAGEMENT,
+      {
+        displayName: 'Account Management',
+        route: DGF_TOOL_ROUTES.USER_ACCOUNT_MANAGEMENT,
+        description: 'Manageyour account.',
+        requiredLoginState: 'loggedIn',
+        icon: 'settings',
+        mainMenuOrder: 800,
+      }
+    )
+  };
 
     // Auto-generate reverse lookup: route -> key
     this.routeToKeyMap = Object.fromEntries(

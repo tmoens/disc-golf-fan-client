@@ -1,26 +1,24 @@
 import {Injectable, signal} from '@angular/core';
 import {map, Observable, of, throwError} from 'rxjs';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpHeaders} from '@angular/common/http';
 import {environment} from '../../environments/environment';
+import { LoaderService } from '../loader.service';
 import { AccessTokenPayload } from './dtos/access-token-payload';
-import {RegistrationDto} from './dtos/registration-dto';
 import {catchError} from 'rxjs/operators';
 import {LoginDto} from './dtos/login-dto';
-import {LoginResponseDto} from './dtos/login-response-dto';
 import {RefreshAccessTokenResponseDto} from './dtos/refresh-access-token-response-dto';
-import {ForgotPasswordDto} from './dtos/forgot-password-dto';
-import {ResetPasswordDto} from './dtos/reset-password-dto';
-import {RefreshTokenPayload} from './dtos/refresh-token-payload';
-import {User} from './user';
-import {UserRoleService} from './dgf-roles';
+import {AuthenticatedUser} from './authenticatedUser';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class AuthService {
-  // Signal to track the authenticated user ID
-  authenticatedUser = signal<User | null>(null);
+  serverUrl: string;
+  // this is where the user was trying to navigate to when they were redirected to log in.
+  intendedPath: string = '';
+
+  authenticatedUser = signal<AuthenticatedUser | null>(null);
 
   private _refreshToken: string = '';
   get refreshToken(): string {
@@ -42,30 +40,32 @@ export class AuthService {
 
   set accessToken(token: string) {
     if (!token || this.isTokenExpired(token)) {
-      console.log(`setting expired or empty accessToken to: ${JSON.stringify(token)}`);
       this._accessToken = '';
       localStorage.setItem('accessToken', '');
       this.authenticatedUser.set(null);
-    } else {
-      console.log(`setting refreshed accessToken to: ${JSON.stringify(token)}`);
-      this._accessToken = token;
-      const tokenPayload: AccessTokenPayload = this.decryptToken(token);
-      if (!tokenPayload || !tokenPayload.sub || !tokenPayload.role) {
-        console.error('Failed to decode access token payload.');
-        return;
-      }
-      localStorage.setItem('accessToken', token);
-      this.authenticatedUser.set(new User(tokenPayload.sub, tokenPayload.role, tokenPayload.email));
+      return;
     }
+
+    this._accessToken = token;
+    const tokenPayload: AccessTokenPayload = this.decryptToken(token);
+    if (!tokenPayload || !tokenPayload.sub || !tokenPayload.role) {
+      console.error('Failed to decode access token payload.');
+      return;
+    }
+
+    // When you get a new access token, it is time to update the authenticatedUser
+    // using that token's payload.
+    localStorage.setItem('accessToken', token);
+    this.authenticatedUser.set(new AuthenticatedUser(
+      tokenPayload.sub,
+      tokenPayload.role,
+      tokenPayload.email,
+      tokenPayload.emailConfirmed,
+    ));
   }
 
-  // this is where the user was trying to navigate to when they were forced to log in.
-  intendedPath: string = '';
-
-  serverUrl: string;
-
   constructor(
-    private http: HttpClient,
+    private loader: LoaderService,
   ) {
     // reload access tokens after browser refresh or re-open of application
     const storedAccessToken: string | null = (localStorage.getItem('accessToken'));
@@ -85,95 +85,55 @@ export class AuthService {
     return !!this.authenticatedUser();
   }
 
-  // Processing a login.  A normal case is to update the local state and be done.
-  // If there was an HTTP Error, we normalize a nice message and rethrow a string for the component to show.
   login(loginDto: LoginDto): Observable<void> {
-    return this.http.post<LoginResponseDto>(`${this.serverUrl}/auth/login`, loginDto).pipe(
-      map((loginResponse: LoginResponseDto) => {
-        this.accessToken = loginResponse.accessToken;
-        this.refreshToken = loginResponse.refreshToken;
-        return; // void
+    return this.loader.login(loginDto).pipe(
+      map((resp) => {
+        // resp === null means: non-400 error already snack-barred
+        // Treat as login failure, but do not throw.
+        if (!resp) return;
+
+        // Login success
+        this.accessToken = resp.accessToken;
+        this.refreshToken = resp.refreshToken;
       }),
       catchError(err => {
-        const message = this.extractErrorMessage(err, 'Sign-in failed. Please try again.');
-        return throwError(() => message);
+        // err is a string thrown by handleErrorsButThrowOn400()
+        return throwError(() => err);
       })
     );
   }
-
-  logout() {
-    // remove user from local storage to log user out
-    return this.http.get<any>(
-      `${this.serverUrl}/auth/logout`,
-      {headers: this.createAccessHeader()}).pipe(
+  logout(): Observable<void | null> {
+    return this.loader.logout().pipe(
       map(() => {
         this.accessToken = '';
         this.refreshToken = '';
         this.authenticatedUser.set(null);
-      }),
-    );
-  }
-
-  // refresh is used in the verb sense here.
-  // We are refreshing the accessToken using the refreshToken (refresh is a noun in refreshToken)
-  refreshAccessToken(): Observable<any> {
-    // cannot refresh the access token if not authenticated.
-    if (!this.isAuthenticated()) {
-      return of(null);
-    }
-
-    return this.http.get<any>(
-      `${this.serverUrl}/auth/refresh-access-token`,
-      {headers: this.createRefreshHeader()}).pipe(
-      map((response: RefreshAccessTokenResponseDto) => {
-        this.accessToken = response.accessToken;
-      }),
-      catchError(error => {
-        console.error('Error occurred while refreshing access token:', error);
-        this.refreshToken = '';
-        return throwError(() => error);
       })
     );
   }
 
-  register(dto: RegistrationDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/register/`;
-    return this.http.post<null>(url, dto)
-      .pipe(
-        catchError(this.handleError())
-      );
-  }
 
-  forgotPassword(dto: ForgotPasswordDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/forgot-password/`;
-    return this.http.put<null>(url, dto)
-      .pipe(
-        catchError(this.handleError())
-      );
-  }
+  // -----------------------------------
+  // REFRESH ACCESS TOKEN
+  // Used by the UnauthorizedInterceptor
+  // MUST RETURN ONLY the accessToken string
+  // -----------------------------------
+  refreshAccessToken(): Observable<string> {
+    if (!this.isAuthenticated()) return of('');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`);
+    return this.loader.refreshAccessToken(headers).pipe(
+      map((resp: RefreshAccessTokenResponseDto | null) => {
+        if (!resp) return '';
 
-  resetPassword(dto: ResetPasswordDto): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/reset-password/`;
-    return this.http.put<null>(url, dto)
-      .pipe(
-        catchError(this.handleError())
-      );
-  }
-
-  confirmEmail(token: string): Observable<string | null> {
-    const url = `${this.serverUrl}/auth/confirm-email/${token}`;
-    return this.http.get<string>(url)
-      .pipe(
-        catchError(this.handleError())
-      );
-  }
-
-  createAccessHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.accessToken}`);
-  }
-
-  createRefreshHeader() {
-    return new HttpHeaders().set('Authorization', `Bearer ${this.refreshToken}`);
+        this.accessToken = resp.accessToken;
+        return resp.accessToken;
+      }),
+      catchError(error => {
+        console.error('Error refreshing access token:', error);
+        this.refreshToken = '';
+        return throwError(() => error);
+      })
+    );
   }
 
   // find out if the token will expire within the next however many seconds.
@@ -189,7 +149,7 @@ export class AuthService {
     }
   }
 
-  // this decodes the access token and stuffs the token's payload in typed object.
+  // this decodes the access token and stuffs the token's payload in a typed object.
   decryptToken(token: string): any | null {
     if (token) {
       return JSON.parse(atob(token.split('.')[1]));
@@ -200,41 +160,11 @@ export class AuthService {
 
   authenticatedUserCanPerformRole(roleInQuestion?: string): boolean {
     if (!roleInQuestion) return true;
-    if (!(this.isAuthenticated())) {
+    const user = this.authenticatedUser();
+    if (!user) {
       return false;
+    } else {
+      return user.canPerformRole(roleInQuestion);
     }
-    return UserRoleService.isAuthorized(this.decryptToken(this.refreshToken).role, roleInQuestion);
-  }
-
-  private handleError() {
-    return (error: any): Observable<string> => {
-      return of(this.extractErrorMessage(error, 'Request failed. Please try again.'));
-    };
-  }
-
-  /**
-   * Extracts a human-friendly message from various HttpErrorResponse shapes.
-   * Falls back to a sensible default if nothing useful is present.
-   */
-  private extractErrorMessage(error: any, fallback: string): string {
-    // Common server shapes: { error: { message } }, { message }, plain string
-    const msg =
-      error?.error?.message ??
-      error?.message ??
-      (typeof error === 'string' ? error : null);
-
-    // If message is an array, join with newlines
-    if (Array.isArray(msg)) {
-      return msg.join('\n');
-    }
-
-    // Optionally surface specific status codes
-    if (!msg && error?.status) {
-      if (error.status === 0) return 'Cannot reach server. Check your network and try again.';
-      if (error.status >= 500) return 'The server encountered a problem. Please try again later.';
-      if (error.status === 401) return 'Invalid email or password.';
-    }
-
-    return msg || fallback;
   }
 }

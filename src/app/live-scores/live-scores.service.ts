@@ -2,12 +2,12 @@ import {effect, Injectable, OnDestroy, signal, WritableSignal} from '@angular/co
 import { firstValueFrom, of, Subscription, timer } from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {LoaderService} from '../loader.service';
-import {DetailedScorelineDto} from './detailed-scoreline-dto';
+import {DetailedScorelineDto} from './score/dtos/detailed-scoreline.dto';
 import {AppStateService} from '../app-state.service';
 import {environment} from '../../environments/environment';
 import {FanService} from '../fan/fan.service';
 import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
-import { ScoresForFavouritePlayerDto } from './scores-for-fan.dto';
+import { ScoresForFavouritePlayerDto } from './score/dtos/scores-for-fan.dto';
 
 /**
  * Manages live scores:

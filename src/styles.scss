@@ -55,6 +55,9 @@ $zf-compact-theme: mat.define-theme((
     shape: 2px,
   ));
 
+  @include mat.dialog-overrides((
+    container-shape: 2px,
+  ))
 }
 
 // With outline appearance the Label pokes out slightly above the outline
@@ -173,6 +176,10 @@ mat-form-field {
 
 .lo-24px {
   flex-basis: 24px;
+}
+
+.lo-30px {
+  flex-basis: 30px;
 }
 
 .lo-40px {

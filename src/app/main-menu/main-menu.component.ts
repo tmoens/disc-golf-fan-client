@@ -8,7 +8,7 @@ import {DgfToolsService} from '../tools/dgf-tools.service';
 import {DgfTool} from '../tools/dgf-tool';
 import {AppStateService} from '../app-state.service';
 import {AuthService} from '../auth/auth.service';
-import {User} from '../auth/user';
+import {AuthenticatedUser} from '../auth/authenticatedUser';
 
 @Component({
   selector: 'app-main-menu',
@@ -38,9 +38,8 @@ export class MainMenuComponent implements OnInit {
   isVisible(tool: DgfTool): boolean {
     if (!tool.show) return false;
 
-    const user: User | null = this.auth.authenticatedUser();
+    const user: AuthenticatedUser | null = this.auth.authenticatedUser();
 
-    // 2. Check login state
     switch (tool.loginState) {
       case 'loggedIn':
         if (!user) return false;

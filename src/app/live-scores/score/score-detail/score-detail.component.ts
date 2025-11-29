@@ -1,9 +1,9 @@
-import { DecimalPipe, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Component, ElementRef, Input, SimpleChanges } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
-import { DetailedScorelineDto } from '../../detailed-scoreline-dto';
+import { DetailedScorelineDto } from '../dtos/detailed-scoreline.dto';
 import { LiveScoresService } from '../../live-scores.service';
-import { RoundForFanDto, ScorelineForFanDto } from '../../scores-for-fan.dto';
+import { RoundForFanDto, ScorelineForFanDto } from '../dtos/scores-for-fan.dto';
 import { HoleScoreComponent } from '../hole-score/hole-score.component';
 import { ScoreToParComponent } from '../score-vs-par/score-vs-par.component';
 
@@ -12,7 +12,6 @@ import { ScoreToParComponent } from '../score-vs-par/score-vs-par.component';
   imports: [
     DecimalPipe,
     MatDivider,
-    NgIf,
     HoleScoreComponent,
     ScoreToParComponent,
   ],

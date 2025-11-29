@@ -6,17 +6,24 @@
     }
   </span>
   <div class="fill-remaining-space"></div>
-  @if (authService.isAuthenticated()) {
-    <button mat-icon-button (click)="onLogoutClick()" [matTooltip]="logoutTool.displayName">
-      <mat-icon>{{ logoutTool.icon }}</mat-icon>
-    </button>
 
+  @if (activeTool?.is(DGF_TOOL_KEY.LIVE_SCORES) || activeTool?.is(DGF_TOOL_KEY.UPCOMING_EVENTS)) {
+    <button mat-icon-button (click)="onAddUserClick()" matTooltip="Add favourite">
+      <mat-icon>add</mat-icon>
+    </button>
+    }
+
+  <!-- Always have a logout button if logged in and vice versa -->
+  @if (authService.isAuthenticated()) {
+    <button mat-icon-button (click)="onLogoutClick()" [matTooltip]="logoutTool.displayName" >
+      <mat-icon> {{logoutTool.icon }}</mat-icon >
+    </button >
   } @else if (!activeTool?.is(loginTool.key)){
     <button mat-icon-button (click)="onLoginClick()" [matTooltip]="loginTool.displayName">
       <mat-icon>{{ loginTool.icon }}</mat-icon>
     </button>
-
   }
+
   <ng-content select="[toolbar-actions]"></ng-content>
   <app-main-menu></app-main-menu>
 </mat-toolbar>

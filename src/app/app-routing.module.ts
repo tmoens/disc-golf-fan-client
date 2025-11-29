@@ -7,6 +7,7 @@ import {EmailConfirmComponent} from './auth/email-confirm/email-confirm.componen
 import {LoginComponent} from './auth/login/login.component';
 import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './auth/reset-password/reset-password.component';
+import { UserAccountManagementComponent } from './user-account-management/user-account-management.component';
 import {WelcomePageComponent} from './welcome-page/welcome-page.component';
 import {authenticatedGuard, roleGuard} from './auth/guards/canActivateGuards';
 import {AdminDashboardComponent} from './admin-dashboard/admin-dashboard.component';
@@ -53,6 +54,15 @@ const routes: Routes = [
     canActivate: [authenticatedGuard, roleGuard],
     data: {
       permittedRole: DGF_TOOL_ROLES.ADMIN_DASHBOARD,
+    }
+  },
+
+  {
+    path: DGF_TOOL_ROUTES.USER_ACCOUNT_MANAGEMENT,
+    component: UserAccountManagementComponent,
+    canActivate: [authenticatedGuard, roleGuard],
+    data: {
+      permittedRole: DGF_TOOL_ROLES.USER_ACCOUNT_MANAGEMENT,
     }
   },
 

@@ -4,15 +4,19 @@ import {FavouriteDto} from './favourite.dto';
 import {UserDto} from './user.dto';
 
 export class FanDto {
-  @Expose() public id!: string;
+  public id!: string;
 
   @Type(() => UserDto)
-  @Expose() public user!: UserDto;
+  public user!: UserDto;
 
   @Type(() => FavouriteDto)
-  @Expose() public favourites: FavouriteDto[] = [];
+  public favourites: FavouriteDto[] = [];
 
   hasFavourites(): boolean {
     return this.favourites.length > 0;
+  }
+
+  hasFavourite(playerId: number): FavouriteDto | undefined {
+    return this.favourites.find(favourite => favourite.playerId === playerId);
   }
 }

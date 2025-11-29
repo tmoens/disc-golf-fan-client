@@ -8,7 +8,7 @@ import {
   RoundForFanDto, ScorelineForFanDto,
   ScoresForFavouritePlayerDto,
   TournamentForFanDto,
-} from '../../scores-for-fan.dto';
+} from '../dtos/scores-for-fan.dto';
 import { ScoreToParComponent } from '../score-vs-par/score-vs-par.component';
 
 @Component({

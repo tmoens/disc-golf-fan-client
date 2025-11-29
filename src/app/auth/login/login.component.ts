@@ -1,11 +1,10 @@
 import {Component} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
 import {finalize} from 'rxjs';
 import { DgfActionRowComponent } from '../../app-helpers/action-row.component';
 import { DgfComponentContainerComponent } from '../../dgf-component-container/dgf-component-container.component';
-import { DGF_TOOL_KEY } from '../../tools/dgf-took-keys';
-import { DgfTool } from '../../tools/dgf-tool';
 import { DgfToolsService } from '../../tools/dgf-tools.service';
 import {AuthService} from '../auth.service';
 import {LoginDto} from '../dtos/login-dto';
@@ -30,13 +29,14 @@ enum LoginStatus {
     MatButtonModule,
     DgfComponentContainerComponent,
     DgfActionRowComponent,
+    MatIcon,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 
 export class LoginComponent {
-  fogotPasswordTool: DgfTool;
+  passwordVisible = false;
   loginStatus = LoginStatus.TBD;
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -50,9 +50,7 @@ export class LoginComponent {
     private authService: AuthService,
     private toolService: DgfToolsService,
     private router: Router,
-  ) {
-    this.fogotPasswordTool =  this.toolService.getByKey(DGF_TOOL_KEY.FORGOT_PASSWORD);
-  }
+  ) {}
 
   onSubmit() {
     if (this.loginForm.invalid) {
@@ -75,18 +73,14 @@ export class LoginComponent {
           : DGF_TOOL_ROUTES.LIVE_SCORES;
 
         void this.router.navigateByUrl(target);
-        this.authService.intendedPath = null as any; // or undefined, depending on your field type
+        this.authService.intendedPath = null as any;
       },
       error: (message: string) => {
-        // AuthService.login now throws a normalized string message
+        // This receives only normalized 400-level errors.
         this.loginStatus = LoginStatus.FAIL;
         this.loginError = message || 'Sign-in failed. Please try again.';
       }
     });
-  }
-
-  onForgotPasswordClick() {
-    void this.router.navigate([this.fogotPasswordTool.route]);
   }
 
   protected readonly DGF_TOOL_ROUTES = DGF_TOOL_ROUTES;
