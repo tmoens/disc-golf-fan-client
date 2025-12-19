@@ -22,6 +22,7 @@ import {DgfTool} from '../../tools/dgf-tool';
 import {DGF_TOOL_KEY} from '../../tools/dgf-took-keys';
 
 @Component({
+  standalone: true,
   selector: 'app-live-scores',
   imports: [
     CommonModule,

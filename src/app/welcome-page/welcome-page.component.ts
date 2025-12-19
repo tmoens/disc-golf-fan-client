@@ -13,6 +13,7 @@ import { DGF_TOOL_ROUTES } from '../tools/dgf-tool-routes';
 import { DgfToolsService } from '../tools/dgf-tools.service';
 
 @Component({
+  standalone: true,
   selector: 'app-welcome-page',
   imports: [
     CommonModule,
@@ -37,12 +38,12 @@ export class WelcomePageComponent {
   }
 
   register() {
-    this.router.navigate([DGF_TOOL_ROUTES.REGISTER]);
+    void this.router.navigate([DGF_TOOL_ROUTES.REGISTER]);
   }
   login() {
-    this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
+    void this.router.navigate([DGF_TOOL_ROUTES.LOGIN]);
   }
   logout() {
-    this.router.navigate([DGF_TOOL_ROUTES.LOGOUT]);
+    void this.router.navigate([DGF_TOOL_ROUTES.LOGOUT]);
   }
 }

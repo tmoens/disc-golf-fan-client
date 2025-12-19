@@ -20,6 +20,7 @@ enum LoginStatus {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-login',
   imports: [
     CommonModule,

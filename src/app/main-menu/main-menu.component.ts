@@ -11,6 +11,7 @@ import {AuthService} from '../auth/auth.service';
 import {AuthenticatedUser} from '../auth/authenticatedUser';
 
 @Component({
+  standalone: true,
   selector: 'app-main-menu',
   imports: [CommonModule, MatIconModule, MatMenuModule, MatButtonModule],
   templateUrl: './main-menu.component.html',
@@ -67,6 +68,6 @@ export class MainMenuComponent implements OnInit {
 
   onClick(tool: DgfTool): void {
     if (this.isDisabled(tool) || !this.isVisible(tool)) return;
-    this.router.navigate([tool.route]);
+    void this.router.navigate([tool.route]);
   }
 }

@@ -18,6 +18,7 @@ enum ConfirmationStatus {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-reset-password',
   imports: [
     CommonModule,

@@ -30,8 +30,6 @@ import { ChangeNameDto } from './change-name.dto';
 })
 export class UserAccountManagementComponent {
   userThreatenedToDeleteAccount = false;
-  userThreatensToChangeEmail = false;
-  userThreatensToChangeName = false;
   user: UserDto | undefined;
   emailFC = new FormControl<string>('', [
     Validators.required,

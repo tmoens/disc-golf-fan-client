@@ -13,6 +13,7 @@ enum ConfirmationStatus {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-email-confirm',
   imports: [
     CommonModule,

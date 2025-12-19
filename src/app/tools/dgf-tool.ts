@@ -18,6 +18,7 @@ export class DgfTool {
   readonly mainMenuOrder?: number;
   readonly icon?: string;
   readonly group?: string | null;
+  readonly rawShortName?: string;
 
   constructor(
     key: DgfToolKey,
@@ -30,6 +31,7 @@ export class DgfTool {
       mainMenuOrder?: number;
       icon?: string;
       group?: string | null;
+      rawShortName?: string;
     },
   ) {
     this.key = key;
@@ -56,6 +58,10 @@ export class DgfTool {
   /** Default order value for sorting. */
   get sortOrder(): number {
     return this.mainMenuOrder ?? 0;
+  }
+
+  get shortName(): string {
+    return this.rawShortName ?? this.displayName;
   }
 
   /** Default group is null: ungrouped. */

@@ -1,10 +1,21 @@
 <mat-toolbar>
+  <app-main-menu></app-main-menu>
+  @if (appState.screenInfo().isSmallPortrait) {
+    <span>
+    {{ shortTitlePrefix }}
+      @if (activeTool) {
+        - {{ activeTool.shortName }}
+      }
+  </span>
+
+  } @else {
   <span>
     {{ titlePrefix }}
     @if (activeTool) {
       - {{ activeTool.displayName }}
     }
   </span>
+  }
   <div class="fill-remaining-space"></div>
 
   @if (activeTool?.is(DGF_TOOL_KEY.LIVE_SCORES) || activeTool?.is(DGF_TOOL_KEY.UPCOMING_EVENTS)) {
@@ -13,17 +24,11 @@
     </button>
     }
 
-  <!-- Always have a logout button if logged in and vice versa -->
-  @if (authService.isAuthenticated()) {
-    <button mat-icon-button (click)="onLogoutClick()" [matTooltip]="logoutTool.displayName" >
-      <mat-icon> {{logoutTool.icon }}</mat-icon >
-    </button >
-  } @else if (!activeTool?.is(loginTool.key)){
+  @if (!authService.isAuthenticated()) {
     <button mat-icon-button (click)="onLoginClick()" [matTooltip]="loginTool.displayName">
       <mat-icon>{{ loginTool.icon }}</mat-icon>
     </button>
   }
 
   <ng-content select="[toolbar-actions]"></ng-content>
-  <app-main-menu></app-main-menu>
 </mat-toolbar>

@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, effect, OnDestroy} from '@angular/core';
 import { AppStateService } from './app-state.service';
 import {BreakpointService} from './breakpoint.service';
 import {Subscription} from 'rxjs';
@@ -18,9 +18,12 @@ export class AppComponent implements OnDestroy {
 
   constructor(
     protected fanService: FanService,
-    protected appStateService: AppStateService,
+    protected appState: AppStateService,
     private breakpointService: BreakpointService,
   ) {
+    effect(() => {
+      document.body.classList.toggle('compact', appState.screenInfo().isSmall);
+    });
     this.toBeDestroyedLater = this.breakpointService.isLargeScreen().subscribe(isLarge => {
       this.isLargeScreen = isLarge;
     });

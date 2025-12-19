@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   // Local dev API
-  apiBaseUrl: 'http://localhost:3478',
+  apiBaseUrl: 'http://192.168.1.200:3476',
   polling: {
     liveScoresMs: 60_000,
     detailedScoresMs: 60_000,

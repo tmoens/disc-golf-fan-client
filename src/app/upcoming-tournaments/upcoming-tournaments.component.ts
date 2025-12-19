@@ -18,6 +18,7 @@ import {DgfToolsService} from '../tools/dgf-tools.service';
 import {DGF_TOOL_KEY} from '../tools/dgf-took-keys';
 
 @Component({
+  standalone: true,
   selector: 'app-upcoming-tournaments',
   imports: [CommonModule,
     MatCardModule,
@@ -52,6 +53,6 @@ export class UpcomingTournamentsComponent implements OnInit {
   }
 
   onManageFavourites() {
-    this.router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
+    void this.router.navigate([DGF_TOOL_ROUTES.MANAGE_FAVOURITES]);
   }
 }

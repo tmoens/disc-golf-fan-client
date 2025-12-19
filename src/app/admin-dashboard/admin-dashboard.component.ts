@@ -8,10 +8,10 @@ import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { DgfComponentContainerComponent } from '../dgf-component-container/dgf-component-container.component';
 import { VersionService } from '../version.service';
-import {AdminDashboardService} from './admin-dashboard.service';
 import {MatListModule} from '@angular/material/list';
 
 @Component({
+  standalone: true,
   selector: 'app-admin-dashboard',
   imports: [
     CommonModule,
@@ -29,7 +29,6 @@ import {MatListModule} from '@angular/material/list';
 })
 export class AdminDashboardComponent {
   constructor(
-    protected adminDashboardService: AdminDashboardService,
     protected versionService: VersionService,
   ) {}
 }

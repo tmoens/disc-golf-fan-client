@@ -1,23 +1,5 @@
 <dgf-component-container>
   <h5>Edit Favourite</h5>
-  <!--  <div class="lo-row lo-justify-center lo-gap10">-->
-  <!--    <mat-form-field subscriptSizing="dynamic">-->
-  <!--      <mat-label>New Favourite's PDGA Number</mat-label>-->
-  <!--      <input matInput type="number" [formControl]="pdgaNumberFC" [disabled]="!isLoading">-->
-  <!--      @if(getHint()) { <mat-hint>{{ getHint() }}</mat-hint> }-->
-  <!--    </mat-form-field>-->
-
-  <!--    @if(playerIdentifiedByPdgaNumber) {-->
-  <!--      <button mat-raised-button (click)="addPlayerAsFavourite(playerIdentifiedByPdgaNumber)">-->
-  <!--        <mat-icon>add</mat-icon>-->
-  <!--        Add {{ playerIdentifiedByPdgaNumber.name }}-->
-  <!--      </button>-->
-  <!--    }-->
-  <!--    @if(existingFavourite) {-->
-  <!--      <span>{{existingFavourite.name}} is already a favourite</span>-->
-  <!--    }-->
-  <!--  </div>-->
-
   <div class="lo-column lo-gap10">
 
     <!-- PDGA Number and Name -->
@@ -28,12 +10,32 @@
     <mat-form-field>
       <mat-label>Nickname</mat-label>
       <input matInput type="text" [formControl]="nicknameFC">
+      <button
+        mat-icon-button
+        matSuffix
+        tabIndex="-1"
+        matTooltip="The name you want us to use for this player e.g. 'Vinny' instead of Calvin Heimburg."
+        (touchstart)="$event.stopPropagation()"
+        style="pointer-events: auto;"
+      >
+        <mat-icon>info</mat-icon>
+      </button>
     </mat-form-field>
 
     <!-- Sort Order -->
     <mat-form-field>
       <mat-label>Sort Order</mat-label>
       <input matInput type="number" [formControl]="orderFC">
+
+      <button
+        mat-icon-button
+        matSuffix
+        tabIndex="-1"
+        matTooltip="0 means first in your list, higher numbers appear lower on your list."
+        style="pointer-events: auto;"
+        (touchstart)="$event.stopPropagation()">
+        <mat-icon>info</mat-icon>
+      </button>
     </mat-form-field>
   </div>
 

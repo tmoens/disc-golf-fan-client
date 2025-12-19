@@ -2,10 +2,11 @@ import {Component, Input, OnChanges} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'dgf-hole-score',
-    imports: [CommonModule],
-    templateUrl: './hole-score.component.html',
-    styleUrl: './hole-score.component.scss'
+  standalone: true,
+  selector: 'dgf-hole-score',
+  imports: [CommonModule],
+  templateUrl: './hole-score.component.html',
+  styleUrl: './hole-score.component.scss'
 })
 export class HoleScoreComponent implements OnChanges {
   /**

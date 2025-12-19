@@ -11,6 +11,7 @@ import {plainToInstance} from 'class-transformer';
 import { LoaderService } from '../loader.service';
 
 @Component({
+  standalone: true,
   selector: 'app-register',
   imports: [
     CommonModule,

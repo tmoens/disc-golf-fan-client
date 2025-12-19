@@ -9,6 +9,7 @@ import { ScoreToParComponent } from '../score-vs-par/score-vs-par.component';
 
 @Component({
   selector: 'dgf-score-detail',
+  standalone: true,
   imports: [
     DecimalPipe,
     MatDivider,
@@ -49,7 +50,7 @@ export class ScoreDetailComponent {
     this.setupVisibilityObserver();
 
     // We do NOT start polling immediately.
-    // Polling starts only when we become visible AND the round is the live round.
+    // Polling starts only when we become visible AND the round is the "live" round.
   }
 
 

@@ -5,7 +5,7 @@
 
 $primary-color: mat.$azure-palette;
 
-$zf-app-theme: mat.define-theme((
+$dgf-app-theme: mat.define-theme((
   color: (
     theme-type: light,
     primary: mat.$azure-palette,
@@ -20,10 +20,18 @@ $zf-app-theme: mat.define-theme((
   )
 ));
 
-// This is used to tighten up the form field widgets.
-$zf-compact-theme: mat.define-theme((
+$dgf-compact-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$cyan-palette,
+    tertiary: mat.$chartreuse-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    bold-weight: 900,
+  ),
   density: (
-    scale: -2,
+    scale: -2, // THIS is the magic compactness
   )
 ));
 
@@ -32,12 +40,12 @@ $zf-compact-theme: mat.define-theme((
   // a colour that is good for backgrounds
   --dgf-primary-2pct: color-mix(in srgb, var(--mat-sys-primary) 2%, transparent);
 
-  @include mat.system-level-colors($zf-app-theme);
-  @include mat.system-level-typography($zf-app-theme);
+  @include mat.system-level-colors($dgf-app-theme);
+  @include mat.system-level-typography($dgf-app-theme);
 
-  @include mat.all-component-themes($zf-app-theme);
-  @include mat.all-component-typographies($zf-compact-theme);
-  @include mat.typography-hierarchy($zf-app-theme);
+  @include mat.all-component-themes($dgf-app-theme);
+  @include mat.all-component-typographies($dgf-app-theme);
+  @include mat.typography-hierarchy($dgf-app-theme);
 
 
   // Override button corners. This took some time to figure out and
@@ -57,24 +65,38 @@ $zf-compact-theme: mat.define-theme((
 
   @include mat.dialog-overrides((
     container-shape: 2px,
-  ))
-}
-
-// With outline appearance the Label pokes out slightly above the outline
-// but the outline is at the dead top of the form-field, so we need to give
-// a little space at the top.
-.mat-mdc-form-field {
-  margin-top: 8px;
+  ));
 }
 
 html, body {
   height: 100%;background: var(--md-sys-color-surface);
-
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.compact {
+  @include mat.form-field-overrides((
+    container-height: 50px,
+    container-text-size: 0.9rem,
+    container-text-line-height: 1.2rem,
+  ));
+  @include mat.toolbar-overrides((
+    mobile-height: 48px,
+    standard-height: 48px,
+    title-text-line-height: 1.4rem,
+    title-text-size: 1.1rem,
+  ));
+  @include mat.button-overrides((
+    outlined-label-text-size: 33px,
+    filled-label-text-size: 33px,
+    protected-label-text-size: 33px,
+  ))
+}
+
+body.compact {
 }
 
 .app-shell {

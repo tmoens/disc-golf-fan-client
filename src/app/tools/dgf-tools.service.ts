@@ -17,6 +17,7 @@ export class DgfToolsService {
         DGF_TOOL_KEY.LIVE_SCORES,
         {
           displayName: 'Live Scores',
+          rawShortName: 'Scores',
           route: DGF_TOOL_ROUTES.LIVE_SCORES,
           description: 'Watch live scores for your favourite players.',
           icon: 'sync_alt',
@@ -29,6 +30,7 @@ export class DgfToolsService {
         DGF_TOOL_KEY.UPCOMING_EVENTS,
         {
           displayName: 'Upcoming Tournaments',
+          rawShortName: 'Events',
           route: DGF_TOOL_ROUTES.UPCOMING_EVENTS,
           description: 'When are your favourites playing next?',
           icon: 'event',
@@ -41,6 +43,7 @@ export class DgfToolsService {
         DGF_TOOL_KEY.MANAGE_FAVOURITES,
         {
           displayName: 'Manage Favorites',
+          rawShortName: 'Favorites',
           route: DGF_TOOL_ROUTES.MANAGE_FAVOURITES,
           description: 'Choose the players you want to follow.',
           icon: 'manage_accounts',
@@ -145,6 +148,7 @@ export class DgfToolsService {
       DGF_TOOL_KEY.USER_ACCOUNT_MANAGEMENT,
       {
         displayName: 'Account Management',
+        rawShortName: 'Settings',
         route: DGF_TOOL_ROUTES.USER_ACCOUNT_MANAGEMENT,
         description: 'Manageyour account.',
         requiredLoginState: 'loggedIn',
